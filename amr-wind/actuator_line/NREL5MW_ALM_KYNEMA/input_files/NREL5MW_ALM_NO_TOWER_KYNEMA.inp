@@ -132,8 +132,8 @@ tagging.T0_level_3_zone.T0_level_3_zone.zaxis = 0.0 0.0 189.0
 
 #---- actuator defs ----
 Actuator.labels                            = T0                  
-Actuator.T0.type                           = TurbineKynemaLine     
-Actuator.T0.kynema_input_file              = NREL-5MW-aero.yaml
+Actuator.T0.type                           = TurbineKynemaFMBLine     
+Actuator.T0.kynema_fmb_input_file          = NREL-5MW-aero.yaml
 Actuator.T0.controller_shared_library_path = /home/mkuhn/exawind-manager/spack/opt/spack/linux-x86_64/rosco-2.9.0-hd35tedogsk5r3gxkghi7ekpo6vl56nm/lib/libdiscon.so
 Actuator.T0.controller_input_file          = DISCON.IN
 Actuator.T0.num_struct_nodes_blade         = 11
