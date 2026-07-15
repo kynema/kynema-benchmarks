@@ -6,31 +6,31 @@
 
 
 
-ExaWind
+Kynema
 -------
 
 .. toctree::
    :maxdepth: 2
 
-   exawind/benchmarks
+   kynema-driver/benchmarks
 
 
-AMR-Wind
---------
-
-.. toctree::
-   :maxdepth: 2
-
-   amr-wind/benchmarks
-
-
-Nalu-Wind
----------
+Kynema-SGF
+----------
 
 .. toctree::
    :maxdepth: 2
 
-   nalu-wind/benchmarks
+   kynema-sgf/benchmarks
+
+
+Kynema-UGF
+----------
+
+.. toctree::
+   :maxdepth: 2
+
+   kynema-ugf/benchmarks
 
 Notes
 ---------

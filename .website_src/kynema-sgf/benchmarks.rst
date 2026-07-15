@@ -1,4 +1,4 @@
-AMR-Wind Benchmarks
+Kynema-SGF Benchmarks
 =================================
 
 .. toctree::

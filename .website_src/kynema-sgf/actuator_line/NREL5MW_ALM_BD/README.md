@@ -27,7 +27,7 @@ The characteristics of the NREL5MW turbine used in this study are are defined in
 | Cut in wind speed | 3 m/s |
 | Cut out wind speed | 25 m/s |
 
-An OpenFAST turbine model is used to represent the aerodynamic, structural, and turbine controller dynamics.  The [ROSCO controller](https://github.com/NREL/ROSCO) is used to govern the turbine operation.  The NREL5MW turbine is placed in a 5km x 5km x 2km domain with a total mesh size of 70.5 million elements.  The background mesh resolution is 10m, with two levels of refinement to reach 2.5m resolution at the rotor disk.  For the blade-resolved problem, an additional two levels of refinement are used in the AMR-Wind domain.
+An OpenFAST turbine model is used to represent the aerodynamic, structural, and turbine controller dynamics.  The [ROSCO controller](https://github.com/NREL/ROSCO) is used to govern the turbine operation.  The NREL5MW turbine is placed in a 5km x 5km x 2km domain with a total mesh size of 70.5 million elements.  The background mesh resolution is 10m, with two levels of refinement to reach 2.5m resolution at the rotor disk.  For the blade-resolved problem, an additional two levels of refinement are used in the Kynema-SGF domain.
 
 ![domain](results/images/NREL5MW_domain.png)
 
@@ -51,7 +51,7 @@ The job was run on an HPC cluster using 8 nodes/896 CPU's and run for 23.3 hours
 
 Full details provided in [**postprocessing documentation**](postprocessing/README.md).
 
-A full set of postprocessing scripts is provided to extract results and images from the AMR-Wind simulations.  These scripts and notebooks will provide the ability to generate
+A full set of postprocessing scripts is provided to extract results and images from the Kynema-SGF simulations.  These scripts and notebooks will provide the ability to generate
 - velocity contour visualizations
 - turbine performance results
 - blade loading profiles
@@ -61,7 +61,7 @@ A full set of postprocessing scripts is provided to extract results and images f
 
 Full details provided in [**results documentation**](results/README.md).
 
-A description of the AMR-Wind results is included in the results documentation.  When appropriate, these will include comparisons against results from other codes and other simulation fidelities of the same NREL5MW turbine case.
+A description of the Kynema-SGF results is included in the results documentation.  When appropriate, these will include comparisons against results from other codes and other simulation fidelities of the same NREL5MW turbine case.
 
 ![Hub-height XY wake profile](results/images/WakeProfile_XY_300_900.png)
 ![XZ wake profile](results/images/WakeProfile_XZ_300_900.png)

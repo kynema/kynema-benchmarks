@@ -1,10 +1,10 @@
-# AMR-Wind code performance
+# Kynema-SGF code performance
 
 ## Overview
 
 The relevant code versions are
 
-- AMR-Wind version: [26063277b57415e735274c0d366ff702ca14fc14](https://github.com/Exawind/amr-wind/commit/26063277b57415e735274c0d366ff702ca14fc14)
+- Kynema-SGF version: [26063277b57415e735274c0d366ff702ca14fc14](https://github.com/Exawind/amr-wind/commit/26063277b57415e735274c0d366ff702ca14fc14)
 - OpenFAST version: [Release 4.0.2](https://github.com/OpenFAST/openfast/releases/tag/v4.0.2)
 - ROSCO version: [2.9](https://github.com/NREL/ROSCO/releases/tag/v2.9.0)
 
