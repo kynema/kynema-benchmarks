@@ -266,7 +266,7 @@ def main():
 
     print('Successfully finished restart checks')
 
-    # Make backups of forces files becuase they get deleted on restart
+    # Make backups of forces files because they get deleted on restart
     nalu_forcefiles = [dict(pp)['output_file_name'] for pp in yamldata['nalu_orig']['realms'][0]['post_processing']]
     for f in nalu_forcefiles:
         fullpath = os.path.join(casepath,f)
