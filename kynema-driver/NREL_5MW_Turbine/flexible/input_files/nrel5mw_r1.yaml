@@ -1,20 +1,20 @@
 # Example input file
-exawind:
-  nalu_wind_inp:
+kynema_driver:
+  kynema_ugf_inp:
     - nrel5mw_nalu_r1.yaml
-  amr_wind_inp: nrel5mw_amr_r1.inp
+  kynema_sgf_inp: nrel5mw_amr_r1.inp
   num_timesteps: 345620
   nonlinear_iterations: 1
 
   # Variables for overset exchange
-  nalu_vars:
+  ugf_vars:
     - velocity
     - turbulent_ke
     - specific_dissipation_rate
     - pressure
-  amr_cell_vars:
+  sgf_cell_vars:
     - velocity
     - tke
     - sdr
-  amr_node_vars:
+  sgf_node_vars:
     - p
