@@ -2,7 +2,7 @@ NREL 5MW Turbine
 ===================
 
 
-Two variants of this simulation are provided: one with rigid blades and one with flexible blades modeled using OpenFAST.  Note that both cases use the `convectively unstable ABL <../amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/README.html>`__ precursor.
+Two variants of this simulation are provided: one with rigid blades and one with flexible blades modeled using OpenFAST.  Note that both cases use the `convectively unstable ABL <../kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/README.html>`__ precursor.
 
 
 #. `Flexible NREL 5MW turbine <nrel5mw/fsi/README.html>`__: Blade-resolved simulation of the NREL5MW reference turbine, coupled to the OpenFAST BeamDyn aerolastic solver and ROSCO open-source turbine controller.

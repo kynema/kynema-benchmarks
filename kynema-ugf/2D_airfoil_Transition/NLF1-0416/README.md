@@ -27,7 +27,7 @@ Validation and verification of the transition model were conducted for the NASA 
     
 2.  Run the AOA=0 case
 	```bash
-    $ cd BENCHMARKDIR/nalu-wind/2D_airfoil_Transition/NLF1-0416/aoa_0/input_files/
+    $ cd BENCHMARKDIR/kynema-ugf/2D_airfoil_Transition/NLF1-0416/aoa_0/input_files/
     
     # Load any modules/libraries necessary for ExaWind/Nalu-Wind
     
@@ -37,7 +37,7 @@ Validation and verification of the transition model were conducted for the NASA 
     
 3.  Run the AOA=5 case
 	```bash
-    $ cd BENCHMARKDIR/nalu-wind/2D_airfoil_Transition/NLF1-0416/aoa_5/input_files/
+    $ cd BENCHMARKDIR/kynema-ugf/2D_airfoil_Transition/NLF1-0416/aoa_5/input_files/
     
     # Load any modules/libraries necessary for ExaWind/Nalu-Wind
     

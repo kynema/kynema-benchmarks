@@ -27,7 +27,7 @@ A near-neutral convective boundary layer precursor was run to feed the domain fo
 - Hub-height streamwise velocity: 11.4 m/s
 - Hub-height flow direction: ~240.0 degrees
 
-![avgmetmest60](../../../amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/results/avgmetmast_0600.png)
+![avgmetmest60](../../../kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/results/avgmetmast_0600.png)
 
 ## CFD Mesh
 

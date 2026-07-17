@@ -32,8 +32,8 @@ $ mkdir RUNDIR
 Note that `RUNDIR` can be an arbitrary name or location chosen to be convenient for the user or HPC system.  Then copy the necessary input files into `RUNDIR`
 
 ```bash
-$ cp BENCHMARKDIR/amr-wind/atmospheric_boundary_layer/neutral/input_files/abl_neutral.inp RUNDIR
-$ cp BENCHMARKDIR/amr-wind/atmospheric_boundary_layer/neutral/input_files/abl_neutral_sampling.inp RUNDIR
+$ cp BENCHMARKDIR/kynema-sgf/atmospheric_boundary_layer/neutral/input_files/abl_neutral.inp RUNDIR
+$ cp BENCHMARKDIR/kynema-sgf/atmospheric_boundary_layer/neutral/input_files/abl_neutral_sampling.inp RUNDIR
 ```
 
 ## Step 2: edit the input files (optional)

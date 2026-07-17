@@ -1,7 +1,7 @@
 2D Airfoil Transition Cases
 =================================
 
-.. comment include:: ../../nalu-wind/2D_airfoil_Transition/README.md
+.. comment include:: ../../kynema-ugf/2D_airfoil_Transition/README.md
    :parser: myst
 
 #. `NLF(1)-0416 airfoil <2D_airfoil_Transition/NLF1-0416/README.html>`__: Validation and verification of the 1-equation gamma transition model on the NASA NLF(1)-0416 airfoil.

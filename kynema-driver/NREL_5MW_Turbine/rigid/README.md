@@ -27,13 +27,13 @@ This benchmark contains a geometry and boundary-layer resolved model of the NREL
 - AMR-Wind SHA: [091b07fa3840af98925792290fb8788696290a5e](https://github.com/Exawind/amr-wind/commit/091b07fa3840af98925792290fb8788696290a5e) 
 
 ## Freestream Conditions
-A near-neutral convective boundary layer precursor was run to feed the domain for this case. Full details are posted here: [Convective ABL for NREL5MW](../../../amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/README.md)
+A near-neutral convective boundary layer precursor was run to feed the domain for this case. Full details are posted here: [Convective ABL for NREL5MW](../../../kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/README.md)
 
 10 minute flow statistics:
 - Hub-height streamwise velocity: 11.63 m/s
 - Hub-height flow direction: ~240.0 degrees
 
-<img src="../../../amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/results/avgmetmast_0600.png" alt="10-Minute Average Virtual Met-mast Precursor Results" style="width:800px; background-color: #ffffff;"/>
+<img src="../../../kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/results/avgmetmast_0600.png" alt="10-Minute Average Virtual Met-mast Precursor Results" style="width:800px; background-color: #ffffff;"/>
 
 ## CFD Mesh
 

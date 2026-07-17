@@ -27,7 +27,7 @@ Validation of the transition model is conducted for the DU00-W-212 wind turbine 
     
 2.  Run the AOA=0 case
 	```bash
-    $ cd BENCHMARKDIR/nalu-wind/2D_airfoil_Transition/DU00-W-212/aoa_0/input_files/
+    $ cd BENCHMARKDIR/kynema-ugf/2D_airfoil_Transition/DU00-W-212/aoa_0/input_files/
     
     # Load any modules/libraries necessary for ExaWind/Nalu-Wind
     
@@ -37,7 +37,7 @@ Validation of the transition model is conducted for the DU00-W-212 wind turbine 
 
 3.  Run the AOA=5 case
 	```bash
-    $ cd BENCHMARKDIR/nalu-wind/2D_airfoil_Transition/DU00-W-212/aoa_5/input_files/
+    $ cd BENCHMARKDIR/kynema-ugf/2D_airfoil_Transition/DU00-W-212/aoa_5/input_files/
     
     # Load any modules/libraries necessary for ExaWind/Nalu-Wind
     

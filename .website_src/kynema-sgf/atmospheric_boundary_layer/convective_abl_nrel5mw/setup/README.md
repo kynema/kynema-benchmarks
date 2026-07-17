@@ -18,7 +18,7 @@ The first part of the ABL simulation will allow the turbulence to initialize and
 To launch this case, navigate to the right directory and create a submission script:
     
 ```bash
-$ cd BENCHMARKDIR/amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files
+$ cd BENCHMARKDIR/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files
 $ vi submit.sh
 ```
 

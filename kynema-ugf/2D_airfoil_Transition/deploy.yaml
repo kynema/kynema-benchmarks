@@ -1,6 +1,6 @@
 
 # Location where files should exist
-destdir: ../../.website_src/nalu-wind/2D_airfoil_Transition
+destdir: ../../.website_src/kynema-ugf/2D_airfoil_Transition
 
 # Define the valid file types to copy over (optional)
 validtypes: ['.html', '.md', '.ipynb', '.png', '.jpg', '.rst', ] 

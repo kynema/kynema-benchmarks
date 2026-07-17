@@ -1,6 +1,6 @@
 
 # Location where files should exist
-destdir: ../../../.website_src/amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/
+destdir: ../../../.website_src/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/
 
 # Define the valid file types to copy over (optional)
 validtypes: ['.html', '.md', '.ipynb', '.png', '.jpg', '.rst', ] 

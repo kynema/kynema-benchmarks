@@ -1,7 +1,7 @@
 3D Airfoil IDDES Cases
 =========================
 
-.. comment include:: ../../nalu-wind/3D_airfoil_IDDES/README.md
+.. comment include:: ../../kynema-ugf/3D_airfoil_IDDES/README.md
    :parser: myst
 
 #. `NACA0021 airfoil <3D_airfoil_IDDES/README.html>`__: Simulations of a NACA 0021 airfoil at 4 angles of attack: 30, 45, 60 and 90 degrees using the IDDES turbulence model.

@@ -1,6 +1,6 @@
 
 # Location where files should exist
-destdir: ../../../.website_src/amr-wind/actuator_line/NREL5MW_ALM_BD/
+destdir: ../../../.website_src/kynema-sgf/actuator_line/NREL5MW_ALM_BD/
 
 # Markdown files to parse and copy files
 mdfiles:

@@ -21,13 +21,13 @@ This benchmark contains a geometry and boundary-layer resolved model of the NREL
 - OpenFAST 4.0.2 SHA: [fc1110183bcc87b16d93129edabdce6d30e3a497](https://github.com/OpenFAST/openfast/commit/fc1110183bcc87b16d93129edabdce6d30e3a497)  
 
 ## Freestream Conditions
-A near-neutral convective boundary layer precursor was run to feed the domain for this case. Full details are posted here: [Convective ABL for NREL5MW](../../../amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/README.md)
+A near-neutral convective boundary layer precursor was run to feed the domain for this case. Full details are posted here: [Convective ABL for NREL5MW](../../../kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/README.md)
 
 10 minute flow statistics:
 - Hub-height streamwise velocity: 11.4 m/s
 - Hub-height flow direction: ~240.0 degrees
 
-![avgmetmest60](../../../amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/results/avgmetmast_0600.png)
+![avgmetmest60](../../../kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/results/avgmetmast_0600.png)
 
 ## CFD Mesh
 
