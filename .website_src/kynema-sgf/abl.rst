@@ -24,5 +24,5 @@ Two different atmospheric boundary simulations are documented here:
    * `Results <atmospheric_boundary_layer/convective_abl_nrel5mw/README.html#results>`__
 
 `View these cases in the github repository
-<https://github.com/Exawind/exawind-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer>`__
+<https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer>`__
 

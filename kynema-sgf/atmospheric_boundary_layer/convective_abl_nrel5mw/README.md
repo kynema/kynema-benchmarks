@@ -4,7 +4,7 @@
 
 This benchmark problem is a slightly convective unstable atmospheric boundary
 layer that is used as an inflow for the [actuator line
-NREL5MW](https://github.com/Exawind/exawind-benchmarks/tree/main/amr-wind/actuator_line/NREL5MW_ALM_BD) and [geometry resolved NREL5MW](https://github.com/Exawind/exawind-benchmarks/tree/main/exawind/NREL_5MW_Turbine)
+NREL5MW](https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/actuator_line/NREL5MW_ALM_BD) and [geometry resolved NREL5MW](https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-driver/NREL_5MW_Turbine)
 benchmark cases. The conditions and details of the case are summarized below:
 
 - Hub-height wind speed: 11.4 m/s
@@ -27,11 +27,11 @@ Full details of the simulation setup are provided in [**setup documentation**](s
 
 The case was set up using the [AMR-Wind frontend](https://github.com/Exawind/amr-wind-frontend) with the notebook [convectiveABL_setup.ipynb](setup/convectiveABL_setup.ipynb).  This allows the locations of the refinement regions and sampling planes to be setup properly relative to the location of the NREL5MW turbine.
 
-Input files are in the [input_files](https://github.com/Exawind/exawind-benchmarks/tree/main/amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files) directory.  There are two stages to this run:
+Input files are in the [input_files](https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files) directory.  There are two stages to this run:
 
-1. Spin-up of the precursor: Use the [convective_abl.inp](https://github.com/Exawind/exawind-benchmarks/tree/main/amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files/convective_abl.inp) input file to run the case from t=0 to 15,000 seconds.
+1. Spin-up of the precursor: Use the [convective_abl.inp](https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files/convective_abl.inp) input file to run the case from t=0 to 15,000 seconds.
 
-2. Capture the boundary plane and sampling plane data: Use [convective_abl_bndry.inp](https://github.com/Exawind/exawind-benchmarks/tree/main/amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files/convective_abl_bndry.inp) to run the case from t=15,000 to 20,000 seconds to output the data needed to run the turbine cases.
+2. Capture the boundary plane and sampling plane data: Use [convective_abl_bndry.inp](https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files/convective_abl_bndry.inp) to run the case from t=15,000 to 20,000 seconds to output the data needed to run the turbine cases.
 
 Current case was run with AMR-Wind version [f67a52dd6aa1882595d16700527470bc8097cb13](https://github.com/Exawind/amr-wind/commit/f67a52dd6aa1882595d16700527470bc8097cb13)
 
@@ -51,7 +51,7 @@ The simulation was run on the Sandia Flight HPC cluster using the following reso
 
 ## Results
 
-Statistics from the ABL are calculated over the time interval $t \in [15000 , 20000]s$ using scripts and notebooks from the [postprocessing](https://github.com/Exawind/exawind-benchmarks/tree/main/amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/postprocessing) directory. The results are saved to the [results](https://github.com/Exawind/exawind-benchmarks/tree/main/amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/results/) directory.  
+Statistics from the ABL are calculated over the time interval $t \in [15000 , 20000]s$ using scripts and notebooks from the [postprocessing](https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/postprocessing) directory. The results are saved to the [results](https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/results/) directory.  
 
 Horizontally averaged statistics are computed in the
 [AVG_horiz_profiles.ipynb](postprocessing/AVG_horiz_profiles.ipynb) notebook and
@@ -124,7 +124,7 @@ for x in amrwindfedirs: sys.path.insert(1, x)
 
 ### Wavenumber Spectra
 
-Two-dimensional (2D) wavenumber spectra are computed from the XY planes sampled from AMR-Wind using the [post-processing engine](https://github.com/Exawind/amr-wind-frontend/tree/main/postproengine) in the the [AMR-Wind front end](https://github.com/Exawind/amr-wind-frontend) library. The [yaml file](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/postprocessing/postpro_windspectra.yaml) for computing 2D wavenumber spectra of vertical planes sampled in this benchmark case can be called using the [ppengine.py](https://github.com/Exawind/amr-wind-frontend/blob/main/utilities/ppengine.py) utility as
+Two-dimensional (2D) wavenumber spectra are computed from the XY planes sampled from AMR-Wind using the [post-processing engine](https://github.com/Exawind/amr-wind-frontend/tree/main/postproengine) in the the [AMR-Wind front end](https://github.com/Exawind/amr-wind-frontend) library. The [yaml file](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/postprocessing/postpro_windspectra.yaml) for computing 2D wavenumber spectra of vertical planes sampled in this benchmark case can be called using the [ppengine.py](https://github.com/Exawind/amr-wind-frontend/blob/main/utilities/ppengine.py) utility as
 ```
 python ppengine.py postpro_windspectra.yaml
 ```

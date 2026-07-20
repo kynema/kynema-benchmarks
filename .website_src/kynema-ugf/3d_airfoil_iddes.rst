@@ -10,4 +10,4 @@
    * `Results <3D_airfoil_IDDES/README.html#results>`__
      
   
-`View the case in the github repository <https://github.com/Exawind/exawind-benchmarks/tree/main/nalu-wind/3D_airfoil_IDDES>`__
+`View the case in the github repository <https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-ugf/3D_airfoil_IDDES>`__

@@ -12,15 +12,15 @@ REPODIR=$(readlink -f "$REPODIR")
 
 # Define mesh url and locations 
 read -r -d '' meshlist <<'EOF'
-https://github.com/Exawind/exawind-benchmarks/releases/download/mesh_assets/du00w212_F.exo.tar.gz		nalu-wind/2D_airfoil_Transition/DU00-W-212/mesh/
-https://github.com/Exawind/exawind-benchmarks/releases/download/mesh_assets/naca0021_aoa_30.exo.tar.gz		nalu-wind/3D_airfoil_IDDES/NACA-0021/aoa_30/input_files
-https://github.com/Exawind/exawind-benchmarks/releases/download/mesh_assets/naca0021_aoa_45.exo.tar.gz		nalu-wind/3D_airfoil_IDDES/NACA-0021/aoa_45/input_files
-https://github.com/Exawind/exawind-benchmarks/releases/download/mesh_assets/naca0021_aoa_60.exo.tar.gz		nalu-wind/3D_airfoil_IDDES/NACA-0021/aoa_60/input_files
-https://github.com/Exawind/exawind-benchmarks/releases/download/mesh_assets/naca0021_aoa_90.exo.tar.gz		nalu-wind/3D_airfoil_IDDES/NACA-0021/aoa_90/input_files
-https://github.com/Exawind/exawind-benchmarks/releases/download/mesh_assets/nlf0416_F.exo.tar.gz		nalu-wind/2D_airfoil_Transition/NLF1-0416/mesh/
-https://github.com/Exawind/exawind-benchmarks/releases/download/mesh_assets/nrelvi_nearbody_mesh.exo.tar.gz	exawind/NREL_Phase_VI_Turbine/mesh/
-https://github.com/Exawind/exawind-benchmarks/releases/download/mesh_assets/pazyslip.exo.tar.gz			exawind/Pazy_Wing/mesh
-https://github.com/Exawind/exawind-benchmarks/releases/download/mesh_assets/split_tower_and_blades.exo.tar.gz	exawind/NREL_5MW_Turbine/flexible/mesh
+https://github.com/Kynema/kynema-benchmarks/releases/download/mesh_assets/du00w212_F.exo.tar.gz		nalu-wind/2D_airfoil_Transition/DU00-W-212/mesh/
+https://github.com/Kynema/kynema-benchmarks/releases/download/mesh_assets/naca0021_aoa_30.exo.tar.gz		nalu-wind/3D_airfoil_IDDES/NACA-0021/aoa_30/input_files
+https://github.com/Kynema/kynema-benchmarks/releases/download/mesh_assets/naca0021_aoa_45.exo.tar.gz		nalu-wind/3D_airfoil_IDDES/NACA-0021/aoa_45/input_files
+https://github.com/Kynema/kynema-benchmarks/releases/download/mesh_assets/naca0021_aoa_60.exo.tar.gz		nalu-wind/3D_airfoil_IDDES/NACA-0021/aoa_60/input_files
+https://github.com/Kynema/kynema-benchmarks/releases/download/mesh_assets/naca0021_aoa_90.exo.tar.gz		nalu-wind/3D_airfoil_IDDES/NACA-0021/aoa_90/input_files
+https://github.com/Kynema/kynema-benchmarks/releases/download/mesh_assets/nlf0416_F.exo.tar.gz		nalu-wind/2D_airfoil_Transition/NLF1-0416/mesh/
+https://github.com/Kynema/kynema-benchmarks/releases/download/mesh_assets/nrelvi_nearbody_mesh.exo.tar.gz	exawind/NREL_Phase_VI_Turbine/mesh/
+https://github.com/Kynema/kynema-benchmarks/releases/download/mesh_assets/pazyslip.exo.tar.gz			exawind/Pazy_Wing/mesh
+https://github.com/Kynema/kynema-benchmarks/releases/download/mesh_assets/split_tower_and_blades.exo.tar.gz	exawind/NREL_5MW_Turbine/flexible/mesh
 EOF
 
 FILTER=""
@@ -40,7 +40,7 @@ function dlmesh(){
 # Help for this script
 function help() {
 cat <<EOF
-Download all meshes for benchmark problems from the repository https://github.com/Exawind/exawind-benchmarks/releases/tag/mesh_assets
+Download all meshes for benchmark problems from the repository https://github.com/Kynema/kynema-benchmarks/releases/tag/mesh_assets
 
 Usage: 
   $1 [OPTIONS]

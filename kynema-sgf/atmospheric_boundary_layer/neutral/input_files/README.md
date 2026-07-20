@@ -40,19 +40,19 @@ $ cp BENCHMARKDIR/amr-wind/atmospheric_boundary_layer/neutral/input_files/abl_ne
 
 This case requires two input files: 
 
-- [abl_neutral.inp](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral.inp): This file initializes the ABL simulation from scratch and runs for a total simulation time of 120,000s. 
+- [abl_neutral.inp](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral.inp): This file initializes the ABL simulation from scratch and runs for a total simulation time of 120,000s. 
 
-- [abl_neutral_sampling.inp](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral_sampling.inp): This file continues the ABL simulation for an additional 5,000s and collecting data from the XY sampling planes.  
+- [abl_neutral_sampling.inp](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral_sampling.inp): This file continues the ABL simulation for an additional 5,000s and collecting data from the XY sampling planes.  
 
 Note that an ABL statistics file will be generated for the entire run. 
 
 To modify the time interval over which sampling planes are collected, follow these steps: 
 
-1. Update the `time.stop_time` parameter in [abl_neutral.inp](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral.inp) to the desired time at which sampling plane should first be collected. 
+1. Update the `time.stop_time` parameter in [abl_neutral.inp](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral.inp) to the desired time at which sampling plane should first be collected. 
 
 2. Update the `io.restart_file = chk240000` parameter to reference the checkpoint file that corresponds to the time specified in step 1. 
 
-Additionally, the sampling planes themselves can be adjusted by editing the `incflo.post_processing` line of the [abl_neutral_sampling.inp](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral_sampling.inp) input file and the subsequent parameters that follow.
+Additionally, the sampling planes themselves can be adjusted by editing the `incflo.post_processing` line of the [abl_neutral_sampling.inp](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral_sampling.inp) input file and the subsequent parameters that follow.
 
 ## Step 3: submit the run
 
@@ -86,10 +86,10 @@ Then, for slurm based queueing systems, submit the run with a command like:
 $ sbatch submit.sh
 ```
 
-Once this case has finished, re-submit the job but change the input file to point to [abl_neutral_sampling.inp](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral_sampling.inp):
+Once this case has finished, re-submit the job but change the input file to point to [abl_neutral_sampling.inp](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral_sampling.inp):
 
 `time mpiexec --bind-to core --npernode $cores --n $ncpus $EXE abl_neutral_sampling.inp`
 
 ## Appendix: grid refinement study
 
-To run the finer grid case detailed in the [main documentation](../README.md) (grid D), follow the same procedure outline here, but use the [abl_neutral_D_grid.inp](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral_D_grid.inp) and [abl_neutral_D_grid_sampling.inp](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral_D_grid_sampling.inp) input files.
+To run the finer grid case detailed in the [main documentation](../README.md) (grid D), follow the same procedure outline here, but use the [abl_neutral_D_grid.inp](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral_D_grid.inp) and [abl_neutral_D_grid_sampling.inp](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral_D_grid_sampling.inp) input files.

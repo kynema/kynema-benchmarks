@@ -13,7 +13,7 @@ Here the optional argument `BENCHMARKDIR` is the location where you'd like the b
 
 ## Step 2.  Run the precursor spin-up case
 
-The first part of the ABL simulation will allow the turbulence to initialize and the boundary layer profile to develop.  The input file for this initial simulation is given by [convective_abl.inp](https://github.com/Exawind/exawind-benchmarks/tree/main/amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files/convective_abl.inp), and will last for 15,000 seconds.
+The first part of the ABL simulation will allow the turbulence to initialize and the boundary layer profile to develop.  The input file for this initial simulation is given by [convective_abl.inp](https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files/convective_abl.inp), and will last for 15,000 seconds.
     
 To launch this case, navigate to the right directory and create a submission script:
     
@@ -57,7 +57,7 @@ $ sbatch submit.sh
 
 ## Step 3.  Launch the statistics and sampling run.
 
-After completing step 2, the ABL simulation is run for an additional 5,000 seconds to gather statistics and boundary inflow data.  The input file for this second run is given by [convective_abl_bndry.inp](https://github.com/Exawind/exawind-benchmarks/tree/main/amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files/convective_abl_bndry.inp).  To launch this case, use a similar submission as above, but edit the last line to use the new input file:
+After completing step 2, the ABL simulation is run for an additional 5,000 seconds to gather statistics and boundary inflow data.  The input file for this second run is given by [convective_abl_bndry.inp](https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files/convective_abl_bndry.inp).  To launch this case, use a similar submission as above, but edit the last line to use the new input file:
 
 ```bash
 time mpiexec --bind-to core --npernode $cores --n $ncpus $EXE convective_abl_bndry.inp 
@@ -66,7 +66,7 @@ time mpiexec --bind-to core --npernode $cores --n $ncpus $EXE convective_abl_bnd
 
 ## Optional: using the jupyter notebook
 
-If you're interested in modifying the AMR-Wind input file, for instance, to change the sampling plane locations, you can use the Jupyter notebook [convectiveABL_setup.ipynb](convectiveABL_setup.ipynb).  This will allow you to visualize the locations of the planes relative to the turbine position and wind direction, and will generate the AMR-Wind input file [convective_abl.inp](https://github.com/Exawind/exawind-benchmarks/tree/main/amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files/convective_abl.inp) at the end of the process.
+If you're interested in modifying the AMR-Wind input file, for instance, to change the sampling plane locations, you can use the Jupyter notebook [convectiveABL_setup.ipynb](convectiveABL_setup.ipynb).  This will allow you to visualize the locations of the planes relative to the turbine position and wind direction, and will generate the AMR-Wind input file [convective_abl.inp](https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files/convective_abl.inp) at the end of the process.
 
 ![ABL domain side view](../results/images/convectiveABL_sideview.png)
 

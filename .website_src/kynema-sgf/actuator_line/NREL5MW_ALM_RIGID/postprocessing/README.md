@@ -21,7 +21,7 @@ for x in amrwindfedirs: sys.path.insert(1, x)
 ## OpenFAST turbine results
 
 - Jupyter notebook: [OpenFAST_v40_Results.ipynb](OpenFAST_v40_Results.ipynb)
-- python script: [OpenFAST_v40_Results.py](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/postprocessing/OpenFAST_v40_Results.py)
+- python script: [OpenFAST_v40_Results.py](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/postprocessing/OpenFAST_v40_Results.py)
 
 These scripts extract out specific performance quantities from the OpenFAST output files and creates a time history of quantities to compare, as well as averaging them over a specific time period.  To use the scripts and notebooks above, change the `RUNDIR` variable in the `replacedict` definition:
 
@@ -43,15 +43,15 @@ $ python OpenFAST_v40_Results.py
 ```
 
 The outputs of the script are contained in two CSV files:
-- [NREL5MW.csv](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/results/OpenFAST_v402_out/NREL5MW.csv): A time history of turbine parameters such as blade pitch, rotor speed, rotor thrust, rotor torque, and generator power.
-- [NREL5MW_mean.csv](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/results/OpenFAST_v402_out/NREL5MW_mean.csv): The time average of the turbine properties over the time period defined by `trange`.
+- [NREL5MW.csv](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/results/OpenFAST_v402_out/NREL5MW.csv): A time history of turbine parameters such as blade pitch, rotor speed, rotor thrust, rotor torque, and generator power.
+- [NREL5MW_mean.csv](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/results/OpenFAST_v402_out/NREL5MW_mean.csv): The time average of the turbine properties over the time period defined by `trange`.
 
- Plots of the quantities from `NREL5MW.csv` are also generated in the [images](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/results/images) directory, look for the `OpenFAST_T0_*.png` files.
+ Plots of the quantities from `NREL5MW.csv` are also generated in the [images](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/results/images) directory, look for the `OpenFAST_T0_*.png` files.
 
 ## OpenFAST blade loading profiles
 
 - Jupyter notebook: [OpenFAST_SectionalLoading.ipynb](OpenFAST_SectionalLoading.ipynb)
-- python script: [OpenFAST_SectionalLoading.py](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/postprocessing/OpenFAST_SectionalLoading.py)
+- python script: [OpenFAST_SectionalLoading.py](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/postprocessing/OpenFAST_SectionalLoading.py)
 
 Similar to the scripts which extract the time-history of the turbine quantities above, the notebook and python script above extract the blade loading profiles from the OpenFAST output file.  These include the radial distributions of angle of attack, lift/drag coefficients, and streamwise/tangential blade forces.
 
@@ -72,7 +72,7 @@ The time range to average the data is defined in `trange`:
 trange: &trange [300, 900]   # Note: add 15,000 sec to get AMR-Wind time
 ```
 
-The raw output will be stored in the file [NREL5MW_SECLOADS_mean_rpts.csv](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/results/OpenFAST_v402_out/NREL5MW_SECLOADS_mean_rpts.csv).  Plots of the blade loading are also generated in the [images](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/results/images) directory, in the files:
+The raw output will be stored in the file [NREL5MW_SECLOADS_mean_rpts.csv](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/results/OpenFAST_v402_out/NREL5MW_SECLOADS_mean_rpts.csv).  Plots of the blade loading are also generated in the [images](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/results/images) directory, in the files:
 
 - OpenFAST_T0_AOA.png
 - OpenFAST_T0_ClCd.png
@@ -81,7 +81,7 @@ The raw output will be stored in the file [NREL5MW_SECLOADS_mean_rpts.csv](https
 ## Contour plots
 
 - Jupyter notebook: [InstantaneousAvgPlanes.ipynb](InstantaneousAvgPlanes.ipynb)
-- python script: [InstantaneousAvgPlanes.py](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/postprocessing/InstantaneousAvgPlanes.py)
+- python script: [InstantaneousAvgPlanes.py](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/postprocessing/InstantaneousAvgPlanes.py)
 
 Images of the domain and the flow-field around the turbine are generated using the Jupyter notebook and python script above.  The notebook and script will extract hub-height and streamwise slices from the sampling planes that were generated from AMR-Wind.  They will also perform a time-average of the hub-height plane through the entire domain for a quick visualization.
 
@@ -110,7 +110,7 @@ After running the notebook, it should generate the following images from the dom
 ## Averaged wake profiles
 
 - Jupyter notebook: [AVGPlanes.ipynb](AVGPlanes.ipynb)
-- python script: [AVGPlanes.py](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/postprocessing/AVGPlanes.py)
+- python script: [AVGPlanes.py](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/postprocessing/AVGPlanes.py)
 
 These postprocesssing notebook and python script will extract hub-height and streamwise wake profiles from the sampling planes generated by AMR-Wind.  
 

@@ -18,7 +18,7 @@
    
    
 `View these cases in the github repository
-<https://github.com/Exawind/exawind-benchmarks/tree/main/nalu-wind/2D_airfoil_Transition>`__
+<https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-ugf/2D_airfoil_Transition>`__
 
 .. toctree::
    :maxdepth: 1

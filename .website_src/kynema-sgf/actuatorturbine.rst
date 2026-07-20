@@ -20,4 +20,4 @@ Actuator line models
   * `Results <actuator_line/NREL5MW_ALM_RIGID/README.html#results>`__
 
 `View these cases in the github repository
-<https://github.com/Exawind/exawind-benchmarks/tree/main/kynema-sgf/actuator_line>`__
+<https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/actuator_line>`__

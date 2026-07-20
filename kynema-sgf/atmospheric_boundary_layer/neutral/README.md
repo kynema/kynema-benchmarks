@@ -25,7 +25,7 @@ horizontal resolution in the "C-grid" used in Berg et al (2020).
 
 Full details of the simulation setup are provided in [**setup documentation**](input_files/README.md).
 
-The input files for this case are located in the [input_files](https://github.com/Exawind/exawind-benchmarks/tree/main/amr-wind/atmospheric_boundary_layer/neutral/input_files) directory. Several of the main input parameters for this case are summarized below: 
+The input files for this case are located in the [input_files](https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/neutral/input_files) directory. Several of the main input parameters for this case are summarized below: 
 
 - Geostrophic wind speed: 5.0 m/s
 - Surface roughness: 0.05 m
@@ -52,7 +52,7 @@ The simulation was run on the NREL's [Kestrel](https://nrel.github.io/HPC/Docume
 
 ## Results
 
-Statistics and results from the ABL are calculated using the scripts and notebooks in the [postprocessing](https://github.com/Exawind/exawind-benchmarks/tree/main/amr-wind/atmospheric_boundary_layer/neutral/postprocessing) directory, and are saved to the [results](https://github.com/Exawind/exawind-benchmarks/tree/main/amr-wind/atmospheric_boundary_layer/neutral/results) directory. 
+Statistics and results from the ABL are calculated using the scripts and notebooks in the [postprocessing](https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/neutral/postprocessing) directory, and are saved to the [results](https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/neutral/results) directory. 
 
 Horizontally averaged statistics are computed in the [AVG_horiz_profiles.ipynb](postprocessing/AVG_horiz_profiles.ipynb) notebook and are summarized in the following table at six different vertical locations:
 
@@ -106,7 +106,7 @@ if postproamrwinddir not in sys.path:
 
 ### Wavenumber Spectra
 
-Two-dimensional (2D) wavenumber spectra are computed from the XY planes sampled from AMR-Wind using the [post-processing engine](https://github.com/Exawind/amr-wind-frontend/tree/main/postproengine) in the the [AMR-Wind front end](https://github.com/Exawind/amr-wind-frontend) library. The [yaml file](https://github.com/Exawind/exawind-benchmarks/tree/main/amr-wind/atmospheric_boundary_layer/neutral/postprocessing/postpro_windspectra_CGrid.yaml) for computing 2D wavenumber spectra of vertical planes sampled in this benchmark case can be called using the [ppengine.py](https://github.com/Exawind/amr-wind-frontend/blob/main/utilities/ppengine.py) utility as
+Two-dimensional (2D) wavenumber spectra are computed from the XY planes sampled from AMR-Wind using the [post-processing engine](https://github.com/Exawind/amr-wind-frontend/tree/main/postproengine) in the the [AMR-Wind front end](https://github.com/Exawind/amr-wind-frontend) library. The [yaml file](https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/neutral/postprocessing/postpro_windspectra_CGrid.yaml) for computing 2D wavenumber spectra of vertical planes sampled in this benchmark case can be called using the [ppengine.py](https://github.com/Exawind/amr-wind-frontend/blob/main/utilities/ppengine.py) utility as
 ```
 python ppengine.py postpro_windspectra_CGrid.yaml
 ```
@@ -162,7 +162,7 @@ The two-point correlation, $R_{ij}$, as a function of longitudinal and latitudin
 
 ## Grid Refinement Study
 
-A grid refinement study is included with this benchmarking case to document the impact of mesh resolution on the neutral ABL statistics in AMR-Wind. The mesh resolution in each direction is doubled, leading to a mesh side of 1024 x 1024 x 368 or 385875968 total cells. The horizontal resolution in this case corresponds to the "D-grid" in Berg et al. (2020), which are included in the comparisons below. The input file for the refined-resolution case is found in [input_files/abl_neutral_D_grid.inp](https://github.com/Exawind/exawind-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/input_files/abl_neutral_D_grid.inp).
+A grid refinement study is included with this benchmarking case to document the impact of mesh resolution on the neutral ABL statistics in AMR-Wind. The mesh resolution in each direction is doubled, leading to a mesh side of 1024 x 1024 x 368 or 385875968 total cells. The horizontal resolution in this case corresponds to the "D-grid" in Berg et al. (2020), which are included in the comparisons below. The input file for the refined-resolution case is found in [input_files/abl_neutral_D_grid.inp](https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/input_files/abl_neutral_D_grid.inp).
 
 ## Performance
 

@@ -16,4 +16,4 @@ Two variants of this simulation are provided: one with rigid blades and one with
 #. Rigid NREL 5MW turbine: A blade-resolved NREL 5MW with rigid blades, fixed pitch and rotor speed.  This case will be posted in near future.
 
 `View these cases in the github repository
-<https://github.com/Exawind/exawind-benchmarks/tree/main/exawind/NREL_5MW_Turbine>`__
+<https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-driver/NREL_5MW_Turbine>`__

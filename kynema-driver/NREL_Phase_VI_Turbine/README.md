@@ -47,7 +47,7 @@ Off-body (AMR-Wind) mesh was generated using the built-in capability of AMR-Wind
 - Domain in x= -100 to 150m, y=-100m to 100m, z=-100m to 100m
 - Initial grid size: 0.78125m
 - Finest cell size: 0.1953 m with 4 AMR levels
-   - See detail ranges of the mesh refinement in [static_box.txt](https://github.com/Exawind/exawind-benchmarks/blob/main/exawind/NREL_Phase_VI_Turbine/RANS/u_7/input_files/static_box.txt)
+   - See detail ranges of the mesh refinement in [static_box.txt](https://github.com/Kynema/kynema-benchmarks/blob/main/exawind/NREL_Phase_VI_Turbine/RANS/u_7/input_files/static_box.txt)
 - Total cell counts: 45,527,040
 
 ## Results
