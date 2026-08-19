@@ -1,0 +1,23 @@
+# Example input file
+kynema_driver:
+  kynema_ugf_inp:
+    - nalu.yaml
+  kynema_sgf_inp: amr.inp
+  num_timesteps: 100000
+  nonlinear_iterations: 1
+
+  # Variables for overset exchange
+  ugf_vars:
+    - velocity
+    - turbulent_ke
+    - specific_dissipation_rate
+    - gamma_transition
+    - pressure
+  sgf_cell_vars:
+    - velocity
+    - tke
+    - sdr
+    - intermittency
+  sgf_node_vars:
+    - p
+    

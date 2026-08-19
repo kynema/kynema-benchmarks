@@ -1,8 +1,8 @@
-# ExaWind Benchmarks
+# Kynema Benchmarks
 
-![NREL5MW ALM](amr-wind/actuator_line/NREL5MW_ALM_BD/results/images/NREL5MW_movie.gif)
+![NREL5MW ALM](kynema-sgf/actuator_line/NREL5MW_ALM_BD/results/images/NREL5MW_movie.gif)
 
-These are reference problems used to evaluate and compare the performance of ExaWind. These benchmarks have been chosen to represent the various capabilities within the ExaWind software stack, featuring cases for each individual solver (AMR-Wind and Nalu-Wind) and the overset hybrid solver. By providing up-to-date examples in an applied context, they also serve as a starting point for researchers setting up similar simulations.
+These are reference problems used to evaluate and compare the performance of Kynema (formerly ExaWind). These benchmarks have been chosen to represent the various capabilities within the Kynema software stack, featuring cases for each individual solver (Kynema-SGF and Kynema-UGF, formerly AMR-Wind and Nalu-Wind, respectively) and the overset hybrid solver. By providing up-to-date examples in an applied context, they also serve as a starting point for researchers setting up similar simulations.
 
 This repository is intended to become a nexus for collaborating among
 research groups, providing a reference frame for other code capabilities,

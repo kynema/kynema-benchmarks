@@ -1,0 +1,11 @@
+
+# Location where files should exist
+destdir: ../../../.website_src/kynema-sgf/actuator_line/NREL5MW_ALM_BD/
+
+# Markdown files to parse and copy files
+mdfiles:
+  - README.md
+  - postprocessing/README.md
+  - results/README.md
+  - setup/README.md
+  - performance/README.md

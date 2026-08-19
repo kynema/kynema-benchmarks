@@ -1,0 +1,10 @@
+
+# Location where files should exist
+destdir: ../../.website_src/kynema-ugf/3D_airfoil_IDDES
+
+# Define the valid file types to copy over (optional)
+validtypes: ['.html', '.md', '.ipynb', '.png', '.jpg', '.rst', ] 
+
+# Markdown files to parse and copy files
+mdfiles:
+  - README.md

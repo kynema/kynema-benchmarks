@@ -1,0 +1,12 @@
+
+# Location where files should exist
+destdir: ../../../.website_src/kynema-sgf/atmospheric_boundary_layer/neutral/
+
+# Define the valid file types to copy over (optional)
+validtypes: ['.html', '.md', '.ipynb', '.png', '.jpg', '.rst', ] 
+
+# Markdown files to parse and copy files
+mdfiles:
+  - README.md
+  - performance/README.md
+  - input_files/README.md
