@@ -1,4 +1,4 @@
-Nalu-Wind Benchmarks
+Kynema-UGF Benchmarks
 ==================================
 
 .. toctree::
