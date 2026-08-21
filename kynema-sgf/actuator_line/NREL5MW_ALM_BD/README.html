@@ -1,0 +1,207 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Actuator line NREL5MW in convectively unstable ABL &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Actuator line NREL5MW in convectively unstable ABL</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/kynema-sgf/actuator_line/NREL5MW_ALM_BD/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <!-- This file is automatically compiled into the website. Please copy linked files into .website_src/ paths to enable website rendering -->
+<section class="tex2jax_ignore mathjax_ignore" id="actuator-line-nrel5mw-in-convectively-unstable-abl">
+<h1>Actuator line NREL5MW in convectively unstable ABL<a class="headerlink" href="#actuator-line-nrel5mw-in-convectively-unstable-abl" title="Link to this heading"></a></h1>
+<p>This benchmark problem describes the simulation of a single NREL5MW turbine using an actuator line model in a turbulent, slightly convective unstable atmospheric boundary layer.</p>
+<p><strong>Contents</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#simulation-description-and-setup">Simulation description and setup</a></p></li>
+<li><p><a class="reference internal" href="#postprocessing">Postprocessing</a></p></li>
+<li><p><a class="reference internal" href="#code-performance">Code performance</a></p></li>
+<li><p><a class="reference internal" href="#results">Results</a></p></li>
+</ul>
+<section id="simulation-description-and-setup">
+<h2>Simulation description and setup<a class="headerlink" href="#simulation-description-and-setup" title="Link to this heading"></a></h2>
+<p>Full details provided in <a class="reference internal" href="setup/README.html"><span class="std std-doc"><strong>setup documentation</strong></span></a>.</p>
+<p>The characteristics of the NREL5MW turbine used in this study are are defined in the technical report <a class="reference external" href="https://www.nrel.gov/docs/fy09osti/38060.pdf">NREL/TP-500-38060</a>.  The basic properties are included below</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Turbine property</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Rotor diameter</p></td>
+<td><p>126 m</p></td>
+</tr>
+<tr class="row-odd"><td><p>Hub-height</p></td>
+<td><p>90 m</p></td>
+</tr>
+<tr class="row-even"><td><p>Rated power</p></td>
+<td><p>5 MW</p></td>
+</tr>
+<tr class="row-odd"><td><p>Rated wind speed</p></td>
+<td><p>11.4 m/s</p></td>
+</tr>
+<tr class="row-even"><td><p>Rated rotor speed</p></td>
+<td><p>12.1 rpm</p></td>
+</tr>
+<tr class="row-odd"><td><p>Cut in wind speed</p></td>
+<td><p>3 m/s</p></td>
+</tr>
+<tr class="row-even"><td><p>Cut out wind speed</p></td>
+<td><p>25 m/s</p></td>
+</tr>
+</tbody>
+</table>
+<p>An OpenFAST turbine model is used to represent the aerodynamic, structural, and turbine controller dynamics.  The <a class="reference external" href="https://github.com/NREL/ROSCO">ROSCO controller</a> is used to govern the turbine operation.  The NREL5MW turbine is placed in a 5km x 5km x 2km domain with a total mesh size of 70.5 million elements.  The background mesh resolution is 10m, with two levels of refinement to reach 2.5m resolution at the rotor disk.  For the blade-resolved problem, an additional two levels of refinement are used in the Kynema-SGF domain.</p>
+<p><img alt="domain" src="../../../_images/NREL5MW_domain.png" /></p>
+<p>This atmospheric inflow for this case is generated via the <a class="reference internal" href="../../atmospheric_boundary_layer/convective_abl_nrel5mw/README.html"><span class="std std-doc">convectively unstable</span></a> benchmark case.</p>
+</section>
+<section id="code-performance">
+<h2>Code performance<a class="headerlink" href="#code-performance" title="Link to this heading"></a></h2>
+<p>Full details provided in <a class="reference internal" href="performance/README.html"><span class="std std-doc"><strong>performance documentation</strong></span></a>.</p>
+<p>The job was run on an HPC cluster using 8 nodes/896 CPU’s and run for 23.3 hours wall-time:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Number of nodes</p></td>
+<td><p>8</p></td>
+</tr>
+<tr class="row-odd"><td><p>Number of CPUs</p></td>
+<td><p>896</p></td>
+</tr>
+<tr class="row-even"><td><p>Wall-time</p></td>
+<td><p>23.3 hours</p></td>
+</tr>
+<tr class="row-odd"><td><p>CPU-hours</p></td>
+<td><p>20862</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="postprocessing">
+<h2>Postprocessing<a class="headerlink" href="#postprocessing" title="Link to this heading"></a></h2>
+<p>Full details provided in <a class="reference internal" href="postprocessing/README.html"><span class="std std-doc"><strong>postprocessing documentation</strong></span></a>.</p>
+<p>A full set of postprocessing scripts is provided to extract results and images from the Kynema-SGF simulations.  These scripts and notebooks will provide the ability to generate</p>
+<ul class="simple">
+<li><p>velocity contour visualizations</p></li>
+<li><p>turbine performance results</p></li>
+<li><p>blade loading profiles</p></li>
+<li><p>downstream wake profiles</p></li>
+</ul>
+</section>
+<section id="results">
+<h2>Results<a class="headerlink" href="#results" title="Link to this heading"></a></h2>
+<p>Full details provided in <a class="reference internal" href="results/README.html"><span class="std std-doc"><strong>results documentation</strong></span></a>.</p>
+<p>A description of the Kynema-SGF results is included in the results documentation.  When appropriate, these will include comparisons against results from other codes and other simulation fidelities of the same NREL5MW turbine case.</p>
+<p><img alt="Hub-height XY wake profile" src="../../../_images/WakeProfile_XY_300_900.png" />
+<img alt="XZ wake profile" src="../../../_images/WakeProfile_XZ_300_900.png" /></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

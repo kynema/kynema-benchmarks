@@ -1,0 +1,394 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Postprocess openfast results for sectional loads &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Postprocess openfast results for sectional loads</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/kynema-sgf/actuator_line/NREL5MW_ALM_BD/postprocessing/OpenFAST_SectionalLoading.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="postprocess-openfast-results-for-sectional-loads">
+<h1>Postprocess openfast results for sectional loads<a class="headerlink" href="#postprocess-openfast-results-for-sectional-loads" title="Link to this heading"></a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add any possible locations of amr-wind-frontend here</span>
+<span class="n">amrwindfedirs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'/projects/wind_uq/lcheung/amrwind-frontend/'</span><span class="p">,</span>
+                 <span class="s1">'/ccs/proj/cfd162/lcheung/amrwind-frontend/'</span><span class="p">]</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">shutil</span><span class="o">,</span><span class="w"> </span><span class="nn">io</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">amrwindfedirs</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">postproamrwindsample_xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ppsample</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">postproengine</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ppeng</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/ascldap/users/lcheung/.local/lib/python3.9/site-packages/pandas/core/computation/expressions.py:21: UserWarning: Pandas requires version '2.8.4' or newer of 'numexpr' (version '2.8.1' currently installed).
+  from pandas.core.computation.check import NUMEXPR_INSTALLED
+/ascldap/users/lcheung/.local/lib/python3.9/site-packages/pandas/core/arrays/masked.py:60: UserWarning: Pandas requires version '1.3.6' or newer of 'bottleneck' (version '1.3.4' currently installed).
+  from pandas.core import (
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load ruamel or pyyaml as needed</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">ruamel.yaml</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">yaml</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"# Loaded ruamel.yaml"</span><span class="p">)</span>
+    <span class="n">useruamel</span><span class="o">=</span><span class="kc">True</span>
+    <span class="n">loaderkwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'Loader'</span><span class="p">:</span><span class="n">yaml</span><span class="o">.</span><span class="n">RoundTripLoader</span><span class="p">}</span>
+    <span class="n">dumperkwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'Dumper'</span><span class="p">:</span><span class="n">yaml</span><span class="o">.</span><span class="n">RoundTripDumper</span><span class="p">,</span> <span class="s1">'indent'</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="s1">'default_flow_style'</span><span class="p">:</span><span class="kc">False</span><span class="p">}</span> 
+<span class="k">except</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">yaml</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"# Loaded yaml"</span><span class="p">)</span>
+    <span class="n">useruamel</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">loaderkwargs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">dumperkwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'default_flow_style'</span><span class="p">:</span><span class="kc">False</span> <span class="p">}</span>
+    
+<span class="k">if</span> <span class="n">useruamel</span><span class="p">:</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">load</span>
+<span class="k">else</span><span class="p">:</span>         <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># Loaded ruamel.yaml
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">stringReplaceDict</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">dreplace</span><span class="p">):</span>
+    <span class="n">outstr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">dreplace</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">outstr</span><span class="o">=</span><span class="n">outstr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">outstr</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">makeSecBladeDF</span><span class="p">(</span><span class="n">csvfile</span><span class="p">,</span> <span class="n">rpts</span><span class="p">,</span> <span class="n">bladekeysdict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Make a dictionary with blade sectional loading quantities</span>
+<span class="sd">    """</span>
+    <span class="n">df</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csvfile</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">'#'</span><span class="p">,)</span>
+    <span class="n">bladedf</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">bladedf</span><span class="p">[</span><span class="s1">'rpts'</span><span class="p">]</span> <span class="o">=</span> <span class="n">rpts</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">bladekeys</span> <span class="ow">in</span> <span class="n">bladekeysdict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">alphadat</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">bladekeys</span><span class="p">]</span>
+        <span class="n">bladedf</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">alphadat</span>
+    <span class="k">return</span> <span class="n">bladedf</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a list of blade variables</span>
+<span class="n">Npts</span> <span class="o">=</span> <span class="mi">19</span>
+<span class="n">prefix</span><span class="o">=</span><span class="s1">'AB1N'</span>
+
+<span class="c1"># Create a dictionary with keys that need to be pulled out</span>
+<span class="n">suffixkeys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Alpha'</span><span class="p">,</span> <span class="s1">'Phi'</span><span class="p">,</span> <span class="s1">'Cl'</span><span class="p">,</span><span class="s1">'Cd'</span><span class="p">,</span> <span class="s1">'Fx'</span><span class="p">,</span><span class="s1">'Fy'</span><span class="p">]</span>
+<span class="n">blistdict</span>  <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="n">suffixkeys</span><span class="p">:</span>
+    <span class="n">blistdict</span><span class="p">[</span><span class="n">suffix</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">prefix</span><span class="o">+</span><span class="p">(</span><span class="s1">'</span><span class="si">%03i</span><span class="s1">'</span><span class="o">%</span><span class="k">i</span>)+suffix for i in range(1, Npts+1)]
+
+<span class="n">blist</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">blistdict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">blist</span> <span class="o">+=</span> <span class="n">g</span>
+<span class="n">bliststr</span>  <span class="o">=</span> <span class="s1">'[Time, '</span><span class="o">+</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">blist</span><span class="p">)</span><span class="o">+</span><span class="s1">']'</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the blade stations</span>
+<span class="n">rundir</span> <span class="o">=</span> <span class="s1">'/pscratch/lcheung/HFM/exawind-benchmarks/NREL5MW_ALM_BD_OFv402_ROSCO.redo'</span>
+<span class="n">bladefile</span> <span class="o">=</span> <span class="n">rundir</span><span class="o">+</span><span class="s1">'/T0_NREL5MW_v402_ROSCO/openfast/5MW_Baseline/NRELOffshrBsline5MW_AeroDyn_blade.dat'</span>
+<span class="n">bladedat</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">bladefile</span><span class="p">,</span> <span class="n">skip_header</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">skip_footer</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">replacedict</span><span class="o">=</span><span class="p">{</span><span class="s1">'RUNDIR'</span><span class="p">:</span><span class="n">rundir</span><span class="p">,</span>
+             <span class="s1">'RESULTSDIR'</span><span class="p">:</span><span class="s1">'../results/OpenFAST_v402_out'</span><span class="p">,</span>
+             <span class="s1">'BLADEVARS'</span><span class="p">:</span><span class="n">bliststr</span><span class="p">,</span>
+            <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">yamlstring</span><span class="o">=</span><span class="s2">"""</span>
+<span class="s2">globalattributes:</span>
+<span class="s2">  verbose: False</span>
+<span class="s2">  udfmodules: []</span>
+<span class="s2">  executeorder:</span>
+<span class="s2">  - openfast</span>
+<span class="s2">  </span>
+<span class="s2">trange: &amp;trange [300, 900]   # Note: add 15,000 sec to get AMR-Wind time</span>
+
+<span class="s2">openfast:</span>
+<span class="s2"># For FSI case</span>
+<span class="s2">- name: NREL5MW_SECLOADS</span>
+<span class="s2">  filename: RUNDIR/T0_NREL5MW_v402_ROSCO/openfast-cpp/5MW_Land_DLL_WTurb_cpp/5MW_Land_DLL_WTurb_cpp.out</span>
+<span class="s2">  vars: BLADEVARS</span>
+<span class="s2">  output_dir: RESULTSDIR</span>
+<span class="s2">  csv:  # Store information to CSV files</span>
+<span class="s2">    individual_files: False</span>
+<span class="s2">  operate:</span>
+<span class="s2">    operations: </span>
+<span class="s2">    - mean</span>
+<span class="s2">    trange: *trange</span>
+<span class="s2">"""</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">stringReplaceDict</span><span class="p">(</span><span class="n">yamlstring</span><span class="p">,</span> <span class="n">replacedict</span><span class="p">))</span>
+<span class="n">yamldict</span> <span class="o">=</span> <span class="n">Loader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">loaderkwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the driver</span>
+<span class="n">ppeng</span><span class="o">.</span><span class="n">driver</span><span class="p">(</span><span class="n">yamldict</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initialized openfast
+Running openfast
+NREL5MW_SECLOADS /pscratch/lcheung/HFM/exawind-benchmarks/NREL5MW_ALM_BD_OFv402_ROSCO.redo/T0_NREL5MW_v402_ROSCO/openfast-cpp/5MW_Land_DLL_WTurb_cpp/5MW_Land_DLL_WTurb_cpp.out
+Initialized csv inside NREL5MW_SECLOADS
+Executing csv
+Initialized operate inside NREL5MW_SECLOADS
+Executing operate
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">makeSecBladeDF</span><span class="p">(</span><span class="n">replacedict</span><span class="p">[</span><span class="s1">'RESULTSDIR'</span><span class="p">]</span><span class="o">+</span><span class="s1">'/NREL5MW_SECLOADS_mean.csv'</span><span class="p">,</span> <span class="n">bladedat</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">blistdict</span><span class="p">)</span>
+<span class="n">pddf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">replacedict</span><span class="p">[</span><span class="s1">'RESULTSDIR'</span><span class="p">]</span><span class="o">+</span><span class="s1">'/NREL5MW_SECLOADS_mean_rpts.csv'</span><span class="p">,</span>  <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">float_format</span><span class="o">=</span><span class="s1">'</span><span class="si">%.15f</span><span class="s1">'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="plot-the-blade-loading">
+<h2>Plot the blade loading<a class="headerlink" href="#plot-the-blade-loading" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">yamlstring</span><span class="o">=</span><span class="s2">"""</span>
+<span class="s2">globalattributes:</span>
+<span class="s2">  verbose: False</span>
+<span class="s2">  udfmodules: []</span>
+<span class="s2">  executeorder:</span>
+<span class="s2">  #- openfast</span>
+<span class="s2">  - plotcsv</span>
+<span class="s2">  </span>
+<span class="s2">trange: &amp;trange [300, 900]   # Note: add 15,000 sec to get AMR-Wind time</span>
+
+<span class="s2">plotcsv:</span>
+<span class="s2">  - name: Blade AOA</span>
+<span class="s2">    xlabel: 'Blade span r [m]'</span>
+<span class="s2">    ylabel: 'AOA [deg]'</span>
+<span class="s2">    title: 'Blade AOA'</span>
+<span class="s2">    figsize: [10,4]</span>
+<span class="s2">    legendopts: {'loc':'upper right'}</span>
+<span class="s2">    savefile: ../results/images/OpenFAST_T0_AOA.png</span>
+<span class="s2">    csvfiles:</span>
+<span class="s2">    - {'file':'RESULTSDIR/NREL5MW_SECLOADS_mean_rpts.csv', 'xcol':'rpts', 'ycol':'Alpha', 'lineopts':{'color':'b', 'lw':1, 'linestyle':'-', 'label':'Alpha'}}    </span>
+<span class="s2">    - {'file':'RESULTSDIR/NREL5MW_SECLOADS_mean_rpts.csv', 'xcol':'rpts', 'ycol':'Phi', 'lineopts':{'color':'r', 'lw':1, 'linestyle':'-', 'label':'Phi'}}  </span>
+<span class="s2">    </span>
+<span class="s2">  - name: Blade AOA</span>
+<span class="s2">    xlabel: 'Blade span r [m]'</span>
+<span class="s2">    ylabel: 'Cl/Cd [-]'</span>
+<span class="s2">    title: 'Blade Cl/Cd'</span>
+<span class="s2">    figsize: [10,4]</span>
+<span class="s2">    legendopts: {'loc':'upper right'}</span>
+<span class="s2">    savefile: ../results/images/OpenFAST_T0_ClCd.png</span>
+<span class="s2">    csvfiles:</span>
+<span class="s2">    - {'file':'RESULTSDIR/NREL5MW_SECLOADS_mean_rpts.csv', 'xcol':'rpts', 'ycol':'Cl', 'lineopts':{'color':'b', 'lw':1, 'linestyle':'-', 'label':'Cl'}}    </span>
+<span class="s2">    - {'file':'RESULTSDIR/NREL5MW_SECLOADS_mean_rpts.csv', 'xcol':'rpts', 'ycol':'Cd', 'lineopts':{'color':'r', 'lw':1, 'linestyle':'-', 'label':'Cd'}}   </span>
+<span class="s2">    </span>
+<span class="s2">  - name: Blade loading</span>
+<span class="s2">    xlabel: 'Blade span r [m]'</span>
+<span class="s2">    ylabel: 'Blade forces [N]'</span>
+<span class="s2">    title: 'Blade loading'</span>
+<span class="s2">    figsize: [10,4]</span>
+<span class="s2">    legendopts: {'loc':'upper right'}</span>
+<span class="s2">    savefile: ../results/images/OpenFAST_T0_FxFy.png</span>
+<span class="s2">    csvfiles:</span>
+<span class="s2">    - {'file':'RESULTSDIR/NREL5MW_SECLOADS_mean_rpts.csv', 'xcol':'rpts', 'ycol':'Fx', 'lineopts':{'color':'b', 'lw':1, 'linestyle':'-', 'label':'Fx'}}    </span>
+<span class="s2">    - {'file':'RESULTSDIR/NREL5MW_SECLOADS_mean_rpts.csv', 'xcol':'rpts', 'ycol':'Fy', 'lineopts':{'color':'r', 'lw':1, 'linestyle':'-', 'label':'Fy'}}   </span>
+
+<span class="s2">"""</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">stringReplaceDict</span><span class="p">(</span><span class="n">yamlstring</span><span class="p">,</span> <span class="n">replacedict</span><span class="p">))</span>
+<span class="n">yamldict</span> <span class="o">=</span> <span class="n">Loader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">loaderkwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the driver</span>
+<span class="n">ppeng</span><span class="o">.</span><span class="n">driver</span><span class="p">(</span><span class="n">yamldict</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initialized plotcsv
+Running plotcsv
+Saving ../results/images/OpenFAST_T0_AOA.png
+Saving ../results/images/OpenFAST_T0_ClCd.png
+Saving ../results/images/OpenFAST_T0_FxFy.png
+</pre></div>
+</div>
+<img alt="../../../../_images/4042f894b835d46bc57a617946079e6f76e50d0c7a169b6c602677012deffc52.png" src="../../../../_images/4042f894b835d46bc57a617946079e6f76e50d0c7a169b6c602677012deffc52.png" />
+<img alt="../../../../_images/9534e32a91e7dd2c965fc47a63729e9a1e0e1a7bf6bc6298b6f96512603294e9.png" src="../../../../_images/9534e32a91e7dd2c965fc47a63729e9a1e0e1a7bf6bc6298b6f96512603294e9.png" />
+<img alt="../../../../_images/b63b9c804cfc2110b38fe4108f4eec148f0091beffd8a0fd654b5980341ec72e.png" src="../../../../_images/b63b9c804cfc2110b38fe4108f4eec148f0091beffd8a0fd654b5980341ec72e.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Write out the notebook to a python script</span>
+<span class="o">!</span>jupyter<span class="w"> </span>nbconvert<span class="w"> </span>--to<span class="w"> </span>script<span class="w"> </span>OpenFAST_SectionalLoading.ipynb
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'OpenFAST_SectionalLoading.py'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'OpenFAST_SectionalLoading.py'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">"'matplotlib', 'inline'"</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span> <span class="o">=</span> <span class="s1">'plt.show(block=False)'</span>
+        <span class="k">if</span> <span class="s1">'nbconvert --to script'</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[NbConvertApp] Converting notebook OpenFAST_SectionalLoading.ipynb to script
+[NbConvertApp] Writing 5883 bytes to OpenFAST_SectionalLoading.py
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

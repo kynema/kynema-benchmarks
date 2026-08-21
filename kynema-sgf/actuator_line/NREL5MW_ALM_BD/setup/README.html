@@ -1,0 +1,414 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setting up the single turbine NREL5MW case in AMR-Wind &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Setting up the single turbine NREL5MW case in AMR-Wind</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/kynema-sgf/actuator_line/NREL5MW_ALM_BD/setup/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="setting-up-the-single-turbine-nrel5mw-case-in-amr-wind">
+<h1>Setting up the single turbine NREL5MW case in AMR-Wind<a class="headerlink" href="#setting-up-the-single-turbine-nrel5mw-case-in-amr-wind" title="Link to this heading"></a></h1>
+<p><strong>Contents</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#prerequisites">Prerequisites</a></p></li>
+<li><p><a class="reference internal" href="#step-1-create-the-run-directory">Step 1: create the run directory</a></p></li>
+<li><p><a class="reference internal" href="#step-2-download-the-openfast-model">Step 2: download the openfast model</a></p></li>
+<li><p><a class="reference internal" href="#step-3-edit-the-file-locations">Step 3: edit the file locations</a></p></li>
+<li><p><a class="reference internal" href="#step-4-submit-the-run">Step 4: submit the run</a></p></li>
+<li><p><a class="reference internal" href="#turbine-and-mesh-settings">Turbine and mesh settings</a></p></li>
+<li><p><a class="reference internal" href="#optional-using-the-jupyter-notebook">Optional: using the jupyter notebook</a></p></li>
+</ul>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Download the benchmarks repository</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>--recursive<span class="w"> </span>git@github.com:Exawind/exawind-benchmarks.git<span class="w"> </span>BENCHMARKDIR
+</pre></div>
+</div>
+<p>Here the optional argument <code class="docutils literal notranslate"><span class="pre">BENCHMARKDIR</span></code> is the location where you’d like the
+benchmark repository to be cloned.  If it is not provided, then the repo will be cloned into <code class="docutils literal notranslate"><span class="pre">exawind-benchmarks</span></code> in the current directory.</p>
+</li>
+<li><p>Run the <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw">slightly convective ABL benchmark</a> case.</p>
+<p>The NREL5MW case depends on initial conditions and boundary
+condition data which is generated during that ABL benchmark case,
+so it needs to be run before the NREL5MW case can be run.</p>
+</li>
+<li><p>Download the <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend">AMR-Wind front end</a> tool.</p>
+<p>The AMR-Wind front end tool has useful utilities which can be used
+for setting up the OpenFAST turbine model and postprocessing
+results.  It is available on github and can be downloaded via</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>--recursive<span class="w"> </span>git@github.com:Exawind/amr-wind-frontend.git<span class="w"> </span>AMRWINDFEDIR
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">AMRWINDFEDIR</span></code> is the location you’d like the tool to be
+located.  For the basic use of front end tool, the usual python 3
+libraries (numpy, scipy, pandas, etc.) are required.</p>
+</li>
+</ol>
+</section>
+<section id="step-1-create-the-run-directory">
+<h2>Step 1: create the run directory<a class="headerlink" href="#step-1-create-the-run-directory" title="Link to this heading"></a></h2>
+<p>Prepare a location where this case can be run.  This will likely be a location on the HPC where larger jobs can be run, and where lots of data (many gigabytes) can be stored.  First create the directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mkdir<span class="w"> </span>RUNDIR
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">RUNDIR</span></code> can be an arbitrary name or location chosen to be convenient for the user or HPC system.  Then copy the necessary input files into <code class="docutils literal notranslate"><span class="pre">RUNDIR</span></code></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>cp<span class="w"> </span>BENCHMARKDIR/amr-wind/actuator_line/NREL5MW_ALM_BD/input_files/NREL5MW_ALM_BD_OFv402.inp<span class="w"> </span>RUNDIR
+$<span class="w"> </span>cp<span class="w"> </span>BENCHMARKDIR/amr-wind/actuator_line/NREL5MW_ALM_BD/input_files/avg_theta.dat<span class="w"> </span>RUNDIR
+$<span class="w"> </span>cp<span class="w"> </span>BENCHMARKDIR/amr-wind/actuator_line/NREL5MW_ALM_BD/setup/nrel5mw_v402_rosco.yaml<span class="w"> </span>RUNDIR
+</pre></div>
+</div>
+</section>
+<section id="step-2-download-the-openfast-model">
+<h2>Step 2: download the openfast model<a class="headerlink" href="#step-2-download-the-openfast-model" title="Link to this heading"></a></h2>
+<p>By default, the NREL5MW files required for the single turbine simulation are not included with the benchmarking repository.  However, they can be easily downloaded using some provided utilities.  First navigate to the run directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>RUNDIR
+</pre></div>
+</div>
+<p>Edit the file <code class="docutils literal notranslate"><span class="pre">nrel5mw_v402_rosco.yaml</span></code> and change the <code class="docutils literal notranslate"><span class="pre">DLL_FileName</span></code> parameter to point to the ROSCO library location:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nt">ServoFile</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># THIS ROSCO PATH NEEDS TO BE EDITED!</span>
+<span class="w">    </span><span class="nt">DLL_FileName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PLEASEEDITTHIS</span>
+</pre></div>
+</div>
+<p>Note: if you leave it as <code class="docutils literal notranslate"><span class="pre">PLEASEEDITTHIS</span></code>, the next command will fail.</p>
+<p>Then use the <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend/blob/main/utilities/downloadOFmodel.py"><code class="docutils literal notranslate"><span class="pre">downloadOFmodel.py</span></code></a> to download all of the required turbine files.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>AMRWINDFEDIR/utilities/downloadOFmodel.py<span class="w"> </span>nrel5mw_v402_rosco.yaml
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">downloadOFmodel.py</span></code> will pull the necessary files straight from the OpenFAST repo, ensure files are from the right OpenFAST version, and make edits to the OpenFAST parameters so that the turbine is correctly configured for this case.</p>
+<p>Then change the name of the directory to match what is used in the input file</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mv<span class="w"> </span>NREL5MW_v402_ROSCO/<span class="w"> </span>T0_NREL5MW_v402_ROSCO/
+</pre></div>
+</div>
+</section>
+<section id="step-3-edit-the-file-locations">
+<h2>Step 3: edit the file locations<a class="headerlink" href="#step-3-edit-the-file-locations" title="Link to this heading"></a></h2>
+<p>There are two edits required to the input file <code class="docutils literal notranslate"><span class="pre">NREL5MW_ALM_BD_OFv402.inp</span></code> in order to properly refer to the right locations.  The first is the location of the restart file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">io</span><span class="o">.</span><span class="n">restart_file</span>                          <span class="o">=</span> <span class="o">/</span><span class="n">gpfs</span><span class="o">/</span><span class="n">lcheung</span><span class="o">/</span><span class="n">HFM</span><span class="o">/</span><span class="n">exawind</span><span class="o">-</span><span class="n">benchmarks</span><span class="o">/</span><span class="n">Neutral_ABL</span><span class="o">/</span><span class="n">chk30000</span>
+</pre></div>
+</div>
+<p>The second is the location of the boundary I/O files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ABL</span><span class="o">.</span><span class="n">bndry_file</span>                           <span class="o">=</span> <span class="o">/</span><span class="n">gpfs</span><span class="o">/</span><span class="n">lcheung</span><span class="o">/</span><span class="n">HFM</span><span class="o">/</span><span class="n">exawind</span><span class="o">-</span><span class="n">benchmarks</span><span class="o">/</span><span class="n">convective_abl</span><span class="o">/</span><span class="n">bndry_file</span>
+</pre></div>
+</div>
+<p>In each of these lines, change the path to match the location where the precursor directory was run.</p>
+</section>
+<section id="step-4-submit-the-run">
+<h2>Step 4: submit the run<a class="headerlink" href="#step-4-submit-the-run" title="Link to this heading"></a></h2>
+<p>On many HPC platforms, a submission script needs to be used to launch the case.  For slurm based systems, a submit script like this <code class="docutils literal notranslate"><span class="pre">submit.sh</span></code> file is used:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1">#SBATCH --nodes=8</span>
+<span class="c1">#SBATCH --time=47:59:59        # Wall clock time (HH:MM:SS) - once the job exceeds this time, the job will be terminated (default is 5 minutes)</span>
+<span class="c1">#SBATCH --job-name=NREL5MW # Name of job</span>
+<span class="c1">#SBATCH --partition=batch      # partition/queue name: short or batch</span>
+<span class="c1">#SBATCH --qos=normal           # Quality of Service: long, large, priority or normal </span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">nodes</span><span class="o">=</span><span class="nv">$SLURM_JOB_NUM_NODES</span>
+
+<span class="c1"># Load any required modules here</span>
+<span class="c1">#module purge</span>
+<span class="c1">#module load ...</span>
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">EXE</span><span class="o">=</span>/projects/wind_uq/lcheung/AMRWindBuilds/hfm.20250211/amr-wind/build/amr_wind
+
+<span class="c1"># Number MPI processes to run on each node (a.k.a. PPN)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">cores</span><span class="o">=</span><span class="m">112</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ncpus</span><span class="o">=</span><span class="k">$((</span><span class="nv">nodes</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nv">cores</span><span class="k">))</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OMP_PROC_BIND</span><span class="o">=</span>spread<span class="w"> </span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OMP_PLACES</span><span class="o">=</span>threads
+
+<span class="nb">time</span><span class="w"> </span>mpiexec<span class="w"> </span>--bind-to<span class="w"> </span>core<span class="w"> </span>--npernode<span class="w"> </span><span class="nv">$cores</span><span class="w"> </span>--n<span class="w"> </span><span class="nv">$ncpus</span><span class="w"> </span><span class="nv">$EXE</span><span class="w"> </span>NREL5MW_ALM_BD_OFv402.inp<span class="w"> </span>
+</pre></div>
+</div>
+<p>Then, for slurm based queueing systems, submit the run with a command like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sbatch submit.sh
+</pre></div>
+</div>
+</section>
+<section id="turbine-and-mesh-settings">
+<h2>Turbine and mesh settings<a class="headerlink" href="#turbine-and-mesh-settings" title="Link to this heading"></a></h2>
+<p>In this section we provide some explanations and context for the turbine and mesh parameter settings used in the simulation.</p>
+<section id="mesh-and-domain">
+<h3>Mesh and domain<a class="headerlink" href="#mesh-and-domain" title="Link to this heading"></a></h3>
+<p><img alt="domain" src="../../../../_images/NREL5MW_domain.png" /></p>
+<p>The domain that is used in the NREL5MW case is the same as in the precursor ABL, namely one that has dimensions of 5120m x 5120m x 1920m.  The turbine base location is at (x,y) = (1800, 1800).  The background (level 0) grid uses a 10m resolution which is refined twice to reach 2.5m resolution at the rotor, for a total mesh size of approximately 70.5M.  Note that for the blade-resolved version of this run, two additional refinement zones are used, so the resolution at the rotor disk is 0.625m.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Level</p></th>
+<th class="head"><p>grid size</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>10 m</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>5 m</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>2.5 m</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="openfast-settings">
+<h3>OpenFAST settings<a class="headerlink" href="#openfast-settings" title="Link to this heading"></a></h3>
+<p>The following changes need to be made to the default NREL5MW model.  These changes are automatically made <code class="docutils literal notranslate"><span class="pre">nrel5mw_v402_rosco.yaml</span></code></p>
+<p><strong>OpenFAST FST file</strong></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Comment</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>DT</p></td>
+<td><p>0.0008608815426997245</p></td>
+<td><p>Typically DT=0.005, but a smaller value is used for beamdyn</p></td>
+</tr>
+<tr class="row-odd"><td><p>DT_Out</p></td>
+<td><p>0.0215220385675</p></td>
+<td><p>Output OpenFAST data at 25 times <code class="docutils literal notranslate"><span class="pre">DT</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>CompElast</p></td>
+<td><p>2</p></td>
+<td><p>Use beamdyn module for structural modeling</p></td>
+</tr>
+<tr class="row-odd"><td><p>CompInflow</p></td>
+<td><p>2</p></td>
+<td><p>Inflow is defined from external source (AMR-Wind)</p></td>
+</tr>
+<tr class="row-even"><td><p>OutFileFmt</p></td>
+<td><p>3</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>AirDens</p></td>
+<td><p>1.00</p></td>
+<td><p>A density of 1.00 kg/m^3 was used in the precursor</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>ElastoDyn file</strong></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Comment</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>NacYaw</p></td>
+<td><p>30.0</p></td>
+<td><p>This will align the turbine with the flow from 240 degrees (South-West)</p></td>
+</tr>
+<tr class="row-odd"><td><p>YawDOF</p></td>
+<td><p>False</p></td>
+<td><p>Fix the turbine yaw position in time</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>AeroDyn file</strong></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Comment</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Wake_Mod</p></td>
+<td><p>0</p></td>
+<td><p>Required when coupling OpenFAST with AMR-Wind</p></td>
+</tr>
+<tr class="row-odd"><td><p>UA_Mod</p></td>
+<td><p>0</p></td>
+<td><p>Turn off unsteady aerodynamics model</p></td>
+</tr>
+</tbody>
+</table>
+<p>Some of these changes are necessary when coupling OpenFAST with AMR-Wind, and many of these parameters are chosen to maintain consistency with the blade-resolved version of the NREL5MW run.</p>
+<p>Several of the settings related to blade-element momentum theory and unsteady aerodynamics model remain unchanged from the OpenFAST defaults.  For instance, the tip-loss and hub-loss models are not used in this simulation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>--- BEM algorithm 
+True                   TipLoss     - Use the Prandtl tip-loss model? (flag) [unused when Wake_Mod=0 or 3]
+True                   HubLoss     - Use the Prandtl hub-loss model? (flag) [unused when Wake_Mod=0 or 3]
+True                   TanInd      - Include tangential induction in BEMT calculations? (flag) [unused when Wake_Mod=0 or 3]
+False                  AIDrag      - Include the drag term in the axial-induction calculation? (flag) [unused when Wake_Mod=0 or 3]
+False                  TIDrag      - Include the drag term in the tangential-induction calculation? (flag) [unused when Wake_Mod=0,3 or TanInd=FALSE]
+"Default"              IndToler    - Convergence tolerance for BEMT nonlinear solve residual equation {or "default"} (-) [unused when Wake_Mod=0 or 3]
+100                    MaxIter     - Maximum number of iteration steps (-) [unused when Wake_Mod=0]
+</pre></div>
+</div>
+<p>Note that with <code class="docutils literal notranslate"><span class="pre">UA_Mod=0</span></code>, these unsteady aerodynamics model settings are not used:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">======</span>  <span class="n">Unsteady</span> <span class="n">Airfoil</span> <span class="n">Aerodynamics</span> <span class="n">Options</span>  <span class="o">====================================================</span>
+<span class="kc">False</span>                  <span class="n">AoA34</span>       <span class="o">-</span> <span class="n">Sample</span> <span class="n">the</span> <span class="n">angle</span> <span class="n">of</span> <span class="n">attack</span> <span class="p">(</span><span class="n">AoA</span><span class="p">)</span> <span class="n">at</span> <span class="n">the</span> <span class="mi">3</span><span class="o">/</span><span class="mi">4</span> <span class="n">chord</span> <span class="ow">or</span> <span class="n">the</span> <span class="n">AC</span> <span class="n">point</span> <span class="p">{</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">}</span> <span class="p">[</span><span class="n">always</span> <span class="n">used</span><span class="p">]</span>
+<span class="mi">3</span>                      <span class="n">UA_Mod</span>      <span class="o">-</span> <span class="n">Unsteady</span> <span class="n">Aero</span> <span class="n">Model</span> <span class="n">Switch</span> <span class="p">(</span><span class="n">switch</span><span class="p">)</span> <span class="p">{</span><span class="mi">0</span><span class="o">=</span><span class="n">Quasi</span><span class="o">-</span><span class="n">steady</span> <span class="p">(</span><span class="n">no</span> <span class="n">UA</span><span class="p">),</span> <span class="mi">2</span><span class="o">=</span><span class="n">B</span><span class="o">-</span><span class="n">L</span> <span class="n">Gonzalez</span><span class="p">,</span> <span class="mi">3</span><span class="o">=</span><span class="n">B</span><span class="o">-</span><span class="n">L</span> <span class="n">Minnema</span><span class="o">/</span><span class="n">Pierce</span><span class="p">,</span> <span class="mi">4</span><span class="o">=</span><span class="n">B</span><span class="o">-</span><span class="n">L</span> <span class="n">HGM</span> <span class="mi">4</span><span class="o">-</span><span class="n">states</span><span class="p">,</span> <span class="mi">5</span><span class="o">=</span><span class="n">B</span><span class="o">-</span><span class="n">L</span> <span class="n">HGM</span><span class="o">+</span><span class="n">vortex</span> <span class="mi">5</span> <span class="n">states</span><span class="p">,</span> <span class="mi">6</span><span class="o">=</span><span class="n">Oye</span><span class="p">,</span> <span class="mi">7</span><span class="o">=</span><span class="n">Boeing</span><span class="o">-</span><span class="n">Vertol</span><span class="p">}</span>
+<span class="kc">True</span>                   <span class="n">FLookup</span>     <span class="o">-</span> <span class="n">Flag</span> <span class="n">to</span> <span class="n">indicate</span> <span class="n">whether</span> <span class="n">a</span> <span class="n">lookup</span> <span class="k">for</span> <span class="sa">f</span><span class="s1">' will be calculated (TRUE) or whether best-fit exponential equations will be used (FALSE); if FALSE S1-S4 must be provided in airfoil input files (flag) [used only when UA_Mod&gt;0]</span>
+<span class="mi">0</span>                      <span class="n">UAStartRad</span>  <span class="o">-</span> <span class="n">Starting</span> <span class="n">radius</span> <span class="k">for</span> <span class="n">dynamic</span> <span class="n">stall</span> <span class="p">(</span><span class="n">fraction</span> <span class="n">of</span> <span class="n">rotor</span> <span class="n">radius</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">])</span> <span class="p">[</span><span class="n">used</span> <span class="n">only</span> <span class="n">when</span> <span class="n">UA_Mod</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">;</span> <span class="k">if</span> <span class="n">line</span> <span class="ow">is</span> <span class="n">missing</span> <span class="n">UAStartRad</span><span class="o">=</span><span class="mi">0</span><span class="p">]</span>
+<span class="mi">1</span>                      <span class="n">UAEndRad</span>    <span class="o">-</span> <span class="n">Ending</span> <span class="n">radius</span> <span class="k">for</span> <span class="n">dynamic</span> <span class="n">stall</span> <span class="p">(</span><span class="n">fraction</span> <span class="n">of</span> <span class="n">rotor</span> <span class="n">radius</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">])</span> <span class="p">[</span><span class="n">used</span> <span class="n">only</span> <span class="n">when</span> <span class="n">UA_Mod</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">;</span> <span class="k">if</span> <span class="n">line</span> <span class="ow">is</span> <span class="n">missing</span> <span class="n">UAEndRad</span><span class="o">=</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Beamdyn changes</strong></p>
+<p>In addition to the changes listed above, we also remove one of the blade stations from the beamdyn blade definition files.  The second blade station is removed, so the total number of key points drops from 49 to 48.  This is also handled automatically through the <code class="docutils literal notranslate"><span class="pre">downloadOFmodel.py</span></code> step above.</p>
+<!--
+```yaml
+  FSTFile:
+    DT: 0.0008608815426997245 # Typically 0.005, make smaller for beamdyn
+    DT_Out: 0.0215220385675
+    CompElast:  2  # use beamdyn
+    CompInflow: 2
+    OutFileFmt: 3
+    AirDens:    1.000
+  EDFile:
+    NacYaw:   30.0
+    YawDOF:   False
+  AeroFile:
+    Wake_Mod: 0
+```
+-->
+</section>
+<section id="alm-settings">
+<h3>ALM settings<a class="headerlink" href="#alm-settings" title="Link to this heading"></a></h3>
+<p>When using the actuator line method in AMR-Wind, several additional parameters need to be set for this case.  The number of actuator line points along the length of the blade and tower needs to be set, as well as the magnitude of epsilon, which sets the amount of smearing required for the applied force at each actuator force point.  These settings are defined through these parameters in the AMR-Wind input file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Actuator</span><span class="o">.</span><span class="n">T0</span><span class="o">.</span><span class="n">num_points_blade</span>             <span class="o">=</span> <span class="mi">25</span>                  
+<span class="n">Actuator</span><span class="o">.</span><span class="n">T0</span><span class="o">.</span><span class="n">num_points_tower</span>             <span class="o">=</span> <span class="mi">11</span>                  
+<span class="n">Actuator</span><span class="o">.</span><span class="n">T0</span><span class="o">.</span><span class="n">epsilon</span>                      <span class="o">=</span> <span class="mf">1.5</span> <span class="mf">1.5</span> <span class="mf">1.5</span>         
+<span class="n">Actuator</span><span class="o">.</span><span class="n">T0</span><span class="o">.</span><span class="n">epsilon_tower</span>                <span class="o">=</span> <span class="mf">1.5</span> <span class="mf">1.5</span> <span class="mf">1.5</span>         
+</pre></div>
+</div>
+</section>
+</section>
+<section id="optional-using-the-jupyter-notebook">
+<h2>Optional: using the jupyter notebook<a class="headerlink" href="#optional-using-the-jupyter-notebook" title="Link to this heading"></a></h2>
+<p>If you’re interested in modifying the AMR-Wind input file, for instance, to change the refinement regions or sampling planes, you can use the Jupyter notebook <a class="reference internal" href="SetupALM_OFv402.html"><span class="std std-doc">SetupALM_OFv402.ipynb</span></a>.  This will allow you to visualize the locations of the refinements or planes, and will generate the AMR-Wind input file <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/input_files/NREL5MW_ALM_BD_OFv402.inp">NREL5MW_ALM_BD_OFv402.inp</a> at the end of the process.</p>
+<p>There are a few modifications required to execute the notebook.  First, the location of the AMR-Wind front end directory (and the utilities subdirectory) should be provided in the <code class="docutils literal notranslate"><span class="pre">amrwindfedirs</span></code> list here:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add any possible locations of amr-wind-frontend here</span>
+<span class="n">amrwindfedirs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'/projects/wind_uq/lcheung/amrwind-frontend'</span><span class="p">,</span>
+                 <span class="s1">'/projects/wind_uq/lcheung/amrwind-frontend/utilities'</span><span class="p">,</span>
+                <span class="p">]</span>
+</pre></div>
+</div>
+<p>Secondly, the location of the precursor directory and the inputfile from the precursor run should be supplied in the <code class="docutils literal notranslate"><span class="pre">precursordir</span></code> directory and the <code class="docutils literal notranslate"><span class="pre">precursorsetup</span></code> input file, respectively.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Location of precursor run with boundary data</span>
+<span class="n">precursordir</span>  <span class="o">=</span> <span class="s1">'/gpfs/lcheung/HFM/exawind-benchmarks/convective_abl'</span>
+<span class="n">precursorsetup</span><span class="o">=</span> <span class="n">precursordir</span><span class="o">+</span><span class="s1">'/neutral_abl_bndry.inp'</span>
+</pre></div>
+</div>
+<p>The location of the input files and openfast files will be set in the <code class="docutils literal notranslate"><span class="pre">farmrundir</span></code> variable:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">farmrundir</span>       <span class="o">=</span> <span class="s1">'../input_files'</span> <span class="c1"># Put all AMR-Wind input files here</span>
+</pre></div>
+</div>
+<p>The Jupyter notebook will take care of downloading the turbine model so <strong>Step 2</strong> above does not need to be executed, just set <code class="docutils literal notranslate"><span class="pre">downloadturbmodel=True</span></code> and <code class="docutils literal notranslate"><span class="pre">addturbdef</span> <span class="pre">=</span> <span class="pre">True</span></code>.</p>
+<p>Once the notebook is executed, it will generate a set of three input files defined by these variables:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">outputfile</span>       <span class="o">=</span> <span class="s1">'NREL5MW_ALM_BD_OFv402.inp'</span>   <span class="c1"># Input file for AMR-Wind run with OpenFAST ALM turbine </span>
+<span class="n">noturboutputfile</span> <span class="o">=</span> <span class="s1">'NREL5MW_ALM_BD_noturb.inp'</span>   <span class="c1"># Input file for AMR-Wind run with no turbine present</span>
+<span class="n">BRoutputfile</span>     <span class="o">=</span> <span class="s1">'NREL5MW_BR.inp'</span>              <span class="c1"># AMR-Wind input file for the blade-resolved run with ExaWind hybrid solver</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

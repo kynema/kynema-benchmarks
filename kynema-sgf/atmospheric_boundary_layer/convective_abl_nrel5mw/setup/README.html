@@ -1,0 +1,187 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setting up the convective ABL in AMR-Wind &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Setting up the convective ABL in AMR-Wind</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/setup/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="setting-up-the-convective-abl-in-amr-wind">
+<h1>Setting up the convective ABL in AMR-Wind<a class="headerlink" href="#setting-up-the-convective-abl-in-amr-wind" title="Link to this heading"></a></h1>
+<section id="step-1-download-the-benchmarks-repository">
+<h2>Step 1.  Download the benchmarks repository<a class="headerlink" href="#step-1-download-the-benchmarks-repository" title="Link to this heading"></a></h2>
+<p>If the benchmark repository has not been downloaded, run the following command to clone it:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>--recursive<span class="w"> </span>git@github.com:Exawind/exawind-benchmarks.git<span class="w"> </span>BENCHMARKDIR
+</pre></div>
+</div>
+<p>Here the optional argument <code class="docutils literal notranslate"><span class="pre">BENCHMARKDIR</span></code> is the location where you’d like the benchmark repository to be cloned and the case to be run.  If it is not provided, then the repo will be cloned into <code class="docutils literal notranslate"><span class="pre">exawind-benchmarks</span></code> in the current directory.</p>
+</section>
+<section id="step-2-run-the-precursor-spin-up-case">
+<h2>Step 2.  Run the precursor spin-up case<a class="headerlink" href="#step-2-run-the-precursor-spin-up-case" title="Link to this heading"></a></h2>
+<p>The first part of the ABL simulation will allow the turbulence to initialize and the boundary layer profile to develop.  The input file for this initial simulation is given by <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files/convective_abl.inp">convective_abl.inp</a>, and will last for 15,000 seconds.</p>
+<p>To launch this case, navigate to the right directory and create a submission script:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>BENCHMARKDIR/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files
+$<span class="w"> </span>vi<span class="w"> </span>submit.sh
+</pre></div>
+</div>
+<p>The submission script (called <code class="docutils literal notranslate"><span class="pre">submit.sh</span></code> above) will resemble something similar to the file below for slurm based HPC clusters.   Edit both the location of the <code class="docutils literal notranslate"><span class="pre">amr_wind</span></code> executable and any modules that might be required for the executable to run.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1">#SBATCH --nodes=8</span>
+<span class="c1">#SBATCH --time=47:59:59        # Wall clock time (HH:MM:SS) - once the job exceeds this time, the job will be terminated (default is 5 minutes)</span>
+<span class="c1">#SBATCH --job-name=ABL # Name of job</span>
+<span class="c1">#SBATCH --partition=batch      # partition/queue name: short or batch</span>
+<span class="c1">#SBATCH --qos=normal           # Quality of Service: long, large, priority or normal </span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">nodes</span><span class="o">=</span><span class="nv">$SLURM_JOB_NUM_NODES</span>
+
+<span class="c1"># Load any required modules here</span>
+<span class="c1">#module purge</span>
+<span class="c1">#module load ...</span>
+
+<span class="c1"># Edit the location of the amr_wind executable here:</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">EXE</span><span class="o">=</span>/projects/wind_uq/lcheung/AMRWindBuilds/hfm.20250211/amr-wind/build/amr_wind
+
+<span class="c1"># Number MPI processes to run on each node (a.k.a. PPN)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">cores</span><span class="o">=</span><span class="m">112</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ncpus</span><span class="o">=</span><span class="k">$((</span><span class="nv">nodes</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nv">cores</span><span class="k">))</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OMP_PROC_BIND</span><span class="o">=</span>spread<span class="w"> </span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OMP_PLACES</span><span class="o">=</span>threads
+
+<span class="nb">time</span><span class="w"> </span>mpiexec<span class="w"> </span>--bind-to<span class="w"> </span>core<span class="w"> </span>--npernode<span class="w"> </span><span class="nv">$cores</span><span class="w"> </span>--n<span class="w"> </span><span class="nv">$ncpus</span><span class="w"> </span><span class="nv">$EXE</span><span class="w"> </span>convective_abl.inp<span class="w"> </span>
+</pre></div>
+</div>
+<p>Lastly, launch the simulation on the cluster with a command similar to</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>sbatch<span class="w"> </span>submit.sh
+</pre></div>
+</div>
+</section>
+<section id="step-3-launch-the-statistics-and-sampling-run">
+<h2>Step 3.  Launch the statistics and sampling run.<a class="headerlink" href="#step-3-launch-the-statistics-and-sampling-run" title="Link to this heading"></a></h2>
+<p>After completing step 2, the ABL simulation is run for an additional 5,000 seconds to gather statistics and boundary inflow data.  The input file for this second run is given by <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files/convective_abl_bndry.inp">convective_abl_bndry.inp</a>.  To launch this case, use a similar submission as above, but edit the last line to use the new input file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">time</span><span class="w"> </span>mpiexec<span class="w"> </span>--bind-to<span class="w"> </span>core<span class="w"> </span>--npernode<span class="w"> </span><span class="nv">$cores</span><span class="w"> </span>--n<span class="w"> </span><span class="nv">$ncpus</span><span class="w"> </span><span class="nv">$EXE</span><span class="w"> </span>convective_abl_bndry.inp<span class="w"> </span>
+</pre></div>
+</div>
+</section>
+<section id="optional-using-the-jupyter-notebook">
+<h2>Optional: using the jupyter notebook<a class="headerlink" href="#optional-using-the-jupyter-notebook" title="Link to this heading"></a></h2>
+<p>If you’re interested in modifying the AMR-Wind input file, for instance, to change the sampling plane locations, you can use the Jupyter notebook <a class="reference internal" href="convectiveABL_setup.html"><span class="std std-doc">convectiveABL_setup.ipynb</span></a>.  This will allow you to visualize the locations of the planes relative to the turbine position and wind direction, and will generate the AMR-Wind input file <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files/convective_abl.inp">convective_abl.inp</a> at the end of the process.</p>
+<p><img alt="ABL domain side view" src="../../../../_images/convectiveABL_sideview.png" /></p>
+<p>In the image above, a side view of the domain is shown, with the potential location of an NREL5MW turbine shown in the black disk.  Sampling planes are placed at the heights z=27, 90, and 153m to calculate statistics, along with a virtual met-mast and inflow planes to characterize the inflow wind statistics to the turbine.</p>
+<p>There are a few modifications required to execute the notebook.  First, the location of the AMR-Wind front end directory (and the utilities subdirectory) should be provided in the <code class="docutils literal notranslate"><span class="pre">amrwindfedirs</span></code> list here:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add any possible locations of amr-wind-frontend here</span>
+<span class="n">amrwindfedirs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'/projects/wind_uq/lcheung/amrwind-frontend'</span><span class="p">,</span>
+                 <span class="s1">'/projects/wind_uq/lcheung/amrwind-frontend/utilities'</span><span class="p">,</span>
+                <span class="p">]</span>
+</pre></div>
+</div>
+<p>Also note that the notebook will refer to the following files and locations to output the input files.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">originalinput</span> <span class="o">=</span> <span class="s1">'abl.inp'</span>
+<span class="n">outputfile</span>    <span class="o">=</span> <span class="s1">'../input_files/convective_abl.inp'</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

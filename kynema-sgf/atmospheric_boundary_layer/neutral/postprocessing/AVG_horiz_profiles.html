@@ -1,0 +1,714 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Postprocess neutral ABL case &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Postprocess neutral ABL case</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/kynema-sgf/atmospheric_boundary_layer/neutral/postprocessing/AVG_horiz_profiles.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="postprocess-neutral-abl-case">
+<h1>Postprocess neutral ABL case<a class="headerlink" href="#postprocess-neutral-abl-case" title="Link to this heading"></a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%capture</span> 
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="n">postproamrwinddir</span> <span class="o">=</span> <span class="s1">'~/src/amr-wind-frontend/'</span>
+<span class="k">if</span> <span class="n">postproamrwinddir</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">postproamrwinddir</span><span class="p">)</span>
+<span class="c1"># Load the libraries</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">postproamrwindabl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ppabl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w">             </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">cm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+
+<span class="c1"># Also ignore warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">)</span>
+
+<span class="c1"># Make all plots inline </span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">savecsvdata</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">savekeys</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="c1"># Create a new dictionary</span>
+    <span class="n">dfcsv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">newkey</span><span class="p">,</span><span class="n">oldkey</span> <span class="ow">in</span> <span class="n">savekeys</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">dfcsv</span><span class="p">[</span><span class="n">newkey</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">oldkey</span><span class="p">]</span>
+    <span class="n">dfcsv</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">','</span><span class="p">)</span>
+    <span class="k">return</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">avgt</span><span class="p">):</span>
+    <span class="n">returndict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">temp_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">prof</span> <span class="o">=</span> <span class="n">ppabl</span><span class="o">.</span><span class="n">CalculatedProfile</span><span class="o">.</span><span class="n">fromdict</span><span class="p">(</span><span class="n">ppabl</span><span class="o">.</span><span class="n">statsprofiles</span><span class="p">[</span><span class="n">var</span><span class="p">],</span><span class="n">df</span><span class="p">,</span><span class="n">temp_dict</span><span class="p">,</span><span class="n">avgt</span><span class="o">=</span><span class="n">avgt</span><span class="p">)</span>
+    <span class="n">z</span><span class="p">,</span> <span class="n">plotdat</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">calculate</span><span class="p">()</span>
+    <span class="n">returndict</span><span class="p">[</span><span class="n">ppabl</span><span class="o">.</span><span class="n">statsprofiles</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'header'</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'z'</span><span class="p">:</span><span class="n">z</span><span class="p">,</span> <span class="s1">'data'</span><span class="p">:</span><span class="n">plotdat</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">returndict</span> 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rundir</span><span class="o">=</span><span class="s1">'/nscratch/gyalla/HFM/exawind-benchmarks_gyalla/amr-wind/atmospheric_boundary_layer/neutral/runs/'</span>
+<span class="n">resultsdir</span><span class="o">=</span><span class="s1">'../results/'</span>
+<span class="n">casenames</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="s1">'AMR-Wind, Grid C'</span><span class="p">,</span>
+  <span class="s1">'AMR-Wind, Grid D'</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">caseparams</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">caseparams</span><span class="p">[</span><span class="n">casenames</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'rundir'</span><span class="p">:</span><span class="n">rundir</span> <span class="o">+</span> <span class="s1">'/C_grid'</span><span class="p">,</span> <span class="s1">'saveprefix'</span><span class="p">:</span><span class="s1">'avgprofile_C'</span><span class="p">,</span><span class="s1">'ncfile'</span><span class="p">:</span><span class="s1">'abl_statistics240000.nc'</span><span class="p">,</span> <span class="s1">'avgtimes'</span><span class="p">:[</span><span class="mi">120000</span><span class="p">,</span><span class="mi">125000</span><span class="p">],</span><span class="s1">'lstyle'</span><span class="p">:{</span><span class="s1">'color'</span><span class="p">:</span><span class="s1">'tab:blue'</span><span class="p">,}}</span>
+<span class="n">caseparams</span><span class="p">[</span><span class="n">casenames</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'rundir'</span><span class="p">:</span><span class="n">rundir</span> <span class="o">+</span> <span class="s1">'/D_grid'</span><span class="p">,</span> <span class="s1">'saveprefix'</span><span class="p">:</span><span class="s1">'avgprofile_D'</span><span class="p">,</span><span class="s1">'ncfile'</span><span class="p">:</span><span class="s1">'post_processing/abl_statistics480000.nc'</span><span class="p">,</span> <span class="s1">'avgtimes'</span><span class="p">:[</span><span class="mi">120000</span><span class="p">,</span><span class="mi">125000</span><span class="p">],</span><span class="s1">'lstyle'</span><span class="p">:{</span><span class="s1">'color'</span><span class="p">:</span><span class="s1">'tab:orange'</span><span class="p">,}}</span>
+
+<span class="c1"># Hub-height locations</span>
+<span class="n">plotheights</span><span class="o">=</span><span class="p">[</span><span class="mi">27</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">153</span><span class="p">,</span><span class="mi">175</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="mi">250</span><span class="p">]</span>
+<span class="n">loadinmemory</span> <span class="o">=</span> <span class="kc">False</span>   <span class="c1"># Do this only if there's enough RAM and for new (python 3+ netCDF4) libraries</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dfs</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Case: "</span><span class="p">,</span><span class="n">case</span><span class="p">)</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'rundir'</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'ncfile'</span><span class="p">]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">ppabl</span><span class="o">.</span><span class="n">loadnetcdffile</span><span class="p">(</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'rundir'</span><span class="p">]</span><span class="o">+</span><span class="s1">'/'</span><span class="o">+</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'ncfile'</span><span class="p">],</span> <span class="n">usemmap</span><span class="o">=</span><span class="n">loadinmemory</span><span class="p">)</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">ppabl</span><span class="o">.</span><span class="n">printReport</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">avgt</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">],</span> <span class="n">heights</span><span class="o">=</span><span class="n">plotheights</span><span class="p">,</span><span class="n">span</span><span class="o">=</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span><span class="mi">153</span><span class="p">))</span>
+    <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span>
+    <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span> <span class="o">=</span> <span class="n">report</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Case:  AMR-Wind, Grid C
+Loading u
+Loading v'v'_r
+Loading w'w'_r
+Loading u'u'_r
+Loading w'theta'_r
+Loading v
+Loading theta
+        z       Uhoriz      WindDir       TI_TKE     TI_horiz        Alpha    Alpha-Fit     ObukhovL         Veer     Veer-Fit 
+      ===         ====         ====         ====         ====         ====         ====         ====         ====         ==== 
+    27.00 3.708206e+00 2.512376e+02 8.576047e-02 1.372803e-01 1.361276e-01 1.459290e-01 2.553476e+04 2.977003e-02 2.371547e-02 
+    90.00 4.391980e+00 2.527041e+02 6.034973e-02 9.263573e-02 1.465347e-01 1.459290e-01 7.298625e+03 2.418350e-02 2.371547e-02 
+   153.00 4.778414e+00 2.542837e+02 4.779809e-02 7.307615e-02 1.701005e-01 1.459290e-01 4.329382e+03 2.549453e-02 2.371547e-02 
+   175.00 4.891523e+00 2.548359e+02 4.406486e-02 6.730979e-02 1.742311e-01 1.459290e-01 3.808723e+03 2.514261e-02 2.371547e-02 
+   200.00 5.008495e+00 2.554880e+02 4.002792e-02 6.123848e-02 1.745819e-01 1.459290e-01 3.363388e+03 2.759098e-02 2.371547e-02 
+   250.00 5.218808e+00 2.569843e+02 3.190635e-02 4.900745e-02 1.943910e-01 1.459290e-01 2.788147e+03 3.478596e-02 2.371547e-02 
+
+ustar: 0.208411
+zi: 352.066531
+Case:  AMR-Wind, Grid D
+Loading u
+Loading v'v'_r
+Loading w'w'_r
+Loading u'u'_r
+Loading w'theta'_r
+Loading v
+Loading theta
+        z       Uhoriz      WindDir       TI_TKE     TI_horiz        Alpha    Alpha-Fit     ObukhovL         Veer     Veer-Fit 
+      ===         ====         ====         ====         ====         ====         ====         ====         ====         ==== 
+    27.00 3.621527e+00 2.503269e+02 8.485543e-02 1.327919e-01 1.360469e-01 1.678821e-01 2.549324e+04 2.771494e-02 3.208279e-02 
+    90.00 4.364165e+00 2.521579e+02 6.034343e-02 9.273637e-02 1.747254e-01 1.678821e-01 7.544361e+03 3.268381e-02 3.208279e-02 
+   153.00 4.812003e+00 2.543145e+02 4.627607e-02 7.089898e-02 1.908589e-01 1.678821e-01 4.457099e+03 3.354020e-02 3.208279e-02 
+   175.00 4.939092e+00 2.550632e+02 4.234917e-02 6.488440e-02 1.955701e-01 1.678821e-01 3.912236e+03 3.528737e-02 3.208279e-02 
+   200.00 5.070053e+00 2.559756e+02 3.797883e-02 5.823802e-02 1.958129e-01 1.678821e-01 3.440613e+03 3.705006e-02 3.208279e-02 
+   250.00 5.300487e+00 2.579729e+02 2.943033e-02 4.523392e-02 2.042058e-01 1.678821e-01 2.809417e+03 4.529565e-02 3.208279e-02 
+
+ustar: 0.203669
+zi: 337.048425
+</pre></div>
+</div>
+</div>
+</div>
+<section id="plot-velocity-profile">
+<h2>Plot velocity profile<a class="headerlink" href="#plot-velocity-profile" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot velocity</span>
+<span class="n">var</span><span class="o">=</span><span class="s1">'Uhoriz'</span>
+<span class="n">csvfiles</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">csvfiles</span><span class="p">[</span><span class="n">casenames</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'../results/S_C_berg.csv'</span><span class="p">,</span><span class="s1">'Berg et. al. (2020), Grid C'</span><span class="p">)</span>
+<span class="n">csvfiles</span><span class="p">[</span><span class="n">casenames</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'../results/S_D_berg.csv'</span><span class="p">,</span><span class="s1">'Berg et. al. (2020), Grid D'</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'data'</span><span class="p">],</span> <span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">case</span><span class="p">,</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+    <span class="n">compare_csv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'y'</span><span class="p">],</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'x'</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">'k'</span><span class="p">,</span><span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'$U_</span><span class="si">{horiz}</span><span class="s1">$ [m/s]'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">':'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_Uhoriz_C_grid.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading u
+Loading v
+</pre></div>
+</div>
+<img alt="../../../../_images/9dc36e83cf4bb6ced9d8348932db0c9f59fbe45a6b1308c3b8785e64c73cb0fa.png" src="../../../../_images/9dc36e83cf4bb6ced9d8348932db0c9f59fbe45a6b1308c3b8785e64c73cb0fa.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'data'</span><span class="p">],</span> <span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">case</span><span class="p">,</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+    <span class="n">compare_csv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'y'</span><span class="p">],</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'x'</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="n">lstyle</span><span class="p">[</span><span class="s1">'color'</span><span class="p">],</span><span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s1">'saveprefix'</span> <span class="ow">in</span> <span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">]:</span>
+        <span class="n">savecsvdata</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">],</span> <span class="p">{</span><span class="s1">'z'</span><span class="p">:</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span><span class="s1">'data'</span><span class="p">},</span> <span class="n">resultsdir</span><span class="o">+</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'saveprefix'</span><span class="p">]</span><span class="o">+</span><span class="s1">'_'</span><span class="o">+</span><span class="n">var</span><span class="o">+</span><span class="s1">'.csv'</span><span class="p">)</span>
+
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'$U_</span><span class="si">{horiz}</span><span class="s1">$ [m/s]'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">':'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_Uhoriz_C_D_grids.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading u
+Loading v
+Loading u
+Loading v
+</pre></div>
+</div>
+<img alt="../../../../_images/6a4486c8c04414c5a8831002c05cb5be831a3cbf34cadb486acd51d074305ee9.png" src="../../../../_images/6a4486c8c04414c5a8831002c05cb5be831a3cbf34cadb486acd51d074305ee9.png" />
+</div>
+</div>
+</section>
+<section id="plot-temperature-profiles">
+<h2>Plot temperature profiles<a class="headerlink" href="#plot-temperature-profiles" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">var</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'Temperature'</span><span class="p">,</span><span class="s1">'T'</span><span class="p">)</span>
+<span class="n">csvfiles</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">csvfiles</span><span class="p">[</span><span class="n">casenames</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'../results/T_C_berg.csv'</span><span class="p">,</span><span class="s1">'Berg et. al. (2020), Grid C'</span><span class="p">)</span>
+<span class="n">csvfiles</span><span class="p">[</span><span class="n">casenames</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'../results/T_D_berg.csv'</span><span class="p">,</span><span class="s1">'Berg et. al. (2020), Grid D'</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s1">'data'</span><span class="p">],</span> <span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s1">'z'</span><span class="p">]</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">case</span><span class="p">,</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+    <span class="n">compare_csv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'y'</span><span class="p">],</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'x'</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">'k'</span><span class="p">,</span><span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mi">290</span><span class="p">,</span> <span class="mi">294</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">var</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">' [K]'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">':'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_T_C_grid.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading theta
+</pre></div>
+</div>
+<img alt="../../../../_images/2b8dcd9e61ded7c608907274dec8f9feabf5c08ed21a5a374d26aa945baa5523.png" src="../../../../_images/2b8dcd9e61ded7c608907274dec8f9feabf5c08ed21a5a374d26aa945baa5523.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s1">'data'</span><span class="p">],</span> <span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s1">'z'</span><span class="p">]</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">case</span><span class="p">,</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+    <span class="n">compare_csv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'y'</span><span class="p">],</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'x'</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="n">lstyle</span><span class="p">[</span><span class="s1">'color'</span><span class="p">],</span><span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s1">'saveprefix'</span> <span class="ow">in</span> <span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">]:</span>
+        <span class="n">savecsvdata</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">{</span><span class="s1">'z'</span><span class="p">:</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">var</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="s1">'data'</span><span class="p">},</span> <span class="n">resultsdir</span><span class="o">+</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'saveprefix'</span><span class="p">]</span><span class="o">+</span><span class="s1">'_'</span><span class="o">+</span><span class="n">var</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="s1">'.csv'</span><span class="p">)</span>
+
+
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mi">290</span><span class="p">,</span> <span class="mi">294</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">var</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">' [K]'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">':'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_T_C_D_grids.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading theta
+Loading theta
+</pre></div>
+</div>
+<img alt="../../../../_images/8140646344853b0b3cd65f0c3fecae02632853e15df7f758413a4a5f322ee4f1.png" src="../../../../_images/8140646344853b0b3cd65f0c3fecae02632853e15df7f758413a4a5f322ee4f1.png" />
+</div>
+</div>
+</section>
+<section id="plot-veer-profile">
+<h2>Plot veer profile<a class="headerlink" href="#plot-veer-profile" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">var</span><span class="o">=</span><span class="s1">'WindDir'</span>
+<span class="n">csvfiles</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">csvfiles</span><span class="p">[</span><span class="n">casenames</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'../results/phi_C_berg.csv'</span><span class="p">,</span><span class="s1">'Berg et. al. (2020), Grid C'</span><span class="p">)</span>
+<span class="n">csvfiles</span><span class="p">[</span><span class="n">casenames</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'../results/phi_D_berg.csv'</span><span class="p">,</span><span class="s1">'Berg et. al. (2020), Grid D'</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">270</span><span class="o">-</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'data'</span><span class="p">],</span> <span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">case</span><span class="p">,</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+    <span class="n">compare_csv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'y'</span><span class="p">],</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'x'</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">'k'</span><span class="p">,</span><span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">25</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'$\phi$ [deg]'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">':'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_WindDir_C_grid.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading u
+Loading v
+</pre></div>
+</div>
+<img alt="../../../../_images/dcf1562c8bd365029791f02d8531ffef9d5340116b63eda34ed4d35fee584d5a.png" src="../../../../_images/dcf1562c8bd365029791f02d8531ffef9d5340116b63eda34ed4d35fee584d5a.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">270</span><span class="o">-</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'data'</span><span class="p">],</span> <span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">case</span><span class="p">,</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+    <span class="n">compare_csv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'y'</span><span class="p">],</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'x'</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="n">lstyle</span><span class="p">[</span><span class="s1">'color'</span><span class="p">],</span><span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s1">'saveprefix'</span> <span class="ow">in</span> <span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">]:</span>
+        <span class="n">savecsvdata</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">],</span> <span class="p">{</span><span class="s1">'z'</span><span class="p">:</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span><span class="s1">'data'</span><span class="p">},</span> <span class="n">resultsdir</span><span class="o">+</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'saveprefix'</span><span class="p">]</span><span class="o">+</span><span class="s1">'_'</span><span class="o">+</span><span class="n">var</span><span class="o">+</span><span class="s1">'.csv'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">25</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'$\phi$ [deg]'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">':'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_WindDir_C_D_grids.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading u
+Loading v
+Loading u
+Loading v
+</pre></div>
+</div>
+<img alt="../../../../_images/0708357ed05db7cb2796331feafe36407eae7393370e31108d6c022da2666d56.png" src="../../../../_images/0708357ed05db7cb2796331feafe36407eae7393370e31108d6c022da2666d56.png" />
+</div>
+</div>
+</section>
+<section id="plot-ti">
+<h2>Plot TI<a class="headerlink" href="#plot-ti" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">var</span> <span class="o">=</span> <span class="s1">'TI_TKE'</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'data'</span><span class="p">],</span> <span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">case</span><span class="p">,</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'TI_TKE'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">':'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_TI_C_grid.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading u
+Loading v
+Loading u'u'_r
+Loading v'v'_r
+Loading w'w'_r
+</pre></div>
+</div>
+<img alt="../../../../_images/ca5c2411df720a78c5cce601c472754efa069ed894556671a39172e88dedecd4.png" src="../../../../_images/ca5c2411df720a78c5cce601c472754efa069ed894556671a39172e88dedecd4.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">var</span> <span class="o">=</span> <span class="s1">'TI_TKE'</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'data'</span><span class="p">],</span> <span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">case</span><span class="p">,</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">'saveprefix'</span> <span class="ow">in</span> <span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">]:</span>
+        <span class="n">savecsvdata</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">],</span> <span class="p">{</span><span class="s1">'z'</span><span class="p">:</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span><span class="s1">'data'</span><span class="p">},</span> <span class="n">resultsdir</span><span class="o">+</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'saveprefix'</span><span class="p">]</span><span class="o">+</span><span class="s1">'_'</span><span class="o">+</span><span class="n">var</span><span class="o">+</span><span class="s1">'.csv'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'TI_TKE'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">':'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_TI_C_D_grids.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading u
+Loading v
+Loading u'u'_r
+Loading v'v'_r
+Loading w'w'_r
+Loading u
+Loading v
+Loading u'u'_r
+Loading v'v'_r
+Loading w'w'_r
+</pre></div>
+</div>
+<img alt="../../../../_images/c79ad5f132ac3b131da61c4fbaeca00b411ebd15df6c02e37578583b65faf2a4.png" src="../../../../_images/c79ad5f132ac3b131da61c4fbaeca00b411ebd15df6c02e37578583b65faf2a4.png" />
+</div>
+</div>
+<section id="plot-reynolds-stress">
+<h3>Plot Reynolds Stress<a class="headerlink" href="#plot-reynolds-stress" title="Link to this heading"></a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">var</span> <span class="o">=</span> <span class="s1">'ReStresses'</span>
+<span class="n">csvfiles</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">csvfiles</span><span class="p">[</span><span class="n">casenames</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'../results/uw_C_berg.csv'</span><span class="p">,</span><span class="s1">'Berg et. al. (2020), Grid C'</span><span class="p">)</span>
+<span class="n">csvfiles</span><span class="p">[</span><span class="n">casenames</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'../results/uw_D_berg.csv'</span><span class="p">,</span><span class="s1">'Berg et. al. (2020), Grid D'</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="n">uw</span> <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="s1">'uu uv uw vv vw ww'</span><span class="p">][</span><span class="s1">'data'</span><span class="p">][:,</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">ustar</span> <span class="o">=</span> <span class="n">report</span><span class="p">[</span><span class="s1">'ustar'</span><span class="p">]</span>
+    <span class="n">zi</span> <span class="o">=</span> <span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">]</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="s1">'uu uv uw vv vw ww'</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span>
+    <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">uw</span><span class="o">/</span><span class="n">ustar</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">z</span><span class="o">/</span><span class="n">zi</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">case</span><span class="p">,</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+    <span class="n">compare_csv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'y'</span><span class="p">],</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'x'</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">'k'</span><span class="p">,</span><span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'$u</span><span class="se">\'</span><span class="s1">w</span><span class="se">\'</span><span class="s1">/u_*^2$ [-]'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">':'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_uw_C_grid.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading u'u'_r
+Loading u'v'_r
+Loading u'w'_r
+Loading v'v'_r
+Loading v'w'_r
+Loading w'w'_r
+</pre></div>
+</div>
+<img alt="../../../../_images/dbb9802a694394cd333731007557eeaad4b7059c20e94e6d6ac51b10043e18e3.png" src="../../../../_images/dbb9802a694394cd333731007557eeaad4b7059c20e94e6d6ac51b10043e18e3.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">:</span>
+    <span class="n">uw</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="n">uw</span><span class="p">[</span><span class="s1">'data'</span><span class="p">]</span> <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="s1">'uu uv uw vv vw ww'</span><span class="p">][</span><span class="s1">'data'</span><span class="p">][:,</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">uw</span><span class="p">[</span><span class="s1">'z'</span><span class="p">]</span> <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="s1">'uu uv uw vv vw ww'</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span>
+    <span class="n">ustar</span> <span class="o">=</span> <span class="n">report</span><span class="p">[</span><span class="s1">'ustar'</span><span class="p">]</span>
+    <span class="n">zi</span> <span class="o">=</span> <span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">]</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="s1">'uu uv uw vv vw ww'</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span>
+    <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">uw</span><span class="p">[</span><span class="s1">'data'</span><span class="p">]</span><span class="o">/</span><span class="n">ustar</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">z</span><span class="o">/</span><span class="n">zi</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">case</span><span class="p">,</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+    <span class="n">compare_csv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'y'</span><span class="p">],</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'x'</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="n">lstyle</span><span class="p">[</span><span class="s1">'color'</span><span class="p">],</span><span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s1">'saveprefix'</span> <span class="ow">in</span> <span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">]:</span>
+        <span class="n">savecsvdata</span><span class="p">(</span><span class="n">uw</span><span class="p">,</span> <span class="p">{</span><span class="s1">'z'</span><span class="p">:</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span><span class="s1">'data'</span><span class="p">},</span> <span class="n">resultsdir</span><span class="o">+</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'saveprefix'</span><span class="p">]</span><span class="o">+</span><span class="s1">'_'</span><span class="o">+</span><span class="n">var</span><span class="o">+</span><span class="s1">'.csv'</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'$u</span><span class="se">\'</span><span class="s1">w</span><span class="se">\'</span><span class="s1">/u_*^2$ [-]'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">':'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_uw_C_D_grids.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading u'u'_r
+Loading u'v'_r
+Loading u'w'_r
+Loading v'v'_r
+Loading v'w'_r
+Loading w'w'_r
+Loading u'u'_r
+Loading u'v'_r
+Loading u'w'_r
+Loading v'v'_r
+Loading v'w'_r
+Loading w'w'_r
+</pre></div>
+</div>
+<img alt="../../../../_images/68fdfdff652994db7d0182fbed1cbccea0b7b44fa4785303ac6d637ce2d0a794.png" src="../../../../_images/68fdfdff652994db7d0182fbed1cbccea0b7b44fa4785303ac6d637ce2d0a794.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">var</span> <span class="o">=</span> <span class="s1">'ReStresses'</span>
+<span class="n">csvfiles</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">csvfiles</span><span class="p">[</span><span class="n">casenames</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'../results/vw_C_berg.csv'</span><span class="p">,</span><span class="s1">'Berg et. al. (2020), Grid C'</span><span class="p">)</span>
+<span class="n">csvfiles</span><span class="p">[</span><span class="n">casenames</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'../results/vw_D_berg.csv'</span><span class="p">,</span><span class="s1">'Berg et. al. (2020), Grid D'</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="n">vw</span> <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="s1">'uu uv uw vv vw ww'</span><span class="p">][</span><span class="s1">'data'</span><span class="p">][:,</span><span class="mi">4</span><span class="p">]</span>
+    <span class="n">ustar</span> <span class="o">=</span> <span class="n">report</span><span class="p">[</span><span class="s1">'ustar'</span><span class="p">]</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="s1">'uu uv uw vv vw ww'</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span>
+    <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vw</span><span class="o">/</span><span class="n">ustar</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">z</span><span class="o">/</span><span class="n">zi</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">case</span><span class="p">,</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+    <span class="n">compare_csv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'y'</span><span class="p">],</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'x'</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">'k'</span><span class="p">,</span><span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'$v</span><span class="se">\'</span><span class="s1">w</span><span class="se">\'</span><span class="s1">/u_*^2$ [-]'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">':'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_vw_C_grid.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading u'u'_r
+Loading u'v'_r
+Loading u'w'_r
+Loading v'v'_r
+Loading v'w'_r
+Loading w'w'_r
+</pre></div>
+</div>
+<img alt="../../../../_images/63e2f1d9ee159cf669885beabc9c6f6fe1fb2dc0e1408c354feb3d2239c42aaa.png" src="../../../../_images/63e2f1d9ee159cf669885beabc9c6f6fe1fb2dc0e1408c354feb3d2239c42aaa.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">:</span>
+    <span class="n">vw</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="n">vw</span><span class="p">[</span><span class="s1">'data'</span><span class="p">]</span> <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="s1">'uu uv uw vv vw ww'</span><span class="p">][</span><span class="s1">'data'</span><span class="p">][:,</span><span class="mi">4</span><span class="p">]</span>
+    <span class="n">vw</span><span class="p">[</span><span class="s1">'z'</span><span class="p">]</span> <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="s1">'uu uv uw vv vw ww'</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span>
+    <span class="n">ustar</span> <span class="o">=</span> <span class="n">report</span><span class="p">[</span><span class="s1">'ustar'</span><span class="p">]</span>
+    <span class="n">zi</span> <span class="o">=</span> <span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">]</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="s1">'uu uv uw vv vw ww'</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span>
+    <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vw</span><span class="p">[</span><span class="s1">'data'</span><span class="p">]</span><span class="o">/</span><span class="n">ustar</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">z</span><span class="o">/</span><span class="n">zi</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">case</span><span class="p">,</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+    <span class="n">compare_csv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'y'</span><span class="p">],</span><span class="n">compare_csv</span><span class="p">[</span><span class="s1">'x'</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="n">lstyle</span><span class="p">[</span><span class="s1">'color'</span><span class="p">],</span><span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">csvfiles</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s1">'saveprefix'</span> <span class="ow">in</span> <span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">]:</span>
+        <span class="n">savecsvdata</span><span class="p">(</span><span class="n">vw</span><span class="p">,</span> <span class="p">{</span><span class="s1">'z'</span><span class="p">:</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span><span class="s1">'data'</span><span class="p">},</span> <span class="n">resultsdir</span><span class="o">+</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'saveprefix'</span><span class="p">]</span><span class="o">+</span><span class="s1">'_'</span><span class="o">+</span><span class="n">var</span><span class="o">+</span><span class="s1">'.csv'</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'$v</span><span class="se">\'</span><span class="s1">w</span><span class="se">\'</span><span class="s1">/u_*^2$ [-]'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">':'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_vw_C_D_grids.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading u'u'_r
+Loading u'v'_r
+Loading u'w'_r
+Loading v'v'_r
+Loading v'w'_r
+Loading w'w'_r
+Loading u'u'_r
+Loading u'v'_r
+Loading u'w'_r
+Loading v'v'_r
+Loading v'w'_r
+Loading w'w'_r
+</pre></div>
+</div>
+<img alt="../../../../_images/140fa231d10441a9d9cb4e1c9d478fd1a1f7ccc374271f1121414ce3c86e6a95.png" src="../../../../_images/140fa231d10441a9d9cb4e1c9d478fd1a1f7ccc374271f1121414ce3c86e6a95.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

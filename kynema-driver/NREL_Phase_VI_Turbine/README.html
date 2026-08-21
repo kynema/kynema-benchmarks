@@ -1,0 +1,204 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NREL Phase VI Rotor &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../kynema-sgf/benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">NREL Phase VI Rotor</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/kynema-driver/NREL_Phase_VI_Turbine/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <!-- This file is automatically compiled into the website. Please copy linked files into .website_src/ paths to enable website rendering -->
+<section class="tex2jax_ignore mathjax_ignore" id="nrel-phase-vi-rotor">
+<h1>NREL Phase VI Rotor<a class="headerlink" href="#nrel-phase-vi-rotor" title="Link to this heading"></a></h1>
+<p>ExaWind simulations are performed for NREL’s Unsteady Aerodynamics Experiment Phase VI rotor [1]. The experimental conditions of the rotor are summarized below:</p>
+<ul class="simple">
+<li><p>Tested in the 80 X 120 ft wind tunnel at NASA Ames Research Center</p></li>
+<li><p>Two bladed rotor with a diameter of 10.529 m</p></li>
+<li><p>Fixed tip speed, 72 RPM</p></li>
+<li><p>Blade section: single airfoil, S809, from r/R=0.25</p></li>
+<li><p>Nonlinear twist with blade tip pitch of 3deg</p></li>
+<li><p>Pitch and twist axis at 0.3c</p></li>
+</ul>
+<section id="simulation-setup">
+<h2>Simulation Setup<a class="headerlink" href="#simulation-setup" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>ExaWind driver version: <a class="reference external" href="https://github.com/Exawind/exawind-driver/commit/a38a4d5f96e4d3b42b52f41280e2d8d28c57ef25">a38a4d5f96e4d3b42b52f41280e2d8d28c57ef25</a></p></li>
+<li><p>Nalu-Wind version: <a class="reference external" href="https://github.com/Exawind/nalu-wind/commit/f3cecafbdc05e61d0550ff41a30307425ef8197b">f3cecafbdc05e61d0550ff41a30307425ef8197b</a></p>
+<ul>
+<li><p>Turbulence / Transition model: SST-2003 with the 1-eq Gamma transition model</p></li>
+<li><p>Four Picard iterations</p></li>
+</ul>
+</li>
+<li><p>AMR-Wind version: <a class="reference external" href="https://github.com/Exawind/amr-wind/commit/8bad127f62cf2fd2f0d0ae16f2df47fdd0d069f8">8bad127f62cf2fd2f0d0ae16f2df47fdd0d069f8</a></p></li>
+</ul>
+</section>
+<section id="freestream-conditions">
+<h2>Freestream conditions<a class="headerlink" href="#freestream-conditions" title="Link to this heading"></a></h2>
+<p>Simulations are performed for both fully turbulent and laminar-turbulent transition conditions at two wind speeds: 7 m/s and 15 m/s, which represent speeds below and above the rated wind speed, respectively.</p>
+<p>The tunnel’s turbulence intensity was reported to be below 0.5%, but the precise measurement was unavailable during the experiments. In this work, a turbulence intensity of 0.1% was assumed, which is typical for wind tunnels. The freestream conditions for the k and <span class="math notranslate nohighlight">\(\omega\)</span> account for the decay of turbulent variables from the inlet to the rotor, with the inlet set 100m upstream of the rotor. The conditions are as follows:</p>
+<ul class="simple">
+<li><p>Inflow conditions at 7 m/s</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(U_\infty\)</span>=7.0 m/s, <span class="math notranslate nohighlight">\(\rho\)</span>=1.246 kg/m<sup>3</sup>, <span class="math notranslate nohighlight">\(\mu_t/\mu\)</span>=4.5</p></li>
+<li><p><span class="math notranslate nohighlight">\(k_\infty\)</span>= 0.007350, <span class="math notranslate nohighlight">\(\omega_\infty\)</span>= 115.044281</p></li>
+</ul>
+</li>
+<li><p>Inflow conditions at 15 m/s</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(U_\infty\)</span>=15.0 m/s, <span class="math notranslate nohighlight">\(\rho\)</span>=1.246 kg/m<sup>3</sup>, <span class="math notranslate nohighlight">\(\mu_t/\mu\)</span>=9.7</p></li>
+<li><p><span class="math notranslate nohighlight">\(k_\infty\)</span>=0.033750, <span class="math notranslate nohighlight">\(\omega_\infty\)</span>=245.071186</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cfd-mesh-generation">
+<h2>CFD mesh generation<a class="headerlink" href="#cfd-mesh-generation" title="Link to this heading"></a></h2>
+<p>The near-body (Nalu-Wind) mesh was created using Pointwise from the CAD model. The two blades are connected with a cylinder at the center, while other components such as the spinner or tower were not included in the CFD mesh.</p>
+<ul class="simple">
+<li><p>Mesh topology: O-O typed structured mesh</p></li>
+<li><p>500 points in the chordwise direction</p></li>
+<li><p>Initial wall normal spacing: 5e-6m</p></li>
+<li><p>Size of the overset boundaries: 1.5m from the blade surface</p></li>
+<li><p>Wall-normal growth rate: 1.15</p></li>
+<li><p>Total cell counts: 23,192,978</p></li>
+</ul>
+<p>Off-body (AMR-Wind) mesh was generated using the built-in capability of AMR-Wind. Off-body mesh information is summarized below</p>
+<ul class="simple">
+<li><p>Mesh topology: Cartesian with AMR</p></li>
+<li><p>Domain in x= -100 to 150m, y=-100m to 100m, z=-100m to 100m</p></li>
+<li><p>Initial grid size: 0.78125m</p></li>
+<li><p>Finest cell size: 0.1953 m with 4 AMR levels</p>
+<ul>
+<li><p>See detail ranges of the mesh refinement in <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/exawind/NREL_Phase_VI_Turbine/RANS/u_7/input_files/static_box.txt">static_box.txt</a></p></li>
+</ul>
+</li>
+<li><p>Total cell counts: 45,527,040</p></li>
+</ul>
+</section>
+<section id="results">
+<h2>Results<a class="headerlink" href="#results" title="Link to this heading"></a></h2>
+<p>The rotor simulations are performed in four sequential stages with reduced time step sizes, so that rotor revolution per iteration decreased as follows:</p>
+<ul class="simple">
+<li><p>Rev. 1 and 2: 0.25° per iteration</p></li>
+<li><p>Rev. 3 and 4: 0.125° per iteration</p></li>
+<li><p>Rev. 5 and 6: 0.0625° per iteration</p></li>
+<li><p>Rev. 7 and 8: 0.03125° per iteration</p></li>
+</ul>
+<p>This approach was particularly important for the wind speed of 15 m/s to acheive the time-step size conevergence, which exhibits highly separated flow, with the sectional angle of attack distribution ranging between 15° and 35°.</p>
+<p>The figure below compares the rotor performance (thrust and torque) against experimental data and available other numerical results [2]. The experimental error is indicated by the black uncertainty bar at the top of each <code class="docutils literal notranslate"><span class="pre">Experiment</span></code> column. For the Nalu-Wind results, the rotor performance was averaged over the last one revolution.</p>
+<p><img alt="Cf" src="../../_images/PhaseVi.png" /></p>
+<p>For the thrust, the transition simulations predict slightly higher values than the fully turbulent simulations, although the differences are minor. For the torque, both fully turbulent and transition simulation results fall within the standard deviation of the experimental measurements. At 7 m/s, the transition simulation predicts slightly higher torque than the fully turbulent simulations due to lower drag from more laminar flow. On the other hand, at 15 m/s, the fully turbulent simulations predict higher torque. This could be attributed to higher turbulent eddy viscosity in the fully turbulent simulation, resulting in more attached flow on the blade section. Overall, both fully turbulent and transition simulations provide reasonable predictions.</p>
+<p>The simulations were performed using 1,440 cores on NREL’s Kestrel HPC cluster: 1152 cores for Nalu-Wind, and 288 cores for AMR-Wind. The transition simulations took approximately 55 hours for the total 8 revolutions.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<p>[1]: M. H. Hand et al, “Unsteady Aerodynamics Experiment Phase VI: Wind Tunnel Test Configurations and Available Data Campaigns,” NREL/TP-500-29955, 2001.</p>
+<p>[2]: Sørensen, “CFD Modelling of Laminar-turbulent Transition for Airfoils and Rotors Using the Gamma-Re Model,” Wind Energ. 12:715–733, 2009.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

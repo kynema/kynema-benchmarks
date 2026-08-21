@@ -1,0 +1,398 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Compute correlations and integral lengthscale &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Compute correlations and integral lengthscale</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/postprocessing/ABL_integral_lengthscale.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="compute-correlations-and-integral-lengthscale">
+<h1>Compute correlations and integral lengthscale<a class="headerlink" href="#compute-correlations-and-integral-lengthscale" title="Link to this heading"></a></h1>
+<section id="definition">
+<h2>Definition<a class="headerlink" href="#definition" title="Link to this heading"></a></h2>
+<p>The two point correlation <span class="math notranslate nohighlight">\(R_{ij}\)</span> is defined as
+$<span class="math notranslate nohighlight">\( R_{ij}({\mathbf x},\boldsymbol{\xi}) = 
+\frac{\langle {u'_i(\mathbf{x}, t) u'_j(\mathbf{x}+\boldsymbol{\xi},t)} \rangle}
+{ \sqrt{\langle u'^2_i \rangle} \sqrt{\langle u'^2_j \rangle}} \)</span>$</p>
+<p>The fluctuations
+$<span class="math notranslate nohighlight">\( u'_i(\mathbf{x},t) = u_i(\mathbf{x},t) - \langle u_i(\mathbf{x},t) \rangle \)</span>$</p>
+<p>The lengthscale is calculated as
+$<span class="math notranslate nohighlight">\( L = \int_0^\infty R_{ij}(\xi)\: {\textrm d}\xi  \)</span>$</p>
+<p>See https://spiral.imperial.ac.uk/bitstream/10044/1/41599/4/Airflow_v16a_Revised25_final_deposit.pdf as a reference</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add any possible locations of amr-wind-frontend here</span>
+<span class="n">amrwindfedirs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'/projects/wind_uq/lcheung/amrwind-frontend/'</span><span class="p">,</span>
+                 <span class="s1">'/ccs/proj/cfd162/lcheung/amrwind-frontend/'</span><span class="p">]</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">amrwindfedirs</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">amrwindfedirs</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="o">+</span><span class="s1">'/utilities'</span><span class="p">)</span>    
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">postproamrwindsample_xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ppsamplexr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">correlate</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">corr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">amrdir</span> <span class="o">=</span> <span class="s1">'/gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/post_processing/'</span>
+<span class="n">ncfile</span> <span class="o">=</span> <span class="s1">'XYdomain_090_30000.nc'</span>  <span class="c1"># netcdf filename</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">timerange</span><span class="o">=</span><span class="p">[</span><span class="mi">15000</span><span class="p">,</span> <span class="mi">20000</span><span class="p">]</span> 
+<span class="n">iplane</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">group</span><span class="o">=</span><span class="s1">'Farm_XYdomain090'</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">avgdat</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">avgNCplaneXR</span><span class="p">(</span><span class="n">amrdir</span><span class="o">+</span><span class="s1">'/'</span><span class="o">+</span><span class="n">ncfile</span><span class="p">,</span> <span class="n">timerange</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">iplane</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/post_processing//XYdomain_090_30000.nc 10001
+[============================================================] 100.0% 
+Ncount = 10001
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">corr</span><span class="o">.</span><span class="n">getsizesindices</span><span class="p">(</span><span class="n">avgdat</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(513, 513, 1, [6, 7, 8])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">iplane2</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">ij</span>   <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">ws</span><span class="p">,</span> <span class="n">winddir</span>           <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">getavgwind</span><span class="p">(</span><span class="n">avgdat</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">iplane2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'WS   = '</span><span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="n">ws</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Wdir = '</span><span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="n">winddir</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WS   = [9.872843179511582, 5.69942735729509, -1.0873868051805409e-06]
+Wdir = 240.00287845460377
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the probe list for LONGITUDINAL</span>
+<span class="c1"># Set parameters</span>
+<span class="c1">#winddir= 240</span>
+<span class="c1">#winddir= 270</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">winddir</span><span class="o">&gt;</span><span class="mi">270</span><span class="p">):</span> <span class="n">s</span><span class="o">=-</span><span class="mi">1</span>
+<span class="k">else</span><span class="p">:</span>             <span class="n">s</span><span class="o">=+</span><span class="mi">1</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">startx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="n">ds</span><span class="p">)</span>
+<span class="n">starty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span><span class="mi">350</span><span class="p">,</span><span class="n">ds</span><span class="p">)[::</span><span class="n">s</span><span class="p">]</span>
+<span class="n">probelength</span> <span class="o">=</span> <span class="mi">2500</span> <span class="c1"># Probe length should be a few hundred meters</span>
+<span class="n">startp</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">yoffset</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">[[</span><span class="n">startp</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">+</span><span class="n">yoffset</span><span class="o">*</span><span class="n">iy</span><span class="p">,</span><span class="n">iplane2</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">startx</span><span class="p">]</span> <span class="k">for</span> <span class="n">iy</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">starty</span><span class="p">)]</span>
+
+<span class="n">plistLONG</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">makeprobeline</span><span class="p">(</span><span class="n">startp</span><span class="p">,</span> <span class="n">winddir</span><span class="p">,</span> <span class="n">probelength</span><span class="p">,</span> <span class="n">avgdat</span><span class="p">)</span>
+
+<span class="n">Nlong</span>      <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">plistLONG</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Len(plist)=</span><span class="si">%i</span><span class="s2">"</span><span class="o">%</span><span class="k">Nlong</span>)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Len(plist)=100
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the probe list for LATERAL</span>
+<span class="c1"># Set parameters</span>
+<span class="c1">#winddir= 150</span>
+<span class="c1">#winddir = 180</span>
+<span class="k">if</span> <span class="p">((</span><span class="n">winddir</span><span class="o">+</span><span class="mi">90</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">270</span><span class="p">):</span> <span class="n">s</span><span class="o">=-</span><span class="mi">1</span>
+<span class="k">else</span><span class="p">:</span>             <span class="n">s</span><span class="o">=+</span><span class="mi">1</span>
+<span class="c1">#ds = 10</span>
+<span class="c1">#startx = np.arange(200,300,ds)</span>
+<span class="c1">#starty = np.arange(100,200,ds)[::s]</span>
+<span class="c1">#probelength = 4000 # Probe length should may be 0.5*domain length</span>
+<span class="n">startp</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">yoffset</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">[[</span><span class="n">startp</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">+</span><span class="n">yoffset</span><span class="o">*</span><span class="n">iy</span><span class="p">,</span><span class="n">iplane2</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">startx</span><span class="p">]</span> <span class="k">for</span> <span class="n">iy</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">starty</span><span class="p">)]</span>
+
+<span class="n">plistLAT</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">makeprobeline</span><span class="p">(</span><span class="n">startp</span><span class="p">,</span> <span class="p">(</span><span class="n">winddir</span><span class="o">+</span><span class="mi">90</span><span class="p">),</span> <span class="n">probelength</span><span class="p">,</span> <span class="n">avgdat</span><span class="p">)</span>
+
+<span class="n">Nlat</span>     <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">plistLAT</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Len(plist)=</span><span class="si">%i</span><span class="s2">"</span><span class="o">%</span><span class="k">Nlat</span>)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Len(plist)=100
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plotprobept</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1"># Plot the probe points</span>
+<span class="k">if</span> <span class="n">plotprobept</span><span class="p">:</span>
+    <span class="c1">#avgdat, headers       = corr.loadavg(ncfilename, loadfromplanes, avgsavefile, verbose=True)</span>
+    <span class="c1"># LONG</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">125</span><span class="p">)</span>
+    <span class="c1">#plt.rc('font', size=14)</span>
+    <span class="n">corr</span><span class="o">.</span><span class="n">plotprobes</span><span class="p">(</span><span class="n">plistLONG</span><span class="p">,</span> <span class="n">avgdat</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Longitudinal'</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">'equal'</span><span class="p">)</span>
+    <span class="c1"># LAT</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">125</span><span class="p">)</span>
+    <span class="c1">#plt.rc('font', size=14)</span>
+    <span class="n">corr</span><span class="o">.</span><span class="n">plotprobes</span><span class="p">(</span><span class="n">plistLAT</span><span class="p">,</span> <span class="n">avgdat</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Lateral'</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">'equal'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../../_images/f083cb71dcf20dc8d760d7492c655bce97c31e97b4d758374d500e26077261b0.png" src="../../../../_images/f083cb71dcf20dc8d760d7492c655bce97c31e97b4d758374d500e26077261b0.png" />
+<img alt="../../../../_images/62da7970b857ac60e1c724e482bda7ece04f186ee3a49a5c7db76e6dc3b69eb0.png" src="../../../../_images/62da7970b857ac60e1c724e482bda7ece04f186ee3a49a5c7db76e6dc3b69eb0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plist</span>        <span class="o">=</span> <span class="n">plistLONG</span> <span class="o">+</span> <span class="n">plistLAT</span>
+<span class="n">allf</span><span class="p">,</span> <span class="n">allRij</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">makeRij</span><span class="p">(</span><span class="n">ij</span><span class="p">,</span> <span class="n">plist</span><span class="p">,</span> <span class="p">[],</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">iplane</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span>
+                            <span class="n">avgdat</span> <span class="o">=</span> <span class="n">avgdat</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">timerange</span><span class="o">=</span><span class="n">timerange</span><span class="p">,</span> <span class="n">ncfilename</span><span class="o">=</span><span class="n">amrdir</span><span class="o">+</span><span class="s1">'/'</span><span class="o">+</span><span class="n">ncfile</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[============================================================] 100.0% 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Split it back into LONG/LAT</span>
+<span class="n">avgRijLong</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">allRij</span><span class="p">[:</span><span class="n">Nlong</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">avgRijLat</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">allRij</span><span class="p">[</span><span class="n">Nlong</span><span class="p">:],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">allRij</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(200, 218)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the LONG Rij</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">125</span><span class="p">)</span>
+<span class="c1">#plt.rc('font', size=14)</span>
+
+
+<span class="k">for</span> <span class="n">ir</span><span class="p">,</span> <span class="n">Rij</span> <span class="ow">in</span>  <span class="nb">enumerate</span><span class="p">(</span><span class="n">allRij</span><span class="p">[:</span><span class="n">Nlong</span><span class="p">]):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">allf</span><span class="p">[</span><span class="n">Nlong</span><span class="p">],</span> <span class="n">Rij</span><span class="p">,</span> <span class="s1">'gray'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="c1"># Average</span>
+<span class="n">fsize</span><span class="o">=</span><span class="mi">18</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">allf</span><span class="p">[</span><span class="n">Nlong</span><span class="p">],</span> <span class="n">avgRijLong</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">probelength</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">'$\xi$ [m]'</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Longitudinal Integral Length Scale"</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">'$R_</span><span class="si">{ij}</span><span class="s1">(x,\xi)$'</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">'both'</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">'major'</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>  <span class="c1"># Major ticks</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">'both'</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">'minor'</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>  <span class="c1"># Minor ticks (if any)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">'./figures/ABL_integral_lengthscale_long.png'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../../_images/9efd7983bf8ec9a88ea53ea09aef5d3de103b4590bf07ef9767b31819c7c8cbe.png" src="../../../../_images/9efd7983bf8ec9a88ea53ea09aef5d3de103b4590bf07ef9767b31819c7c8cbe.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the LAT Rij</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">125</span><span class="p">)</span>
+<span class="c1">#plt.rc('font', size=14)</span>
+<span class="n">fsize</span> <span class="o">=</span> <span class="mi">18</span>
+
+<span class="k">for</span> <span class="n">ir</span><span class="p">,</span> <span class="n">Rij</span> <span class="ow">in</span>  <span class="nb">enumerate</span><span class="p">(</span><span class="n">allRij</span><span class="p">[</span><span class="n">Nlong</span><span class="p">:]):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">allf</span><span class="p">[</span><span class="n">Nlong</span><span class="p">],</span> <span class="n">Rij</span><span class="p">,</span> <span class="s1">'gray'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="c1"># Average</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">allf</span><span class="p">[</span><span class="n">Nlong</span><span class="p">],</span> <span class="n">avgRijLat</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">probelength</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">'$\xi$ [m]'</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Latitudinal Integral Length Scale"</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">'$R_</span><span class="si">{ij}</span><span class="s1">(x,\xi)$'</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">'both'</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">'major'</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>  <span class="c1"># Major ticks</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">'both'</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">'minor'</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>  <span class="c1"># Minor ticks (if any)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">'./figures/ABL_integral_lengthscale_lat.png'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../../_images/8035511757cde5f96b0b818fc49cd79550180b56855a827b86b6cd13ead91a46.png" src="../../../../_images/8035511757cde5f96b0b818fc49cd79550180b56855a827b86b6cd13ead91a46.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate lengthscale</span>
+<span class="n">lengthscale</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">calclengthscale</span><span class="p">(</span><span class="n">allf</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">avgRijLong</span><span class="o">-</span><span class="mf">0.0</span><span class="p">,</span><span class="nb">max</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'LONG lengthscale = </span><span class="si">%f</span><span class="s1">'</span><span class="o">%</span><span class="k">lengthscale</span>)
+<span class="n">lengthscale</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">calclengthscale</span><span class="p">(</span><span class="n">allf</span><span class="p">[</span><span class="n">Nlong</span><span class="p">],</span> <span class="n">avgRijLat</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'LAT lengthscale  = </span><span class="si">%f</span><span class="s1">'</span><span class="o">%</span><span class="k">lengthscale</span>)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>LONG lengthscale = 539.607349
+LAT lengthscale  = 97.135780
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,255 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NREL 5MW Rotor in Atmospheric Boundary Layer With OpenFAST/BeamDyn Fluid Structure Interaction &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../kynema-sgf/benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">NREL 5MW Rotor in Atmospheric Boundary Layer With OpenFAST/BeamDyn Fluid Structure Interaction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/kynema-driver/nrel5mw/fsi/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <!-- This file is automatically compiled into the website. Please copy linked files into .website_src/ paths to enable website rendering -->
+<section class="tex2jax_ignore mathjax_ignore" id="nrel-5mw-rotor-in-atmospheric-boundary-layer-with-openfast-beamdyn-fluid-structure-interaction">
+<h1>NREL 5MW Rotor in Atmospheric Boundary Layer With OpenFAST/BeamDyn Fluid Structure Interaction<a class="headerlink" href="#nrel-5mw-rotor-in-atmospheric-boundary-layer-with-openfast-beamdyn-fluid-structure-interaction" title="Link to this heading"></a></h1>
+<p>This benchmark contains a geometry and boundary-layer resolved model of the NREL 5MW reference turbine [1] in a developed near-neutral convective atmospheric boundary layer with a mean hub-height streamwise velocity of 11.4m/s.</p>
+<ul class="simple">
+<li><p>Hub-height: 90m</p></li>
+<li><p>Blade Radius: 63m</p></li>
+<li><p>Rated Power: 5 MW</p></li>
+<li><p>Type: Upwind 3 Blade</p></li>
+<li><p>Simulation dt: 0.003443526170799 s</p></li>
+<li><p>OpenFAST dt: 0.0008608815426997245 s</p></li>
+</ul>
+<p><em>Note on run-time: Current results are for approximately 180s simulation time, but a minimum of 300s will be posted as results become available.</em></p>
+<p><em>Note on turbine controller: This case will be re-run in Q3 as a result of a small bug in the controller. If interested in running this benchmark, please contact the authors for up-to-date scheduling</em></p>
+<section id="simulation-setup">
+<h2>Simulation Setup<a class="headerlink" href="#simulation-setup" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>ExaWind driver SHA: <a class="reference external" href="https://github.com/Exawind/exawind-driver/commit/cba5259fc43ddeca67329630d3c84faad90e91bb">cba5259fc43ddeca67329630d3c84faad90e91bb</a></p></li>
+<li><p>Nalu-Wind SHA: <a class="reference external" href="https://github.com/Exawind/nalu-wind/commit/b9e4ae654b646ecd0501dd6391dc7537239c82db">b9e4ae654b646ecd0501dd6391dc7537239c82db</a></p></li>
+<li><p>AMR-Wind SHA: <a class="reference external" href="https://github.com/Exawind/amr-wind/commit/091b07fa3840af98925792290fb8788696290a5e">091b07fa3840af98925792290fb8788696290a5e</a></p></li>
+<li><p>OpenFAST 4.0.2 SHA: <a class="reference external" href="https://github.com/OpenFAST/openfast/commit/fc1110183bcc87b16d93129edabdce6d30e3a497">fc1110183bcc87b16d93129edabdce6d30e3a497</a></p></li>
+</ul>
+</section>
+<section id="freestream-conditions">
+<h2>Freestream Conditions<a class="headerlink" href="#freestream-conditions" title="Link to this heading"></a></h2>
+<p>A near-neutral convective boundary layer precursor was run to feed the domain for this case. Full details are posted here: <a class="reference internal" href="../../../kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/README.html"><span class="std std-doc">Convective ABL for NREL5MW</span></a></p>
+<p>10 minute flow statistics:</p>
+<ul class="simple">
+<li><p>Hub-height streamwise velocity: 11.4 m/s</p></li>
+<li><p>Hub-height flow direction: ~240.0 degrees</p></li>
+</ul>
+<p><img alt="avgmetmest60" src="../../../_images/avgmetmast_0600.png" /></p>
+</section>
+<section id="cfd-mesh">
+<h2>CFD Mesh<a class="headerlink" href="#cfd-mesh" title="Link to this heading"></a></h2>
+<p><img alt="meshpicture" src="../../../_images/split_mesh_layout.png" /></p>
+<p><strong>Total number of cells: 155,363,046</strong></p>
+<p>The near-body (Nalu-Wind) mesh was created using a proprietary surface mesher, pyHyp, and Pointwise. Three blades are split at the hub, and an unconnected tower is included.</p>
+<ul class="simple">
+<li><p>Hexahedral cells</p></li>
+<li><p>Cell count: 13,436,646</p></li>
+</ul>
+<p>Off-body (AMR-Wind) mesh was generated using the built-in capability of AMR-Wind. Off-body mesh information is summarized below</p>
+<ul class="simple">
+<li><p>Mesh topology: structured hex with nested refinements</p></li>
+<li><p>Domain in x= 0 to 5000m, y=0m to 5000m, z=0m to 1000m</p></li>
+<li><p>Initial grid size: 10m</p></li>
+<li><p>Finest cell size: 0.625m with 4 AMR levels</p></li>
+<li><p>Cell count: 141,926,400</p></li>
+</ul>
+</section>
+<section id="results">
+<h2>Results<a class="headerlink" href="#results" title="Link to this heading"></a></h2>
+<section id="timeseries-results-from-openfast">
+<h3>Timeseries results from OpenFAST<a class="headerlink" href="#timeseries-results-from-openfast" title="Link to this heading"></a></h3>
+<p>The plots below show timeseries of some key quantities as reported by OpenFAST (which in this simulation is acting as the structural and controller model).</p>
+<p><img alt="openfastresults" src="../../../_images/openfast_summary.png" /></p>
+</section>
+<section id="mean-values-over-time-period-60s-to-180s">
+<h3>Mean values over time period: 60s to 180s<a class="headerlink" href="#mean-values-over-time-period-60s-to-180s" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>variable</p></th>
+<th class="head"><p>value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Generator Power</p></td>
+<td><p>4165.49 kW</p></td>
+</tr>
+<tr class="row-odd"><td><p>Rotor Aero Torque</p></td>
+<td><p>3509.12 kN-m</p></td>
+</tr>
+<tr class="row-even"><td><p>Rotor Speed</p></td>
+<td><p>12.0 rpm</p></td>
+</tr>
+<tr class="row-odd"><td><p>Rotor Thrust</p></td>
+<td><p>643.58 kN</p></td>
+</tr>
+<tr class="row-even"><td><p>B1 Root Flap Moment (x)</p></td>
+<td><p>8.300869e+05 N-m</p></td>
+</tr>
+<tr class="row-odd"><td><p>B1 Root Edge Moment (y)</p></td>
+<td><p>7.869930e+06 N-m</p></td>
+</tr>
+<tr class="row-even"><td><p>B1 Tip Deflection x-direction</p></td>
+<td><p>4.24 m</p></td>
+</tr>
+<tr class="row-odd"><td><p>B1 Pitch</p></td>
+<td><p>2.07 degrees</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="simulation-timings">
+<h2>Simulation Timings<a class="headerlink" href="#simulation-timings" title="Link to this heading"></a></h2>
+<p>This benchmark was run at Sandia National Laboratories on a machine comprised of 112 Intel® Xeon® Platinum 8480+ CPU cores per node.</p>
+<section id="processor-decomposition">
+<h3>Processor Decomposition:<a class="headerlink" href="#processor-decomposition" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Nalu-Wind: 672 ranks</p></li>
+<li><p>AMR-Wind: 4928 ranks</p></li>
+</ul>
+</section>
+<section id="timings">
+<h3>Timings:<a class="headerlink" href="#timings" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Mean wall-clock time per timestep for entire simulation: 17.75s</p></li>
+<li><p>Mean wall-clock time per timestep per cell 1.142e-07s</p></li>
+</ul>
+</section>
+</section>
+<section id="quick-exawind-simulation-guide">
+<h2>Quick Exawind Simulation Guide<a class="headerlink" href="#quick-exawind-simulation-guide" title="Link to this heading"></a></h2>
+<section id="step-0-run-the-abl-precursor-in-amr-wind">
+<h3>Step 0: Run the ABL precursor in AMR-Wind<a class="headerlink" href="#step-0-run-the-abl-precursor-in-amr-wind" title="Link to this heading"></a></h3>
+<p>This simulation is driven by an ABL precursor, run in AMR-Wind, with recorded boundary planes, initial conditions, and average temperature. (See case linked above)</p>
+</section>
+<section id="step-1-develop-and-decompose-overset-mesh">
+<h3>Step 1: Develop and decompose overset mesh<a class="headerlink" href="#step-1-develop-and-decompose-overset-mesh" title="Link to this heading"></a></h3>
+<p>It is necessary to develop a near-body mesh surrounding the blade surface in Nalu-Wind using external tools. This
+mesh should be in the Exodus II format and decomposed to approximately 20K cells per core available to Nalu-Wind. (Current mesh provided via dvc/github assets)</p>
+</section>
+<section id="step-2-run-the-openfast-precursor-for-5760-openfast-timesteps-approximately-1-rotation">
+<h3>Step 2: Run the OpenFAST precursor for 5760 OpenFAST timesteps (approximately 1 rotation)<a class="headerlink" href="#step-2-run-the-openfast-precursor-for-5760-openfast-timesteps-approximately-1-rotation" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">srun</span> <span class="pre">-n</span> <span class="pre">1</span> <span class="pre">openfastcpp</span> <span class="pre">inp.yaml</span></code></p>
+</section>
+<section id="step-3-run-the-full-exawind-suite">
+<h3>Step 3: Run the full Exawind suite<a class="headerlink" href="#step-3-run-the-full-exawind-suite" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">srun</span> <span class="pre">-N</span> <span class="pre">50</span> <span class="pre">-n</span> <span class="pre">5600</span> <span class="pre">exawind</span> <span class="pre">--nwind</span> <span class="pre">672</span> <span class="pre">--awind</span> <span class="pre">4928</span> <span class="pre">nrel5mw.yaml</span> <span class="pre">&amp;&gt;</span> <span class="pre">log</span></code></p>
+</section>
+<section id="step-4-setup-and-run-the-full-exawind-suite-restart-s">
+<h3>Step 4: Setup and Run the full Exawind suite restart(s)<a class="headerlink" href="#step-4-setup-and-run-the-full-exawind-suite-restart-s" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">srun</span> <span class="pre">-N</span> <span class="pre">50</span> <span class="pre">-n</span> <span class="pre">5600</span> <span class="pre">exawind</span> <span class="pre">--nwind</span> <span class="pre">672</span> <span class="pre">--awind</span> <span class="pre">4928</span> <span class="pre">nrel5mw_r1.yaml</span> <span class="pre">&amp;&gt;</span> <span class="pre">log_1</span></code></p>
+</section>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<p>[1]: Jonkman, J. et al, “Definition of a 5-MW Reference Wind Turbine for Offshore System Development” NREL/TP-500-38060, 2009. https://www.nrel.gov/docs/fy09osti/38060.pdf</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

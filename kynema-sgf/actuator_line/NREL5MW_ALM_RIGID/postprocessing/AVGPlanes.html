@@ -1,0 +1,440 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Average wake planes &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Average wake planes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/kynema-sgf/actuator_line/NREL5MW_ALM_RIGID/postprocessing/AVGPlanes.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="average-wake-planes">
+<h1>Average wake planes<a class="headerlink" href="#average-wake-planes" title="Link to this heading"></a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add any possible locations of amr-wind-frontend here</span>
+<span class="n">amrwindfedirs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'/projects/wind_uq/lcheung/amrwind-frontend/'</span><span class="p">,</span>
+                 <span class="s1">'/ccs/proj/cfd162/lcheung/amrwind-frontend/'</span><span class="p">]</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">shutil</span><span class="o">,</span><span class="w"> </span><span class="nn">io</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">amrwindfedirs</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">postproamrwindsample_xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ppsample</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">postproengine</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ppeng</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/ascldap/users/lcheung/.local/lib/python3.9/site-packages/pandas/core/computation/expressions.py:21: UserWarning: Pandas requires version '2.8.4' or newer of 'numexpr' (version '2.8.1' currently installed).
+  from pandas.core.computation.check import NUMEXPR_INSTALLED
+/ascldap/users/lcheung/.local/lib/python3.9/site-packages/pandas/core/arrays/masked.py:60: UserWarning: Pandas requires version '1.3.6' or newer of 'bottleneck' (version '1.3.4' currently installed).
+  from pandas.core import (
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load ruamel or pyyaml as needed</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">ruamel.yaml</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">yaml</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"# Loaded ruamel.yaml"</span><span class="p">)</span>
+    <span class="n">useruamel</span><span class="o">=</span><span class="kc">True</span>
+    <span class="n">loaderkwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'Loader'</span><span class="p">:</span><span class="n">yaml</span><span class="o">.</span><span class="n">RoundTripLoader</span><span class="p">}</span>
+    <span class="n">dumperkwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'Dumper'</span><span class="p">:</span><span class="n">yaml</span><span class="o">.</span><span class="n">RoundTripDumper</span><span class="p">,</span> <span class="s1">'indent'</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="s1">'default_flow_style'</span><span class="p">:</span><span class="kc">False</span><span class="p">}</span> 
+<span class="k">except</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">yaml</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"# Loaded yaml"</span><span class="p">)</span>
+    <span class="n">useruamel</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">loaderkwargs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">dumperkwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'default_flow_style'</span><span class="p">:</span><span class="kc">False</span> <span class="p">}</span>
+    
+<span class="k">if</span> <span class="n">useruamel</span><span class="p">:</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">load</span>
+<span class="k">else</span><span class="p">:</span>         <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># Loaded ruamel.yaml
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">stringReplaceDict</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">dreplace</span><span class="p">):</span>
+    <span class="n">outstr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">dreplace</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">outstr</span><span class="o">=</span><span class="n">outstr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">outstr</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">interppoints</span><span class="p">(</span><span class="n">xD</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">240</span><span class="o">*</span><span class="n">xD</span>
+    <span class="n">ptlist</span> <span class="o">=</span> <span class="p">[[</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="p">]</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">240</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="mi">240</span><span class="o">*</span><span class="mi">2</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">ptlist</span>
+
+<span class="n">ppeng</span><span class="o">.</span><span class="n">interppoints4</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">interppoints</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">ppeng</span><span class="o">.</span><span class="n">interppoints6</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">interppoints</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="n">ppeng</span><span class="o">.</span><span class="n">interppoints8</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">interppoints</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">ppeng</span><span class="o">.</span><span class="n">interppoints10</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">interppoints</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">interpXY</span><span class="p">(</span><span class="n">xD</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Interpolate on the XY hub-height plane plane </span>
+<span class="sd">    """</span>
+    <span class="n">D</span>  <span class="o">=</span> <span class="mf">126.0</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">D</span><span class="o">*</span><span class="mf">4.0</span>
+    <span class="n">y0</span> <span class="o">=</span> <span class="n">D</span><span class="o">*</span><span class="mf">2.0</span>
+    <span class="n">z0</span> <span class="o">=</span> <span class="mf">90.0</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">D</span><span class="o">*</span><span class="n">xD</span>
+    <span class="c1">#ptlist = [[x+x0, y+y0, z0] for y in np.linspace(-D*2, D*2, int(D*4+1))]</span>
+    <span class="n">ptlist</span> <span class="o">=</span> <span class="p">[[</span><span class="n">x</span><span class="o">+</span><span class="n">x0</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="n">y0</span><span class="p">]</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">D</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">D</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">D</span><span class="o">*</span><span class="mi">4</span><span class="o">+</span><span class="mi">1</span><span class="p">))]</span>
+    <span class="k">return</span> <span class="n">ptlist</span>
+
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">]:</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">ppeng</span><span class="p">,</span> <span class="s1">'interpXY'</span><span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">partial</span><span class="p">(</span><span class="n">interpXY</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+    
+    
+<span class="k">def</span><span class="w"> </span><span class="nf">interpXZ</span><span class="p">(</span><span class="n">xD</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Interpolate on the XZ streamwise plane </span>
+<span class="sd">    """</span>
+    <span class="n">D</span>  <span class="o">=</span> <span class="mf">126.0</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">D</span><span class="o">*</span><span class="mf">4.0</span>
+    <span class="n">y0</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">D</span><span class="o">*</span><span class="n">xD</span>
+    <span class="n">ptlist</span> <span class="o">=</span> <span class="p">[[</span><span class="n">x</span><span class="o">+</span><span class="n">x0</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="n">y0</span><span class="p">]</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">D</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">D</span><span class="o">*</span><span class="mi">2</span><span class="p">))]</span>
+    <span class="k">return</span> <span class="n">ptlist</span>
+
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">]:</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">ppeng</span><span class="p">,</span> <span class="s1">'interpXZ'</span><span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">partial</span><span class="p">(</span><span class="n">interpXZ</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">RUNDIR</span><span class="o">=</span><span class="s1">'/tscratch/lcheung/HFM/exawind-benchmarks/NREL5MW_ALM_RIGID_OFv402.redo/'</span>
+<span class="n">RESULTSDIR</span><span class="o">=</span><span class="s1">'../results/'</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">yamlstring</span><span class="o">=</span><span class="s2">"""</span>
+<span class="s2">globalattributes:</span>
+<span class="s2">  verbose: False</span>
+<span class="s2">  udfmodules: []</span>
+<span class="s2">  executeorder:</span>
+<span class="s2">  - avgworkflow</span>
+
+<span class="s2">trange: &amp;trange [15300, 15900]</span>
+
+<span class="s2">interpXYstuff: &amp;interpanchor</span>
+<span class="s2">    pointlocationfunction: postproengine.interpXY4                    #Function to call to generate point locations. Function should have no arguments and return a list of points (Required)</span>
+<span class="s2">    pointcoordsystem:   A1A2                                          #Coordinate system for point interpolation.  Options: XYZ, A1A2 (Required)</span>
+<span class="s2">    varnames: ['velocityx_avg', 'velocityy_avg', 'velocityz_avg']     #List of variable names to extract. (Required)</span>
+<span class="s2">    savefile: ../results/HHProfiles_300_900/XY_wake_04.csv</span>
+
+<span class="s2">avgworkflow:</span>
+<span class="s2">  avgplanes:</span>
+<span class="s2">  - name: turbHH</span>
+<span class="s2">    ncfile:</span>
+<span class="s2">    - RUNDIR/post_processing/turbhh_30000.nc</span>
+<span class="s2">    tavg: *trange</span>
+<span class="s2">    varnames: [ 'velocityx', 'velocityy', 'velocityz']    #  </span>
+<span class="s2">    #savepklfile:  avg_fixed_hhdomain.pkl         # Name of pickle file to save results (Optional, Default: '')</span>
+<span class="s2">    #loadpklfile:  avg_fixed_hhdomain.pkl</span>
+<span class="s2">    #group: T0_YZ_wake2              # Which group to pull from netcdf file (Optional, Default: None)</span>
+<span class="s2">    contourplot:</span>
+<span class="s2">      plotfunc: "lambda db: np.sqrt(db['velocityx_avg']**2 + db['velocityy_avg']**2)"</span>
+<span class="s2">      title: 'NREL5MW ALM AVG horizontal velocity'</span>
+<span class="s2">      xaxis: a1</span>
+<span class="s2">      yaxis: a2     </span>
+<span class="s2">      xlabel: "x/D"</span>
+<span class="s2">      ylabel: "y/D"</span>
+<span class="s2">      iplane: [0]</span>
+<span class="s2">      clevels: np.linspace(0, 14, 141)</span>
+<span class="s2">      cbar_nticks: 15</span>
+<span class="s2">      xscalefunc: "lambda x: (x-504.0)/126.0"</span>
+<span class="s2">      yscalefunc: "lambda y: (y-252.0)/126.0"</span>
+<span class="s2">      figsize: [12, 4]</span>
+<span class="s2">      savefile: '../results/images/turbineHH_AVG_300_900.png'</span>
+<span class="s2">      plotturbines:</span>
+<span class="s2">      - basexyz: [0.0, 0.0, 0]</span>
+<span class="s2">        hubheight: 0.0</span>
+<span class="s2">        rotordiameter: 1.0</span>
+<span class="s2">        nacelledir: 270</span>
+<span class="s2">        ix: 0</span>
+<span class="s2">        iy: 1  </span>
+
+<span class="s2">    interpolate:                                                        #ACTION: Interpolate data from an arbitrary set of points (Optional)</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXY1</span>
+<span class="s2">      savefile: ../results/HHProfiles_300_900/XY_wake_01.csv</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXY2</span>
+<span class="s2">      savefile: ../results/HHProfiles_300_900/XY_wake_02.csv</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXY3</span>
+<span class="s2">      savefile: ../results/HHProfiles_300_900/XY_wake_03.csv</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXY4</span>
+<span class="s2">      savefile: ../results/HHProfiles_300_900/XY_wake_04.csv</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXY5</span>
+<span class="s2">      savefile: ../results/HHProfiles_300_900/XY_wake_05.csv</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXY6</span>
+<span class="s2">      savefile: ../results/HHProfiles_300_900/XY_wake_06.csv</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXY7</span>
+<span class="s2">      savefile: ../results/HHProfiles_300_900/XY_wake_07.csv</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXY8</span>
+<span class="s2">      savefile: ../results/HHProfiles_300_900/XY_wake_08.csv</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXY9</span>
+<span class="s2">      savefile: ../results/HHProfiles_300_900/XY_wake_09.csv</span>
+
+<span class="s2">  - name: turbSW</span>
+<span class="s2">    ncfile:</span>
+<span class="s2">    - RUNDIR/post_processing/turbsw_30000.nc</span>
+<span class="s2">    tavg: *trange</span>
+<span class="s2">    #savepklfile:  avg_fixed_hhdomain.pkl         # Name of pickle file to save results (Optional, Default: '')</span>
+<span class="s2">    #loadpklfile:  avg_fixed_hhdomain.pkl</span>
+<span class="s2">    #group: T0_YZ_wake2              # Which group to pull from netcdf file (Optional, Default: None)</span>
+<span class="s2">    contourplot:</span>
+<span class="s2">      plotfunc: "lambda db: np.sqrt(db['velocityx_avg']**2 + db['velocityy_avg']**2)"</span>
+<span class="s2">      title: 'NREL5MW ALM AVG horizontal velocity'</span>
+<span class="s2">      xaxis: a1</span>
+<span class="s2">      yaxis: a2</span>
+<span class="s2">      xlabel: "x/D"</span>
+<span class="s2">      ylabel: "$(z-z_h)/D$"      </span>
+<span class="s2">      iplane: [0]</span>
+<span class="s2">      clevels: np.linspace(0, 14, 141)</span>
+<span class="s2">      cbar_nticks: 8</span>
+<span class="s2">      xscalefunc: "lambda x: (x-504.0)/126.0"</span>
+<span class="s2">      yscalefunc: "lambda y: (y-90.0)/126.0"</span>
+<span class="s2">      figsize: [12, 3]</span>
+<span class="s2">      savefile: '../results/images/turbineSW_AVG_300_900.png'</span>
+<span class="s2">      plotturbines:</span>
+<span class="s2">      - basexyz: [0.0, 0.0, 0]</span>
+<span class="s2">        hubheight: 0.0</span>
+<span class="s2">        rotordiameter: 1.0</span>
+<span class="s2">        nacelledir: 270</span>
+<span class="s2">        ix: 0</span>
+<span class="s2">        iy: 2  </span>
+
+
+<span class="s2">    interpolate:</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXZ1</span>
+<span class="s2">      savefile: ../results/XZProfiles_300_900/XZ_wake_01.csv</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXZ2</span>
+<span class="s2">      savefile: ../results/XZProfiles_300_900/XZ_wake_02.csv</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXZ3</span>
+<span class="s2">      savefile: ../results/XZProfiles_300_900/XZ_wake_03.csv</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXZ4</span>
+<span class="s2">      savefile: ../results/XZProfiles_300_900/XZ_wake_04.csv</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXZ5</span>
+<span class="s2">      savefile: ../results/XZProfiles_300_900/XZ_wake_05.csv</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXZ6</span>
+<span class="s2">      savefile: ../results/XZProfiles_300_900/XZ_wake_06.csv</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXZ7</span>
+<span class="s2">      savefile: ../results/XZProfiles_300_900/XZ_wake_07.csv</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXZ8</span>
+<span class="s2">      savefile: ../results/XZProfiles_300_900/XZ_wake_08.csv</span>
+<span class="s2">    - &lt;&lt; : *interpanchor</span>
+<span class="s2">      pointlocationfunction: postproengine.interpXZ9</span>
+<span class="s2">      savefile: ../results/XZProfiles_300_900/XZ_wake_09.csv</span>
+
+
+
+<span class="s2">"""</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">stringReplaceDict</span><span class="p">(</span><span class="n">yamlstring</span><span class="p">,</span> <span class="p">{</span><span class="s1">'RUNDIR'</span><span class="p">:</span><span class="n">RUNDIR</span><span class="p">,</span> <span class="s1">'RESULTSDIR'</span><span class="p">:</span><span class="n">RESULTSDIR</span><span class="p">}))</span>
+<span class="n">yamldict</span> <span class="o">=</span> <span class="n">Loader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">loaderkwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the driver</span>
+<span class="n">ppeng</span><span class="o">.</span><span class="n">driver</span><span class="p">(</span><span class="n">yamldict</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initialized avgplanes
+Running avgplanes
+/tscratch/lcheung/HFM/exawind-benchmarks/NREL5MW_ALM_RIGID_OFv402.redo//post_processing/turbhh_30000.nc 697
+Getting data from ncfile:  /tscratch/lcheung/HFM/exawind-benchmarks/NREL5MW_ALM_RIGID_OFv402.redo//post_processing/turbhh_30000.nc
+[============================================================] 100.0% 
+Ncount = 697
+
+Initialized contourplot inside avgplanes
+Executing contourplot
+Initialized interpolate inside avgplanes
+Executing interpolate
+/tscratch/lcheung/HFM/exawind-benchmarks/NREL5MW_ALM_RIGID_OFv402.redo//post_processing/turbsw_30000.nc 697
+Getting data from ncfile:  /tscratch/lcheung/HFM/exawind-benchmarks/NREL5MW_ALM_RIGID_OFv402.redo//post_processing/turbsw_30000.nc
+[============================================================] 100.0% 
+Ncount = 697
+
+Initialized contourplot inside avgplanes
+Executing contourplot
+Initialized interpolate inside avgplanes
+Executing interpolate
+</pre></div>
+</div>
+<img alt="../../../../_images/a5a8ee5a1361b233a524b29f36cbda1075bee0bbe91eab7b1f71d514e0a10220.png" src="../../../../_images/a5a8ee5a1361b233a524b29f36cbda1075bee0bbe91eab7b1f71d514e0a10220.png" />
+<img alt="../../../../_images/6f649420b883a82e5f8750ea89f146c66e21d6627cbefd3a4fa3157426a6a209.png" src="../../../../_images/6f649420b883a82e5f8750ea89f146c66e21d6627cbefd3a4fa3157426a6a209.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Write out the notebook to a python script</span>
+<span class="o">!</span>jupyter<span class="w"> </span>nbconvert<span class="w"> </span>--to<span class="w"> </span>script<span class="w"> </span>AVGPlanes.ipynb
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'AVGPlanes.py'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'AVGPlanes.py'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">"'matplotlib', 'inline'"</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span> <span class="o">=</span> <span class="s1">'plt.show(block=False)'</span>
+        <span class="k">if</span> <span class="s1">'nbconvert --to script'</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[NbConvertApp] Converting notebook AVGPlanes.ipynb to script
+[NbConvertApp] Writing 8465 bytes to AVGPlanes.py
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

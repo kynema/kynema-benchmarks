@@ -1,0 +1,474 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Postprocess convective ABL case &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Postprocess convective ABL case</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/postprocessing/AVG_horiz_profiles.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="postprocess-convective-abl-case">
+<h1>Postprocess convective ABL case<a class="headerlink" href="#postprocess-convective-abl-case" title="Link to this heading"></a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%capture</span> 
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="n">postproamrwinddir</span> <span class="o">=</span> <span class="s1">'~/src/amr-wind-frontend/'</span>
+<span class="k">if</span> <span class="n">postproamrwinddir</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">postproamrwinddir</span><span class="p">)</span>
+<span class="c1"># Load the libraries</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">postproamrwindabl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ppabl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w">             </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">cm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+
+<span class="c1"># Also ignore warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">)</span>
+
+<span class="c1"># Make all plots inline </span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">plotrotorlines</span><span class="p">(</span><span class="n">zhh</span><span class="p">,</span> <span class="n">rotorD</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">zhh</span><span class="p">,</span>             <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="c1"># Plot the HH line</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">zhh</span><span class="o">+</span><span class="n">rotorD</span><span class="o">*</span><span class="mf">0.5</span><span class="p">,</span>  <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="c1"># Plot the HH line</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">zhh</span><span class="o">-</span><span class="n">rotorD</span><span class="o">*</span><span class="mf">0.5</span><span class="p">,</span>  <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="c1"># Plot the HH line    </span>
+    
+<span class="k">def</span><span class="w"> </span><span class="nf">savecsvdata</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">savekeys</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="c1"># Create a new dictionary</span>
+    <span class="n">dfcsv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">newkey</span><span class="p">,</span><span class="n">oldkey</span> <span class="ow">in</span> <span class="n">savekeys</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">dfcsv</span><span class="p">[</span><span class="n">newkey</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">oldkey</span><span class="p">]</span>
+    <span class="n">dfcsv</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">','</span><span class="p">)</span>
+    <span class="k">return</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">avgt</span><span class="p">):</span>
+    <span class="n">returndict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">temp_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">prof</span> <span class="o">=</span> <span class="n">ppabl</span><span class="o">.</span><span class="n">CalculatedProfile</span><span class="o">.</span><span class="n">fromdict</span><span class="p">(</span><span class="n">ppabl</span><span class="o">.</span><span class="n">statsprofiles</span><span class="p">[</span><span class="n">var</span><span class="p">],</span><span class="n">df</span><span class="p">,</span><span class="n">temp_dict</span><span class="p">,</span><span class="n">avgt</span><span class="o">=</span><span class="n">avgt</span><span class="p">)</span>
+    <span class="n">z</span><span class="p">,</span> <span class="n">plotdat</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">calculate</span><span class="p">()</span>
+    <span class="n">returndict</span><span class="p">[</span><span class="n">ppabl</span><span class="o">.</span><span class="n">statsprofiles</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'header'</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'z'</span><span class="p">:</span><span class="n">z</span><span class="p">,</span> <span class="s1">'data'</span><span class="p">:</span><span class="n">plotdat</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">returndict</span> 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rundir</span><span class="o">=</span><span class="s1">'/gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/'</span>
+<span class="n">resultsdir</span><span class="o">=</span><span class="s1">'../results/'</span>
+<span class="n">casenames</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">'AMR-Wind, t=[15000,20000]'</span>
+<span class="p">]</span>
+<span class="n">caseparams</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">caseparams</span><span class="p">[</span><span class="n">casenames</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'rundir'</span><span class="p">:</span><span class="n">rundir</span><span class="p">,</span> <span class="s1">'saveprefix'</span><span class="p">:</span><span class="s1">'avgprofile_5000s'</span><span class="p">,</span><span class="s1">'ncfile'</span><span class="p">:</span><span class="s1">'post_processing/abl_statistics30000.nc'</span><span class="p">,</span> <span class="s1">'avgtimes'</span><span class="p">:[</span><span class="mi">15000</span><span class="p">,</span><span class="mi">20000</span><span class="p">],</span><span class="s1">'lstyle'</span><span class="p">:{</span><span class="s1">'color'</span><span class="p">:</span><span class="s1">'tab:blue'</span><span class="p">,}}</span>
+
+<span class="c1"># Hub-height locations</span>
+<span class="n">zHH_target</span>    <span class="o">=</span> <span class="mf">90.0</span>
+<span class="n">rotorD</span>        <span class="o">=</span> <span class="mi">126</span>
+<span class="n">bottom_tip</span>    <span class="o">=</span> <span class="n">zHH_target</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">rotorD</span>
+<span class="n">top_tip</span>       <span class="o">=</span> <span class="n">zHH_target</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">rotorD</span>
+
+<span class="n">plotheights</span><span class="o">=</span><span class="p">[</span><span class="n">bottom_tip</span><span class="p">,</span><span class="n">zHH_target</span><span class="p">,</span><span class="n">top_tip</span><span class="p">]</span>
+
+<span class="n">loadinmemory</span> <span class="o">=</span> <span class="kc">False</span>   <span class="c1"># Do this only if there's enough RAM and for new (python 3+ netCDF4) libraries</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dfs</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Case: "</span><span class="p">,</span><span class="n">case</span><span class="p">)</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'rundir'</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'ncfile'</span><span class="p">]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">ppabl</span><span class="o">.</span><span class="n">loadnetcdffile</span><span class="p">(</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'rundir'</span><span class="p">]</span><span class="o">+</span><span class="s1">'/'</span><span class="o">+</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'ncfile'</span><span class="p">],</span> <span class="n">usemmap</span><span class="o">=</span><span class="n">loadinmemory</span><span class="p">)</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">ppabl</span><span class="o">.</span><span class="n">printReport</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">avgt</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">],</span> <span class="n">heights</span><span class="o">=</span><span class="n">plotheights</span><span class="p">,</span><span class="n">span</span><span class="o">=</span><span class="p">(</span><span class="n">bottom_tip</span><span class="p">,</span><span class="n">top_tip</span><span class="p">))</span>
+    <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span>
+    <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span> <span class="o">=</span> <span class="n">report</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Case:  AMR-Wind, t=[15000,20000]
+Loading v
+Loading u
+Loading w'theta'_r
+Loading theta
+Loading u'u'_r
+Loading w'w'_r
+Loading v'v'_r
+        z       Uhoriz      WindDir       TI_TKE     TI_horiz        Alpha    Alpha-Fit     ObukhovL         Veer     Veer-Fit 
+      ===         ====         ====         ====         ====         ====         ====         ====         ====         ==== 
+    27.00 9.898237e+00 2.397437e+02 8.294232e-02 1.396770e-01 1.299356e-01 9.446530e-02 -2.447446e+03 8.765632e-03 1.515664e-03 
+    90.00 1.139983e+01 2.400028e+02 6.173801e-02 9.830029e-02 8.154171e-02 9.446530e-02 -2.017924e+03 6.082818e-04 1.515664e-03 
+   153.00 1.189863e+01 2.400229e+02 5.387763e-02 8.458292e-02 6.932999e-02 9.446530e-02 -2.341192e+03 1.245154e-04 1.515664e-03 
+
+ustar: 0.468587
+zi: 803.132957
+</pre></div>
+</div>
+</div>
+</div>
+<section id="plot-velocity-profile">
+<h2>Plot velocity profile<a class="headerlink" href="#plot-velocity-profile" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot velocity</span>
+<span class="n">var</span><span class="o">=</span><span class="s1">'Uhoriz'</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'data'</span><span class="p">],</span> <span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">case</span><span class="p">,</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">'saveprefix'</span> <span class="ow">in</span> <span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">]:</span>
+        <span class="n">savecsvdata</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">],</span> <span class="p">{</span><span class="s1">'z'</span><span class="p">:</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span><span class="s1">'data'</span><span class="p">},</span> <span class="n">resultsdir</span><span class="o">+</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'saveprefix'</span><span class="p">]</span><span class="o">+</span><span class="s1">'_'</span><span class="o">+</span><span class="n">var</span><span class="o">+</span><span class="s1">'.csv'</span><span class="p">)</span>
+
+
+<span class="c1"># Plot the turbine dimensions</span>
+<span class="n">plotrotorlines</span><span class="p">(</span><span class="n">zHH_target</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">rotorD</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">,)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'$U_</span><span class="si">{horiz}</span><span class="s1">$ [m/s]'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">':'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_Uhoriz.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading u
+Loading v
+</pre></div>
+</div>
+<img alt="../../../../_images/8ebc2f913e0608db34b2be6af2a08a23577bbfcf3de456def2169b2ba40080aa.png" src="../../../../_images/8ebc2f913e0608db34b2be6af2a08a23577bbfcf3de456def2169b2ba40080aa.png" />
+</div>
+</div>
+</section>
+<section id="plot-temperature-profiles">
+<h2>Plot temperature profiles<a class="headerlink" href="#plot-temperature-profiles" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">var</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'Temperature'</span><span class="p">,</span><span class="s1">'T'</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s1">'data'</span><span class="p">],</span> <span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s1">'z'</span><span class="p">]</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">case</span><span class="p">,</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">'saveprefix'</span> <span class="ow">in</span> <span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">]:</span>
+        <span class="n">savecsvdata</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">{</span><span class="s1">'z'</span><span class="p">:</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">var</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="s1">'data'</span><span class="p">},</span> <span class="n">resultsdir</span><span class="o">+</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'saveprefix'</span><span class="p">]</span><span class="o">+</span><span class="s1">'_'</span><span class="o">+</span><span class="n">var</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="s1">'.csv'</span><span class="p">)</span>
+
+<span class="c1"># Plot the turbine dimensions</span>
+<span class="n">plotrotorlines</span><span class="p">(</span><span class="n">zHH_target</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">rotorD</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">,)</span>
+
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="c1">#ax.set_xlim([290, 294])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">var</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">' [K]'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">':'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_T.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading theta
+</pre></div>
+</div>
+<img alt="../../../../_images/70dcfdb857d06846d299edfa41b733e0eb7ca2dd176a2b851b44c236ee139f7d.png" src="../../../../_images/70dcfdb857d06846d299edfa41b733e0eb7ca2dd176a2b851b44c236ee139f7d.png" />
+</div>
+</div>
+</section>
+<section id="plot-veer-profile">
+<h2>Plot veer profile<a class="headerlink" href="#plot-veer-profile" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">var</span><span class="o">=</span><span class="s1">'WindDir'</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'data'</span><span class="p">],</span> <span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">case</span><span class="p">,</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">'saveprefix'</span> <span class="ow">in</span> <span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">]:</span>
+        <span class="n">savecsvdata</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">],</span> <span class="p">{</span><span class="s1">'z'</span><span class="p">:</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span><span class="s1">'data'</span><span class="p">},</span> <span class="n">resultsdir</span><span class="o">+</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'saveprefix'</span><span class="p">]</span><span class="o">+</span><span class="s1">'_'</span><span class="o">+</span><span class="n">var</span><span class="o">+</span><span class="s1">'.csv'</span><span class="p">)</span>
+
+<span class="c1"># Plot the turbine dimensions</span>
+<span class="n">plotrotorlines</span><span class="p">(</span><span class="n">zHH_target</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">rotorD</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">,)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'$\phi$ [deg]'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">':'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_WindDir.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading u
+Loading v
+</pre></div>
+</div>
+<img alt="../../../../_images/4dca3ad2c6803a580bc6bb05a9cf6caac14ff08fec857b4f37c9ffb9072db76a.png" src="../../../../_images/4dca3ad2c6803a580bc6bb05a9cf6caac14ff08fec857b4f37c9ffb9072db76a.png" />
+</div>
+</div>
+</section>
+<section id="plot-ti">
+<h2>Plot TI<a class="headerlink" href="#plot-ti" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">var</span> <span class="o">=</span> <span class="s1">'TI_TKE'</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'data'</span><span class="p">],</span> <span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">case</span><span class="p">,</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">'saveprefix'</span> <span class="ow">in</span> <span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">]:</span>
+        <span class="n">savecsvdata</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">var</span><span class="p">],</span> <span class="p">{</span><span class="s1">'z'</span><span class="p">:</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span><span class="s1">'data'</span><span class="p">},</span> <span class="n">resultsdir</span><span class="o">+</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'saveprefix'</span><span class="p">]</span><span class="o">+</span><span class="s1">'_'</span><span class="o">+</span><span class="n">var</span><span class="o">+</span><span class="s1">'.csv'</span><span class="p">)</span>
+
+<span class="c1"># Plot the turbine dimensions</span>
+<span class="n">plotrotorlines</span><span class="p">(</span><span class="n">zHH_target</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">rotorD</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">,)</span>
+
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1100</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">]])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">.11</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'TI_TKE'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">':'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_TI.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading u
+Loading v
+Loading u'u'_r
+Loading v'v'_r
+Loading w'w'_r
+</pre></div>
+</div>
+<img alt="../../../../_images/b3965a75860e2e4a3e38daed62536ff0dc0d827d707cc377c679bc98452b11a4.png" src="../../../../_images/b3965a75860e2e4a3e38daed62536ff0dc0d827d707cc377c679bc98452b11a4.png" />
+</div>
+</div>
+</section>
+<section id="plot-reynolds-stresses">
+<h2>Plot Reynolds stresses<a class="headerlink" href="#plot-reynolds-stresses" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">var</span> <span class="o">=</span> <span class="s1">'ReStresses'</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plotlabels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'$u</span><span class="se">\'</span><span class="s1">u</span><span class="se">\'</span><span class="s1">$'</span><span class="p">,</span> <span class="s1">'$u</span><span class="se">\'</span><span class="s1">v</span><span class="se">\'</span><span class="s1">$'</span><span class="p">,</span> <span class="s1">'$u</span><span class="se">\'</span><span class="s1">w</span><span class="se">\'</span><span class="s1">$'</span><span class="p">,</span><span class="s1">'$v</span><span class="se">\'</span><span class="s1">v</span><span class="se">\'</span><span class="s1">$'</span><span class="p">,</span><span class="s1">'$v</span><span class="se">\'</span><span class="s1">w</span><span class="se">\'</span><span class="s1">$'</span><span class="p">,</span><span class="s1">'$w</span><span class="se">\'</span><span class="s1">w</span><span class="se">\'</span><span class="s1">$'</span><span class="p">]</span>
+<span class="n">plotvars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'uu'</span><span class="p">,</span> <span class="s1">'uv'</span><span class="p">,</span> <span class="s1">'uw'</span><span class="p">,</span> <span class="s1">'vv'</span><span class="p">,</span> <span class="s1">'vw'</span><span class="p">,</span> <span class="s1">'ww'</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">plotvars</span><span class="p">):</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">amrdat</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">sca</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+        <span class="n">amrdat</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'data'</span><span class="p">]</span> <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="s1">'uu uv uw vv vw ww'</span><span class="p">][</span><span class="s1">'data'</span><span class="p">][:,</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">amrdat</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span>    <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="s1">'uu uv uw vv vw ww'</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span>
+        <span class="n">re</span> <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'data'</span><span class="p">]</span>
+        <span class="n">ustar</span> <span class="o">=</span> <span class="n">report</span><span class="p">[</span><span class="s1">'ustar'</span><span class="p">]</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span>
+        <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">re</span><span class="o">/</span><span class="n">ustar</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">z</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">plotlabels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'$/u_*^2$ [-]'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">'saveprefix'</span> <span class="ow">in</span> <span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">]:</span>
+            <span class="n">savecsvdata</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">v</span><span class="p">],</span> <span class="p">{</span><span class="s1">'z'</span><span class="p">:</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span><span class="s1">'data'</span><span class="p">},</span> <span class="n">resultsdir</span><span class="o">+</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'saveprefix'</span><span class="p">]</span><span class="o">+</span><span class="s1">'_'</span><span class="o">+</span><span class="n">v</span><span class="o">+</span><span class="s1">'.csv'</span><span class="p">)</span>
+        <span class="c1"># Plot the turbine dimensions</span>
+        <span class="n">plotrotorlines</span><span class="p">(</span><span class="n">zHH_target</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">rotorD</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">,)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_RE.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading u'u'_r
+Loading u'v'_r
+Loading u'w'_r
+Loading v'v'_r
+Loading v'w'_r
+Loading w'w'_r
+</pre></div>
+</div>
+<img alt="../../../../_images/4fcac48c3b1fc63ae2b1d8466c43a07fe5ecb4c49da8bee0a77d60b8873cafcd.png" src="../../../../_images/4fcac48c3b1fc63ae2b1d8466c43a07fe5ecb4c49da8bee0a77d60b8873cafcd.png" />
+</div>
+</div>
+</section>
+<section id="plot-temperature-fluxes">
+<h2>Plot temperature fluxes<a class="headerlink" href="#plot-temperature-fluxes" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">var</span> <span class="o">=</span> <span class="s1">'Tfluxes'</span>
+<span class="c1">#fig, ax = plt.subplots(figsize=(6,6), facecolor='w', dpi=150)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plotlabels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'$u</span><span class="se">\'</span><span class="s1">T$'</span><span class="p">,</span> <span class="s1">'$v</span><span class="se">\'</span><span class="s1">T$'</span><span class="p">,</span> <span class="s1">'$w</span><span class="se">\'</span><span class="s1">T$'</span><span class="p">,]</span>
+<span class="n">plotvars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'uT'</span><span class="p">,</span><span class="s1">'vT'</span><span class="p">,</span><span class="s1">'wT'</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">casenames</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'df'</span><span class="p">]</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'report'</span><span class="p">]</span>
+    <span class="n">amrdat</span> <span class="o">=</span> <span class="n">plot_profile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="n">df</span><span class="p">,</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'avgtimes'</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">plotvars</span><span class="p">):</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">sca</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+        <span class="n">amrdat</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">amrdat</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'data'</span><span class="p">]</span> <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="s1">'uT vT wT'</span><span class="p">][</span><span class="s1">'data'</span><span class="p">][:,</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">amrdat</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span>    <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="s1">'uT vT wT'</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span>
+        <span class="n">ustar</span> <span class="o">=</span> <span class="n">report</span><span class="p">[</span><span class="s1">'ustar'</span><span class="p">]</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'z'</span><span class="p">]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">amrdat</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="s1">'data'</span><span class="p">]</span>
+        <span class="n">lstyle</span><span class="o">=</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'lstyle'</span><span class="p">]</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">z</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span><span class="o">**</span><span class="n">lstyle</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">plotlabels</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1100</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">]])</span>
+        <span class="k">if</span> <span class="s1">'saveprefix'</span> <span class="ow">in</span> <span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">]:</span>
+            <span class="n">savecsvdata</span><span class="p">(</span><span class="n">amrdat</span><span class="p">[</span><span class="n">v</span><span class="p">],</span> <span class="p">{</span><span class="s1">'z'</span><span class="p">:</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span><span class="s1">'data'</span><span class="p">},</span> <span class="n">resultsdir</span><span class="o">+</span><span class="n">caseparams</span><span class="p">[</span><span class="n">case</span><span class="p">][</span><span class="s1">'saveprefix'</span><span class="p">]</span><span class="o">+</span><span class="s1">'_'</span><span class="o">+</span><span class="n">v</span><span class="o">+</span><span class="s1">'.csv'</span><span class="p">)</span>
+        <span class="c1"># Plot the turbine dimensions</span>
+        <span class="n">plotrotorlines</span><span class="p">(</span><span class="n">zHH_target</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">rotorD</span><span class="o">/</span><span class="n">report</span><span class="p">[</span><span class="s1">'zi'</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">,)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'$z/z_i$ [-]'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/AVG_horiz_profiles_uT.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading u'theta'_r
+Loading v'theta'_r
+Loading w'theta'_r
+</pre></div>
+</div>
+<img alt="../../../../_images/d30d340c6637f1b9753a4d5abd79f199b7ba1541886046c046c1bcdecf102eac.png" src="../../../../_images/d30d340c6637f1b9753a4d5abd79f199b7ba1541886046c046c1bcdecf102eac.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,357 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pazy Wing Aeroelastic Validation Case &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../kynema-sgf/benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Pazy Wing Aeroelastic Validation Case</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/kynema-driver/Pazy_Wing/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="pazy-wing-aeroelastic-validation-case">
+<h1>Pazy Wing Aeroelastic Validation Case<a class="headerlink" href="#pazy-wing-aeroelastic-validation-case" title="Link to this heading"></a></h1>
+<p>This benchmark contains a blade-resolved model of the Pazy Wing [1] aeroelastic case in uniform flow.  A range of freestream velocities is used to assess the pre-flutter static deflection and flutter onset boundaries.  Both wind-tunnel data [1] and simulation results [2] are used for comparison.</p>
+<p><strong>Contents</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#simulation-description-and-setup">Simulation Description and Setup</a></p></li>
+<li><p><a class="reference internal" href="#postprocessing">Postprocessing</a></p></li>
+<li><p><a class="reference internal" href="#code-performance">Code Performance</a></p></li>
+<li><p><a class="reference internal" href="#results">Results</a></p></li>
+</ul>
+<section id="simulation-description-and-setup">
+<h2>Simulation Description and Setup<a class="headerlink" href="#simulation-description-and-setup" title="Link to this heading"></a></h2>
+<p>The geometry and flow conditions of the Pazy Wing case are defined in Avin et al. [1]  They are summarized in the following table.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Case Property</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Span</p></td>
+<td><p>0.55 m</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Chord</p></td>
+<td><p>0.10 m</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Airfoil</p></td>
+<td><p>NACA0018</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Angle of Attack</p></td>
+<td><p>3-7 deg</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Density</p></td>
+<td><p>1.225 kg/m<sup>3</sup></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Dynamic Viscosity</p></td>
+<td><p>1.8E-05 Pa-s</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Velocity</p></td>
+<td><p>15-50 m/s</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Mach Number</p></td>
+<td><p>0.04-0.15</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Reynolds Number</p></td>
+<td><p>&lt; 3.4E+05</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Turbulence Level</p></td>
+<td><p>0.5%</p></td>
+</tr>
+</tbody>
+</table>
+<p>In the wind tunnel experiments [1], the intended geometry of the blade was a straight blade with no sweep or twist, matching the parameters in the above table.  However, the as-built wind-tunnel model had several small unintended features, including varying airfoil thickness along the span, sag in the flap-wise direction, and twist (about 1 degree).  It is assumed here that these features have a negligible impact on the FSI results, and the intended geometry is instead used, with a uniform cross section across the span.</p>
+<p><strong>Domain Overview</strong></p>
+<p><img alt="Domain Overview" src="../../_images/Pazy_Overview_Fig_550.png" /></p>
+<p>The CFD computational domain consists of an inner Nalu-Wind domain immediately surrounding the wing, and an outer AMR-Wind domain to allow space for the wake to propagate.  The sides, ceiling, and floor of the AMR-Wind domain are intended to approximate the effect of the wind tunnel walls used in the experiment.  However, to avoid the computational expense of resolving the boundary layers near the tunnel walls, <em>slip wall</em> boundaries are used there.  The Nalu-Wind domain extends a few chord-lengths away from the wing, and terminates with an <em>overset</em> boundary on the exterior, and a <em>slip wall</em> on the portion that touches the bottom wind tunnel boundary.  The inner boundary of the Nalu-Wind domain represents the wing surface, and uses a <em>no-slip wall</em> boundary condition.</p>
+<p>In the experiment, the wing tip passes near the wind-tunnel walls at peak deflection.  Since the Nalu-Wind domain extends several chord lengths away from the wing, the AMR-Wind domain was chosen to be somewhat larger than the wind tunnel in order to avoid collisions of the overset boundary with the slip wall at peak deflection, and additional padding was provided to ensure the results are not contaminated by the effect of the artificial slip wall boundaries.  Future studies are planned to investigate the impact of the choice of AMR-Wind domain size on the simulation results.</p>
+<p>The structural deformations of the wing are modeled using the BeamDyn module of OpenFAST.  In the simulation setup used here, the aerodynamic forces calculated by Nalu-Wind are passed to OpenFAST/BeamDyn, and the deformations are passed back to Nalu-Wind.  No information is passed between OpenFAST/BeamDyn and AMR-Wind; instead, AMR-Wind communicates with Nalu-Wind through the overset boundary in the CFD domain.  (Note that this is different from some of the other benchmark cases, such as the  <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/actuator_line/NREL5MW_ALM_BD"><code class="docutils literal notranslate"><span class="pre">NREL5MW</span> <span class="pre">Actuator</span> <span class="pre">Line</span></code></a> case.  There, AMR-Wind and BeamDyn communcate directly, and Nalu-Wind is not present.)</p>
+<p><strong>Grid Generation</strong></p>
+<p><img alt="Mesh Overview" src="../../_images/mesh_overview_100.png" /></p>
+<p>The Nalu-Wind grid was generated using Pointwise, and a cut-away view is shown in the left figure above.  The wing tip surface grid used an O-grid surrounding an H-grid, to which elliptic smoothing was applied.  The outer boundary of this wing tip grid was extruded to yield the complete surface mesh, shown in red above.  Finally, the volume mesh was created through hyperbolic extrusion of the surface mesh.  The grid for AMR-Wind was generated using its internal grid generator, and has one refinement region in the interior, centered around the wing.  This grid is shown in the right figure above.  Metrics for these grids are given in the table below.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Nalu-Wind Grid Property</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p></p></th>
+<th class="head text-left"><p>AMR-Wind Grid Property</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Number of cells</p></td>
+<td><p>8,736,600</p></td>
+<td><p></p></td>
+<td class="text-left"><p>Domain size</p></td>
+<td><p>3 m x 3 m x 1.5 m</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>First cell height</p></td>
+<td><p>1.0E-06 m</p></td>
+<td><p></p></td>
+<td class="text-left"><p>Level 0 dimensions</p></td>
+<td><p>128 x 128 x 64</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>First cell y+</p></td>
+<td><p>0.2</p></td>
+<td><p></p></td>
+<td class="text-left"><p>Number of cells</p></td>
+<td><p>5,767,168</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Cells around airfoil</p></td>
+<td><p>500</p></td>
+<td><p></p></td>
+<td class="text-left"><p>Level 0 spacing</p></td>
+<td><p>~0.024 m</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Number of spanwise layers</p></td>
+<td><p>100</p></td>
+<td><p></p></td>
+<td class="text-left"><p>Level 1 spacing</p></td>
+<td><p>~0.012 m</p></td>
+</tr>
+</tbody>
+</table>
+<p>For the results shown in this documentation, the same grid was used for all wind speeds and angles of attack.  The y+ value given in the above table corresponds to the highest wind speed.</p>
+<p><strong>Setup</strong></p>
+<ol class="arabic">
+<li><p>Clone the Exawind-Benchmarks repository by using the following syntax:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>--recursive<span class="w"> </span>git@github.com:Exawind/exawind-benchmarks.git
+</pre></div>
+</div>
+</li>
+<li><p>Once the repository has been cloned, navigate to the Pazy-Wing directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>exawind-benchmarks/exawind/Pazy_Wing
+</pre></div>
+</div>
+</li>
+<li><p>Modify the “loadmod.sh” script to point to your ExaWind installation.  We assume here that you are using <a class="reference external" href="https://github.com/Exawind/exawind-manager">Exawind-Manager</a> to build your ExaWind installation.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">manloc</span><span class="o">=</span>the/location/of/your/build/exawind-manager
+<span class="nv">envnam</span><span class="o">=</span>pazy
+</pre></div>
+</div>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">manloc</span></code> refers to the <code class="docutils literal notranslate"><span class="pre">exawind-manager</span></code> directory location, and <code class="docutils literal notranslate"><span class="pre">envname</span></code> refers to the name of the <code class="docutils literal notranslate"><span class="pre">exawind-manager</span></code> environment you will be using.  Note that if you want to use this script in an interactive terminal session, it must be sourced, rather than executed; i.e. <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">loadmod.sh</span></code>.  However, this is unnecessary for most users, as the other scripts given here do this automatically.</p>
+</li>
+<li><p>Modify the slurm script (<code class="docutils literal notranslate"><span class="pre">base/template/run</span></code>) as needed for your HPC machine.  Pay particular attention to the allocation name.</p></li>
+<li><p>Modify the header of the <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> script to reflect the case conditions you wish to simulate.  An example header is shown below:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Case selection</span>
+<span class="nv">aoa</span><span class="o">=</span><span class="m">93</span>
+<span class="nv">windspeed</span><span class="o">=</span><span class="m">30</span>
+<span class="c1"># Simulation parameters, experts only</span>
+<span class="nv">dtshort</span><span class="o">=</span><span class="m">0</span>.00002
+<span class="nv">dtlong</span><span class="o">=</span><span class="m">0</span>.00006
+<span class="nv">density</span><span class="o">=</span><span class="m">1</span>.225
+<span class="nv">visc</span><span class="o">=</span><span class="m">0</span>.000018
+<span class="nv">tkein</span><span class="o">=</span><span class="m">1</span>.0
+<span class="nv">sdrin</span><span class="o">=</span><span class="m">250</span>.0
+<span class="nv">amrnx</span><span class="o">=</span><span class="m">128</span>
+<span class="nv">cfdplotinterval</span><span class="o">=</span><span class="m">1000</span>
+<span class="nv">cfdcheckpointinterval</span><span class="o">=</span><span class="m">10000</span>
+</pre></div>
+</div>
+<p>Variable description:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">aoa</span></code> - The angle of attack, given in degrees.  Since the nominal position of the wing is with the leading edge perpindicular to the incoming flow (per OpenFAST conventions), <code class="docutils literal notranslate"><span class="pre">aoa</span></code> should be set 90 degrees higher than the true angle of attack.  The angles of attack used in the experiment are 3, 5, and 7 degrees, so the corresponding values of <code class="docutils literal notranslate"><span class="pre">aoa</span></code> are 93, 95, and 97 degrees.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">windspeed</span></code> - The freestream wind velocity, given in meters per second.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dtshort</span></code> - The structural timestep, in seconds.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dtlong</span></code> - The CFD and driver timestep, in seconds.  This should be an integer multiple of <code class="docutils literal notranslate"><span class="pre">dtshort</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">density</span></code> - The freestream air density, in kg/m^3.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">visc</span></code> - The freestream air dynamic viscosity, in Pa-s.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tkein</span></code> and <code class="docutils literal notranslate"><span class="pre">sdrin</span></code> - The freestream turbulence model parameters.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">amrnx</span></code> - The number of elements in the x and y directions of the base AMR-Wind grid.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cfdplotinterval</span></code> - The number of timesteps that pass in between plot file output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cfdcheckpointinterval</span></code> - The number of timesteps that pass in between checkpoint file output.</p></li>
+</ul>
+<p>If the user wishes to reproduce the benchmark results, only <code class="docutils literal notranslate"><span class="pre">aoa</span></code> and <code class="docutils literal notranslate"><span class="pre">windspeed</span></code> need to be modified.</p>
+</li>
+<li><p>Run the <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> script.  This will copy the simulation input files from <code class="docutils literal notranslate"><span class="pre">base</span></code> and substitute in the simulation parameters you added to the header using <code class="docutils literal notranslate"><span class="pre">aprepro</span></code>.  The resulting files will be placed in a directory titled <code class="docutils literal notranslate"><span class="pre">a#v#</span></code>, where the first number indicates the value of <code class="docutils literal notranslate"><span class="pre">aoa</span></code>, and the second indicates the value of <code class="docutils literal notranslate"><span class="pre">windspeed</span></code>.  This naming convention is chosen to facilitate parameter sweeps.  Note that this script relies on the <em>aprepro</em> preprocessor, which will be included in your exawind installation if your are using <a class="reference external" href="https://github.com/Exawind/exawind-manager">Exawind-Manager</a>.  However, if you are installing ExaWind some other way, and <em>aprepro</em> is unavailable, you can achieve the same result by manually copying the input files and editing the variables in accolades ({}), following the contents of the script.</p></li>
+<li><p>Navigate to the simulation directory you just created, and submit the slurm script.</p></li>
+</ol>
+<p><strong>Code Versions</strong></p>
+<p>While we expect that using the current release of each code will produce comparable results, the specific versions of each code that were used to generate the results in this document are given below for completeness.</p>
+<ul class="simple">
+<li><p>ExaWind driver: <a class="reference external" href="https://github.com/Exawind/exawind-driver/commit/046b080c7e0f0ab1efea0dccb4f798fe84ef905e"><code class="docutils literal notranslate"><span class="pre">046b080c7e0f0ab1efea0dccb4f798fe84ef905e</span></code></a></p></li>
+<li><p>Nalu-Wind:         <a class="reference external" href="https://github.com/Exawind/nalu-wind/commit/b9e4ae654b646ecd0501dd6391dc7537239c82db"><code class="docutils literal notranslate"><span class="pre">b9e4ae654b646ecd0501dd6391dc7537239c82db</span></code></a></p></li>
+<li><p>AMR-Wind:       <a class="reference external" href="https://github.com/Exawind/amr-wind/commit/b61c01895e8eab388e4a3fd129e1db0f4fd0f534"><code class="docutils literal notranslate"><span class="pre">b61c01895e8eab388e4a3fd129e1db0f4fd0f534</span></code></a></p></li>
+<li><p>OpenFAST:        <a class="reference external" href="https://github.com/OpenFAST/openfast/commit/024dbc1816ca8caeefcc720b1099397730b1ec0a"><code class="docutils literal notranslate"><span class="pre">024dbc1816ca8caeefcc720b1099397730b1ec0a</span></code></a></p></li>
+</ul>
+</section>
+<section id="postprocessing">
+<h2>Postprocessing<a class="headerlink" href="#postprocessing" title="Link to this heading"></a></h2>
+<p>The primary QoI is wing tip deflection, which is recorded in the OpenFAST output file <code class="docutils literal notranslate"><span class="pre">pazy.out</span></code>.  The <code class="docutils literal notranslate"><span class="pre">post.sh</span></code> script will duplicate this output file, remove its header, and run the <code class="docutils literal notranslate"><span class="pre">post.py</span></code> python script.  This will yield a plot of the tip deflection history, together with an average value for the tip deflection.</p>
+<p>The files need to reproduce the plots in this document may be found in the <code class="docutils literal notranslate"><span class="pre">plotting</span></code> directory.  For the static deflection (low speed) cases, the final tip deflection (from the <code class="docutils literal notranslate"><span class="pre">post.py</span></code> script mentioned above) may be assembled for several windspeeds and angles of attack into the files <code class="docutils literal notranslate"><span class="pre">nalu3.dat</span></code>, <code class="docutils literal notranslate"><span class="pre">nalu5.dat</span></code>, and <code class="docutils literal notranslate"><span class="pre">nalu7.dat</span></code>.  The quantity in the first column is the wind speed, and the quantity in the second column is the tip deflection (in meters).  Running <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">plot3.py</span></code> will reproduce the AoA=3 figure below, and the other figures may be obtained likewise.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">plotting</span></code> directory also contains the files needed to reproduce the flutter boundary figure.  For this, you will need to do a parameter sweep (the <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> script will help with this), and run cases for several windspeeds near the flutter onset speed for each AoA (3, 5, and 7 degrees).  From the deflection history (obtained from the <code class="docutils literal notranslate"><span class="pre">post.py</span></code> script), one can determine whether each case meets the criteria for “stable”, “unstable”, or “flutter”, as discussed in the results section below.  These speeds can be added to the files <code class="docutils literal notranslate"><span class="pre">nalustable.dat</span></code>, <code class="docutils literal notranslate"><span class="pre">naluunstable.dat</span></code>, and <code class="docutils literal notranslate"><span class="pre">naluflut.dat</span></code>.  Then, the figure may be reproduced by running <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">plotflut.py</span></code>.</p>
+</section>
+<section id="code-performance">
+<h2>Code Performance<a class="headerlink" href="#code-performance" title="Link to this heading"></a></h2>
+<p>For these simulations, 90% of the cores were allocated to Nalu-Wind, and the remainder to AMR-Wind.  However, the timings indicated that adding yet more cores to Nalu-Wind would yield a speed improvement in this case.  Future studies are planned to determine the optimal resource balance.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Property</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Wall-Clock Time</p></td>
+<td><p>48 hours</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Simulated Time</p></td>
+<td><p>2.09 seconds</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Number of Timesteps</p></td>
+<td><p>34,380</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Number of CPUs</p></td>
+<td><p>560</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Number of HPC Nodes</p></td>
+<td><p>5</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Nalu Cells per CPU</p></td>
+<td><p>~15,600</p></td>
+</tr>
+</tbody>
+</table>
+<p>The job time of 48 hours was selected for HPC queue reasons.  However, it was found that the 2 seconds of simulated time achieved after 48 hours of wall-clock time was sufficient to achieve steady state for the static deflection cases, as well as sufficient to observe the flutter behavior for the high-speed cases.  The job was run on the Sandia Flight HPC cluster, which has the following specifications:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CPU processor type</p></td>
+<td><p>Intel® Xeon® Platinum 8480+</p></td>
+</tr>
+<tr class="row-odd"><td><p>CPU processor speed</p></td>
+<td><p>3800 Mhz</p></td>
+</tr>
+<tr class="row-even"><td><p>Node interconnects</p></td>
+<td><p>Cornelis Omni-Path high-speed interconnect</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="results">
+<h2>Results<a class="headerlink" href="#results" title="Link to this heading"></a></h2>
+<p><strong>Static Deflection Results</strong></p>
+<p><img alt="Static Deflection" src="../../_images/combined.png" /></p>
+<p>For wind velocities below the flutter onset boundary, the wing deformation approaches a steady state after the initial oscillatory transients decay.  The final tip deflection is a function of the freestream velocity and the root angle of attack.  Comparison data is available for three angles of attack (3, 5 and 7 degrees), and wind speeds between 15 m/s and the flutter onset speed, which depends on the angle of attack.  For each AoA, comparisons are shown above.  The two black curves are experimental data from [1].  The solid black curve is from a sweep of dynamic pressure (while holding AoA constant), and the dashed black curve is from a sweep of AoA (while holding dynamic pressure constant).  The solid black line is used as the reference for comparison in [2], and we likewise treat it as the more reliable of the two experimental data sets.  The grey band indicates the spread in computational comparison data given in [2].</p>
+<p><strong>Flutter Results</strong></p>
+<p><img alt="Flutter" src="../../_images/flut_figs_350.png" /></p>
+<p>For wind velocities above the flutter onset boundary, the wing deformation initially behaves in a similar way to the pre-flutter cases above.  However, the oscillatory transients do not decay, but instead continually grow until solver failure is reached.  The quantity of interest is the flutter onset velocity.  The results are shown in the left figure above.  The grey band indicates the set of AoA and wind speed values that produced flutter in the experiment [1].  The green range indicates the spread in predictions for the onset speed from the workshop [2].  The blue symbols indicate the results of ExaWind simulations that bracket the flutter onset boundary. The next section explains how these brackets should be interpreted.</p>
+<p><strong>Determination of Flutter Onset Boundary</strong></p>
+<p>For wind speeds in the neighborhood of the flutter boundary, three possible behaviors of the tip deflection may be observed:</p>
+<ul class="simple">
+<li><p>The oscillatory transients decay, and approach a constant steady-state value.  We term this behavior “stable”.</p></li>
+<li><p>The oscillations do not decay, but also do not grow without bound.  We term this behavior “unstable”.</p></li>
+<li><p>The oscillations continue to grow without bound, leading to solver failure.  We term this behavior “flutter”.</p></li>
+</ul>
+<p>These three behaviors are demonstrated in the right plot above.  Since the exact speed for which flutter begins is expected to be sensitive to resolution and simulation parameters, we opt instead to bracket the flutter onset boundary; that is, for a given root AoA, we perform simulations at multiple velocities in the neighborhood of the flutter onset boundary, and determine two speeds that may be clearly classified as “stable” and “flutter”, respectively.  We aim to bracket the flutter onset speed in this manner within 10% of the experimental value.  The left figure above indicates we are predicting the onset speed within this tolerance.</p>
+<p><strong>References</strong></p>
+<p>[1]: Avin, Or,  et al. “Experimental aeroelastic benchmark of a very flexible wing.” AIAA Journal 60.3 (2022): 1745-1768.</p>
+<p>[2]: Ritter, Markus, et al. “Collaborative Pazy wing analyses for the third aeroelastic prediction workshop.” AIAA SciTech 2024 Forum. 2024.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

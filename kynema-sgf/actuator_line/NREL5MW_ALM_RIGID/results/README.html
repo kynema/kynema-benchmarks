@@ -1,0 +1,179 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NREL5MW results &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">NREL5MW results</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/kynema-sgf/actuator_line/NREL5MW_ALM_RIGID/results/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="nrel5mw-results">
+<h1>NREL5MW results<a class="headerlink" href="#nrel5mw-results" title="Link to this heading"></a></h1>
+<p>The results of the NREL5MW ALM simulation are shown here.  Many of the scripts and notebooks used to create the results are documented in the <a class="reference internal" href="../postprocessing/README.html"><span class="std std-doc">postprocessing</span></a> section, where we describe the settings and parameters used.</p>
+<section id="contour-visualizations">
+<h2>Contour visualizations<a class="headerlink" href="#contour-visualizations" title="Link to this heading"></a></h2>
+<p>Instantaneous velocity contours of the domain and near the turbine are created using the <a class="reference internal" href="../postprocessing/InstantaneousAvgPlanes.html"><span class="std std-doc">InstantaneousAvgPlanes</span></a> scripts.
+The horizontal velocity contours at the hub-height (z=90m) plane at 900 seconds after the start of the simulation are shown here:</p>
+<p><img alt="turbine domain" src="../../../../_images/XYdomain_INST_159001.png" /></p>
+<p>Similarly, the instantaneous horizontal velocity flow near the turbine (at the hub-height z=90m plane) at 900 seconds after the start of the simulation is depicted in the image below.  The turbine hub-height center sits at (x,y)=(0,0) in this coordinate system:</p>
+<p><img alt="instantaneous HH" src="../../../../_images/turbineHH_INST_159001.png" /></p>
+<p>The same image in streamwise plane gives a view of the vertical structure in the wake.</p>
+<p><img alt="instantaneous SW" src="../../../../_images/turbineSW_INST_159001.png" /></p>
+</section>
+<section id="turbine-results">
+<h2>Turbine results<a class="headerlink" href="#turbine-results" title="Link to this heading"></a></h2>
+<p>The time-history and time-averaged turbine performance is extracted and calculated from the OpenFAST output in the <a class="reference internal" href="../postprocessing/OpenFAST_v40_Results.html"><span class="std std-doc">OpenFAST_v40_Results</span></a> scripts.  In this case, we assume that a 300 second initialization period is sufficient for the initial transients to decay and for the far wake region develop.  Averaged, 10-minute statistics from t=300s to t=900s are given in the table below</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>BldPitch1</p></th>
+<th class="head"><p>RotSpeed</p></th>
+<th class="head"><p>RotThrust</p></th>
+<th class="head"><p>RotTorq</p></th>
+<th class="head"><p>Electrical Power</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0.000 deg</p></td>
+<td><p>12.100 rpm</p></td>
+<td><p>696.604 kN</p></td>
+<td><p>3535.028 kN-m</p></td>
+<td><p>4228.427 kW</p></td>
+</tr>
+</tbody>
+</table>
+<p>Note that the electrical power was calculated using this formula</p>
+<div class="math notranslate nohighlight">
+\[
+P_{el} = \eta \times \Omega \times  T
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\eta\)</span> is the generator efficiency (0.944), <span class="math notranslate nohighlight">\(\Omega\)</span> is the rotor speed in radian/sec, and <span class="math notranslate nohighlight">\(T\)</span> is the rotor torque.</p>
+<p>The full time history of the turbine power, rotor thrust, rotor speed, blade pitch, and rotor torque are also shown here:</p>
+<p><img alt="ElecPwr" src="../../../../_images/OpenFAST_T0_ElecPwr.png" />
+<img alt="RotThrust" src="../../../../_images/OpenFAST_T0_RotThrust1.png" />
+<img alt="RotSpeed" src="../../../../_images/OpenFAST_T0_RotSpeed1.png" />
+<img alt="BldPitch1" src="../../../../_images/OpenFAST_T0_BldPitch11.png" />
+<img alt="RotTorq" src="../../../../_images/OpenFAST_T0_RotTorq1.png" /></p>
+</section>
+<section id="blade-loading-profiles">
+<h2>Blade loading profiles<a class="headerlink" href="#blade-loading-profiles" title="Link to this heading"></a></h2>
+<p>The averaged blade loading profiles and aerodynamic properties as a function of the blade span are calculated in the <a class="reference internal" href="../postprocessing/OpenFAST_SectionalLoading.html"><span class="std std-doc">OpenFAST_SectionalLoading</span></a> scripts.  These include the angle of attack (AOA), inflow angle (Phi), lift/drag (Cl/Cd), and streamwise/tangential force (Fx/Fy) loading profiles shown here:</p>
+<p><img alt="AOA" src="../../../../_images/OpenFAST_T0_AOA1.png" />
+<img alt="ClCd" src="../../../../_images/OpenFAST_T0_ClCd1.png" />
+<img alt="FxFy" src="../../../../_images/OpenFAST_T0_FxFy1.png" /></p>
+</section>
+<section id="wake-profile-results">
+<h2>Wake profile results<a class="headerlink" href="#wake-profile-results" title="Link to this heading"></a></h2>
+<p>The time averaged wake profiles are calculated in the <a class="reference internal" href="../postprocessing/AVGPlanes.html"><span class="std std-doc">AVGPlanes</span></a> script.  Contours of the 10-minute averaged velocities, on both the hub-height and streamwise planes show the overall wake structure:</p>
+<p><img alt="avg HH" src="../../../../_images/turbineHH_AVG_300_9001.png" />
+<img alt="avg SW" src="../../../../_images/turbineSW_AVG_300_9001.png" /></p>
+<p>Profiles of the wake velocity, normalized against <span class="math notranslate nohighlight">\(U_\infty\)</span>=11.4 m/s, are extracted from x/D = 1, 2, 3,…,9:</p>
+<p><img alt="Hub-height XY wake profile" src="../../../../_images/WakeProfile_XY_300_9001.png" />
+<img alt="XZ wake profile" src="../../../../_images/WakeProfile_XZ_300_9001.png" /></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
