@@ -1,2 +1,2 @@
 # Hybrid overset solver benchmarks
-Cases that serve as benchmarks for the ExaWind solver, relying on exawind-driver to couple AMR-Wind and Nalu-Wind.
+Cases that serve as benchmarks for the Kynema solver, relying on kynema-driver to couple kynema-sgf and kynema-ugf.
