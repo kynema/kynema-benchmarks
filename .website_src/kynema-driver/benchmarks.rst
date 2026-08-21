@@ -1,4 +1,4 @@
-ExaWind Hybrid Solver Benchmarks
+Kynema Hybrid Solver Benchmarks
 ========================================================
 
 .. toctree::
