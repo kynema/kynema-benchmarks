@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# ExaWind Benchmarks Website file
+# Kynema Benchmarks Website file
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -71,9 +71,9 @@ source_suffix = ['.rst', '.md']
 master_doc = 'index'
 
 # General information about the project.
-project = u'ExaWind Benchmarks'
-copyright = u'ExaWind team'
-author = u'ExaWind team'
+project = u'Kynema Benchmarks'
+copyright = u'Kynema team'
+author = u'Kynema team'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -260,7 +260,7 @@ html_show_copyright = False
 # html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'exawind-benchmarks-website'
+htmlhelp_basename = 'kynema-benchmarks-website'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -286,7 +286,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'exawind_benchmarks_website.tex', u'ExaWind Benchmarks Website',
+    (master_doc, 'kynema_benchmarks_website.tex', u'Kynema Benchmarks Website',
      author, 'manual'),
 ]
 
@@ -328,7 +328,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'exawind_benchmarks_website', u'ExaWind Benchmarks Website',
+    (master_doc, 'kynema_benchmarks_website', u'Kynema Benchmarks Website',
      [author], 1)
 ]
 
@@ -343,8 +343,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'exawind_benchmarks_website', u'ExaWind Benchmarks Website',
-     author, 'ExaWind', 'One line description of project.',
+    (master_doc, 'kynema_benchmarks_website', u'Kynema Benchmarks Website',
+     author, 'Kynema', 'One line description of project.',
      'Miscellaneous'),
 ]
 
