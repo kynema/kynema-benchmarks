@@ -9,4 +9,6 @@ They include the following airfoils and flow parameters:
 - [TU Delft DU00-W-212 airfoil](DU00-W-212/README.md) at M=0.1, Re=3M, Tu=0.0864%
 
 Read the NLF(1)-0416 case first, then the DU00-W-212 case.
-A paper containing detailed validation is currently under review.
+A paper containing detailed validation is published here:
+
+Lee, B., Vijayakumar, G., and Sprague M. (2026), Assessment and Improvement of the SST-Gamma Transition Model in Nalu-Wind. Journal of Aircraft, 63: 681-702. https://doi.org/10.2514/1.C038368

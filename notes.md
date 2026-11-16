@@ -8,10 +8,7 @@ Benchmarks project, and the authors of the benchmark cases.
 ## Additional published cases
 
 Additional simulations have been performed for verification and validation of this CFD tool.
-Following publication of the methods paper on Kynema-SGF, this page will provide those cases
-to the public, though these are not intended as benchmark cases in the same manner as the
-rest of this repository. For now, while the paper is under review, we provide the input
-files only:
+We provide the input files for the published cases:
 
 - See the [verification cases in github repository](https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/verification)
 - See the [validation cases in the github repository](https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/validation)
