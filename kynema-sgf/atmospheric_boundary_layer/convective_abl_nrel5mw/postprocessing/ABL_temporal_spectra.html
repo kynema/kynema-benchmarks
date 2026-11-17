@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Compute the single-point time spectra &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Compute the single-point time spectra</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/postprocessing/ABL_temporal_spectra.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="compute-the-single-point-time-spectra">
+<h1>Compute the single-point time spectra<a class="headerlink" href="#compute-the-single-point-time-spectra" title="Link to this heading"></a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add any possible locations of amr-wind-frontend here</span>
+<span class="n">amrwindfedirs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'/projects/wind_uq/lcheung/amrwind-frontend/'</span><span class="p">,</span>
+                  <span class="s1">'/ccs/proj/cfd162/lcheung/amrwind-frontend/'</span><span class="p">,</span>
+                <span class="p">]</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">shutil</span><span class="o">,</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">amrwindfedirs</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># Make all plots inline </span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">postproengine</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ppeng</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load ruamel or pyyaml as needed</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">ruamel.yaml</span>
+    <span class="n">yaml</span> <span class="o">=</span> <span class="n">ruamel</span><span class="o">.</span><span class="n">yaml</span><span class="o">.</span><span class="n">YAML</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="s1">'unsafe'</span><span class="p">,</span> <span class="n">pure</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">useruamel</span><span class="o">=</span><span class="kc">True</span>
+    <span class="n">loaderkwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'Loader'</span><span class="p">:</span><span class="n">yaml</span><span class="o">.</span><span class="n">RoundTripLoader</span><span class="p">}</span>
+    <span class="n">dumperkwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'Dumper'</span><span class="p">:</span><span class="n">yaml</span><span class="o">.</span><span class="n">RoundTripDumper</span><span class="p">,</span> <span class="s1">'indent'</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="s1">'default_flow_style'</span><span class="p">:</span><span class="kc">False</span><span class="p">}</span>
+    <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">load</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">yaml</span>
+    <span class="n">useruamel</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">loaderkwargs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">dumperkwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'default_flow_style'</span><span class="p">:</span><span class="kc">False</span> <span class="p">}</span>
+    <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">spectrapoints</span><span class="p">():</span>
+    <span class="n">xrange</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">500</span><span class="p">]</span>
+    <span class="n">yrange</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">500</span><span class="p">]</span>
+    <span class="n">ptlist</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">yrange</span><span class="p">:</span>
+            <span class="n">ptlist</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">ptlist</span>
+
+<span class="n">ppeng</span><span class="o">.</span><span class="n">spectrapoints</span> <span class="o">=</span> <span class="n">spectrapoints</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">yamlstring</span><span class="o">=</span><span class="s2">"""</span>
+<span class="s2">globalattributes:</span>
+<span class="s2">  verbose: False</span>
+<span class="s2">  executeorder:</span>
+<span class="s2">  - windspectra</span>
+
+<span class="s2">windspectra:</span>
+<span class="s2">- name: spectraZ027</span>
+<span class="s2">  ncfile: /gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/post_processing/XYdomain_027_30000.nc</span>
+<span class="s2">  group: Farm_XYdomain027</span>
+<span class="s2">  pointlocationfunction: postproengine.spectrapoints</span>
+<span class="s2">  csvfile: ../results/time_spectra_Z027.csv</span>
+<span class="s2">  kaimal:</span>
+<span class="s2">    ustarsource: ablstatsfile</span>
+<span class="s2">    ablstatsfile:  /gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/post_processing/abl_statistics30000.nc</span>
+<span class="s2">    avgt: [15000, 20000]</span>
+<span class="s2">    csvfile: ../results/kaimal_Z027.csv</span>
+<span class="s2">    z: 27.0</span>
+
+<span class="s2">- name: spectraZ090</span>
+<span class="s2">  ncfile: /gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/post_processing/XYdomain_090_30000.nc</span>
+<span class="s2">  group: Farm_XYdomain090</span>
+<span class="s2">  pointlocationfunction: postproengine.spectrapoints</span>
+<span class="s2">  csvfile: ../results/time_spectra_Z090.csv</span>
+<span class="s2">  kaimal:</span>
+<span class="s2">    ustarsource: ablstatsfile</span>
+<span class="s2">    ablstatsfile:  /gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/post_processing/abl_statistics30000.nc</span>
+<span class="s2">    avgt: [15000, 20000]</span>
+<span class="s2">    csvfile: ../results/kaimal_Z090.csv</span>
+<span class="s2">    z: 90.0</span>
+
+<span class="s2">"""</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">yamlstring</span><span class="p">)</span>
+<span class="n">yamldict</span> <span class="o">=</span> <span class="n">Loader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">loaderkwargs</span><span class="p">)</span>
+<span class="n">yamldict</span><span class="p">[</span><span class="s1">'windspectra'</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">'timeindices'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">))[::</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">yamldict</span><span class="p">[</span><span class="s1">'windspectra'</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s1">'timeindices'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">))[::</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the driver</span>
+<span class="n">ppeng</span><span class="o">.</span><span class="n">driver</span><span class="p">(</span><span class="n">yamldict</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initialized windspectra
+Running windspectra
+[============================================================] 100.0% 
+Initialized kaimal inside windspectra
+Executing kaimal
+ustar =  0.4685868615973461
+[============================================================] 100.0% 
+Initialized kaimal inside windspectra
+Executing kaimal
+ustar =  0.4685868615973461
+</pre></div>
+</div>
+</div>
+</div>
+<section id="load-data">
+<h2>Load Data<a class="headerlink" href="#load-data" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_27</span>      <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'../results/time_spectra_Z027.csv'</span><span class="p">)</span>
+<span class="n">df_90</span>      <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'../results/time_spectra_Z090.csv'</span><span class="p">)</span>
+<span class="n">kaimal_27</span>  <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'../results/kaimal_Z027.csv'</span><span class="p">)</span>
+<span class="n">kaimal_90</span>  <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'../results/kaimal_Z090.csv'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="plot-spectra">
+<h3>Plot Spectra<a class="headerlink" href="#plot-spectra" title="Link to this heading"></a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the driver</span>
+<span class="n">fsize</span> <span class="o">=</span> <span class="mi">14</span>
+<span class="n">comps</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Suu'</span><span class="p">,</span><span class="s1">'Svv'</span><span class="p">,</span><span class="s1">'Sww'</span><span class="p">]</span>
+<span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'$S_</span><span class="si">{uu}</span><span class="s1">$'</span><span class="p">,</span><span class="s1">'$S_</span><span class="si">{vv}</span><span class="s1">$'</span><span class="p">,</span><span class="s1">'$S_</span><span class="si">{ww}</span><span class="s1">$'</span><span class="p">]</span>
+<span class="n">dfs</span> <span class="o">=</span> <span class="p">[</span><span class="n">df_27</span><span class="p">,</span><span class="n">df_90</span><span class="p">]</span>
+<span class="n">kaimals</span> <span class="o">=</span> <span class="p">[</span><span class="n">kaimal_27</span><span class="p">,</span><span class="n">kaimal_90</span><span class="p">]</span>
+<span class="n">heights</span> <span class="o">=</span> <span class="p">[</span><span class="mi">27</span><span class="p">,</span><span class="mi">90</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">heights</span><span class="p">)):</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">z</span><span class="p">]</span>
+    <span class="n">kaimal</span> <span class="o">=</span> <span class="n">kaimals</span><span class="p">[</span><span class="n">z</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">axiter</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">axs</span><span class="p">):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">sca</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">kaimal</span><span class="p">[</span><span class="s1">'f'</span><span class="p">],</span><span class="n">kaimal</span><span class="p">[</span><span class="n">comps</span><span class="p">[</span><span class="n">axiter</span><span class="p">]],</span><span class="n">c</span><span class="o">=</span><span class="s1">'k'</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">'Kaimal'</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">ls</span><span class="o">=</span><span class="s1">'-'</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'f'</span><span class="p">],</span><span class="n">df</span><span class="p">[</span><span class="n">comps</span><span class="p">[</span><span class="n">axiter</span><span class="p">]],</span><span class="n">c</span><span class="o">=</span><span class="s1">'tab:blue'</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">'AMR-Wind'</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">ls</span><span class="o">=</span><span class="s1">'--'</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>  <span class="c1"># Set x tick label font size</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>  <span class="c1"># Set y tick label font size</span>
+
+        <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">'Wind spectra z='</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">heights</span><span class="p">[</span><span class="n">z</span><span class="p">])</span> <span class="o">+</span> <span class="s1">'m'</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.025</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">'$f $'</span> <span class="o">+</span> <span class="n">titles</span><span class="p">[</span><span class="n">axiter</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'$/u_{</span><span class="se">\\</span><span class="s1">tau}^2$'</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"f [Hz]"</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">titles</span><span class="p">[</span><span class="n">axiter</span><span class="p">],</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="o">**-</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">axiter</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fsize</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">0.75</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"./figures/ABL_temporal_spectra_z"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">heights</span><span class="p">[</span><span class="n">z</span><span class="p">])</span> <span class="o">+</span> <span class="s1">'.png'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../../_images/b77c03b02ee2b77373ce35bdd9867b0b70e31cd9c6f8a57ff1b3f2dfb40b6176.png" src="../../../../_images/b77c03b02ee2b77373ce35bdd9867b0b70e31cd9c6f8a57ff1b3f2dfb40b6176.png" />
+<img alt="../../../../_images/3b2eaa887f25de10b3dbf3040ec5421593ec69f278aebce85d11ea94def05002.png" src="../../../../_images/3b2eaa887f25de10b3dbf3040ec5421593ec69f278aebce85d11ea94def05002.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

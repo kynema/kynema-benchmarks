@@ -1,0 +1,330 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Convectively unstable ABL for wind turbine simulations &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Convectively unstable ABL for wind turbine simulations</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <!-- This file is automatically compiled into the website. Please copy linked files into .website_src/ paths to enable website rendering -->
+<section class="tex2jax_ignore mathjax_ignore" id="convectively-unstable-abl-for-wind-turbine-simulations">
+<h1>Convectively unstable ABL for wind turbine simulations<a class="headerlink" href="#convectively-unstable-abl-for-wind-turbine-simulations" title="Link to this heading"></a></h1>
+<p>This benchmark problem is a slightly convective unstable atmospheric boundary
+layer that is used as an inflow for the <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/actuator_line/NREL5MW_ALM_BD">actuator line
+NREL5MW</a> and <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-driver/NREL_5MW_Turbine">geometry resolved NREL5MW</a>
+benchmark cases. The conditions and details of the case are summarized below:</p>
+<ul class="simple">
+<li><p>Hub-height wind speed: 11.4 m/s</p></li>
+<li><p>Hub-height wind direction: 240 degrees SW</p></li>
+<li><p>Surface roughness: 0.01 m</p></li>
+<li><p>Surface temperature flux: 0.005 K-m/s</p></li>
+<li><p>Domain size: 5120m x 5120m x 1920m</p></li>
+<li><p>Mesh size: 512 x 512 x 192</p></li>
+<li><p>Total mesh size: 50331648 cells</p></li>
+</ul>
+<p><strong>Contents</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#simulation-setup">Simulation setup</a></p></li>
+<li><p><a class="reference internal" href="#performance">Performance</a></p></li>
+<li><p><a class="reference internal" href="#results">Results</a></p></li>
+</ul>
+<section id="simulation-setup">
+<h2>Simulation Setup<a class="headerlink" href="#simulation-setup" title="Link to this heading"></a></h2>
+<p>Full details of the simulation setup are provided in <a class="reference internal" href="setup/README.html"><span class="std std-doc"><strong>setup documentation</strong></span></a>.</p>
+<p>The case was set up using the <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend">AMR-Wind frontend</a> with the notebook <a class="reference internal" href="setup/convectiveABL_setup.html"><span class="std std-doc">convectiveABL_setup.ipynb</span></a>.  This allows the locations of the refinement regions and sampling planes to be setup properly relative to the location of the NREL5MW turbine.</p>
+<p>Input files are in the <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files">input_files</a> directory.  There are two stages to this run:</p>
+<ol class="arabic simple">
+<li><p>Spin-up of the precursor: Use the <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files/convective_abl.inp">convective_abl.inp</a> input file to run the case from t=0 to 15,000 seconds.</p></li>
+<li><p>Capture the boundary plane and sampling plane data: Use <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/input_files/convective_abl_bndry.inp">convective_abl_bndry.inp</a> to run the case from t=15,000 to 20,000 seconds to output the data needed to run the turbine cases.</p></li>
+</ol>
+<p>Current case was run with AMR-Wind version <a class="reference external" href="https://github.com/Exawind/amr-wind/commit/f67a52dd6aa1882595d16700527470bc8097cb13">f67a52dd6aa1882595d16700527470bc8097cb13</a></p>
+</section>
+<section id="performance">
+<h2>Performance<a class="headerlink" href="#performance" title="Link to this heading"></a></h2>
+<p>Full details provided in <a class="reference internal" href="performance/README.html"><span class="std std-doc"><strong>performance documentation</strong></span></a>.</p>
+<p>The simulation was run on the Sandia Flight HPC cluster using the following resources:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Number of nodes</p></td>
+<td><p>8</p></td>
+</tr>
+<tr class="row-odd"><td><p>Number of CPUs</p></td>
+<td><p>896</p></td>
+</tr>
+<tr class="row-even"><td><p>Wall-time</p></td>
+<td><p>5.4 hours</p></td>
+</tr>
+<tr class="row-odd"><td><p>CPU-hours</p></td>
+<td><p>4821.7</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="results">
+<h2>Results<a class="headerlink" href="#results" title="Link to this heading"></a></h2>
+<p>Statistics from the ABL are calculated over the time interval <span class="math notranslate nohighlight">\(t \in [15000 , 20000]s\)</span> using scripts and notebooks from the <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/postprocessing">postprocessing</a> directory. The results are saved to the <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/tree/main/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/results/">results</a> directory.</p>
+<p>Horizontally averaged statistics are computed in the
+<a class="reference internal" href="postprocessing/AVG_horiz_profiles.html"><span class="std std-doc">AVG_horiz_profiles.ipynb</span></a> notebook and
+are summarized in the following table at the bottom-tip, hub-height, and top-tip
+location of the NREL5MW:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>z</p></th>
+<th class="head"><p>Horizontal Velocity</p></th>
+<th class="head"><p>Wind Direction</p></th>
+<th class="head"><p>TI (TKE)</p></th>
+<th class="head"><p>Shear Exponent</p></th>
+<th class="head"><p>Veer</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>27 m</p></td>
+<td><p>9.89 m/s</p></td>
+<td><p>239.74 deg</p></td>
+<td><p>8.29 %</p></td>
+<td><p>0.1300</p></td>
+<td><p>0.0087 deg/m</p></td>
+</tr>
+<tr class="row-odd"><td><p>90 m</p></td>
+<td><p>11.40 m/s</p></td>
+<td><p>240.00 deg</p></td>
+<td><p>6.17 %</p></td>
+<td><p>0.0815</p></td>
+<td><p>0.0006 deg/m</p></td>
+</tr>
+<tr class="row-even"><td><p>153 m</p></td>
+<td><p>11.90 m/s</p></td>
+<td><p>240.02 deg</p></td>
+<td><p>5.38 %</p></td>
+<td><p>0.0693</p></td>
+<td><p>0.0001 deg/m</p></td>
+</tr>
+</tbody>
+</table>
+<p>The veer and shear exponent over the rotor disk are 0.0015 deg/m and 0.0944, respectively. The corresponding friction velocity, <span class="math notranslate nohighlight">\(u^*\)</span>, inversion height, <span class="math notranslate nohighlight">\(z_i\)</span>, and Obukhov length-scale for this simulation are:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(u^*\)</span> = 0.468 m/s</p></li>
+<li><p><span class="math notranslate nohighlight">\(z_i\)</span> = 803.133 m</p></li>
+<li><p>Obukhov Length = -2447.446 m (computed at z=27 m)</p></li>
+</ul>
+<section id="flow-visualizations">
+<h3>Flow Visualizations<a class="headerlink" href="#flow-visualizations" title="Link to this heading"></a></h3>
+<p>An instantaneous hub-height visualization of the horizontal velocity at <span class="math notranslate nohighlight">\(t=15,000s\)</span> is included below.
+<img alt="HH WS contour" src="../../../_images/XYdomain_15000.png" /></p>
+</section>
+<section id="horizontal-profiles">
+<h3>Horizontal Profiles<a class="headerlink" href="#horizontal-profiles" title="Link to this heading"></a></h3>
+<p>Horizontally averaged profiles are computed in the <a class="reference internal" href="postprocessing/AVG_horiz_profiles.html"><span class="std std-doc">AVG_horiz_profiles.ipynb</span></a> Jupyter notebook are shown below.</p>
+<p><strong>Note</strong>: The python routines for computing horizontal profiles from the statistics file(s) generated by AMR-Wind rely on importing the <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend/blob/main/postproamrwindabl.py">postproamrwindabl</a> module from the <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend">AMR-Wind front end</a> library. It is not necessary to import the entire AMR-Wind front end library to compute the horizontal profiles.  If necessary, download the module files and edit the lines in the python code which define <code class="docutils literal notranslate"><span class="pre">postproamrwinddir</span></code> to include the location of that module:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Location of postproamrwindabl module inside the amr-wind-frontend</span>
+<span class="n">postproamrwinddir</span> <span class="o">=</span> <span class="s1">'~/src/amr-wind-frontend/'</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">shutil</span><span class="o">,</span><span class="w"> </span><span class="nn">io</span>
+<span class="k">if</span> <span class="n">postproamrwinddir</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">postproamrwinddir</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="horizontal-velocity">
+<h4>Horizontal velocity:<a class="headerlink" href="#horizontal-velocity" title="Link to this heading"></a></h4>
+<p><img alt="Uhoriz_Profile" src="../../../_images/AVG_horiz_profiles_Uhoriz.png" /></p>
+</section>
+<section id="temperature">
+<h4>Temperature:<a class="headerlink" href="#temperature" title="Link to this heading"></a></h4>
+<p><img alt="T_Profile" src="../../../_images/AVG_horiz_profiles_T.png" /></p>
+</section>
+<section id="wind-direction">
+<h4>Wind Direction:<a class="headerlink" href="#wind-direction" title="Link to this heading"></a></h4>
+<p><img alt="winddir_profile" src="../../../_images/AVG_horiz_profiles_WindDir.png" /></p>
+</section>
+<section id="turbulence-intensity-tke">
+<h4>Turbulence Intensity (TKE):<a class="headerlink" href="#turbulence-intensity-tke" title="Link to this heading"></a></h4>
+<p><img alt="TI_profile" src="../../../_images/AVG_horiz_profiles_TI.png" /></p>
+</section>
+<section id="resolved-reynolds-stresses">
+<h4>Resolved Reynolds stresses:<a class="headerlink" href="#resolved-reynolds-stresses" title="Link to this heading"></a></h4>
+<p><img alt="uw_profile" src="../../../_images/AVG_horiz_profiles_RE.png" /></p>
+</section>
+<section id="resolved-temperature-fluxes">
+<h4>Resolved Temperature Fluxes:<a class="headerlink" href="#resolved-temperature-fluxes" title="Link to this heading"></a></h4>
+<p><img alt="vw_profile" src="../../../_images/AVG_horiz_profiles_uT.png" /></p>
+</section>
+</section>
+<section id="metmast-profiles">
+<h3>Metmast Profiles<a class="headerlink" href="#metmast-profiles" title="Link to this heading"></a></h3>
+<p>Averaged wind profiles from a virtual metmast at the turbine location are computed in the <a class="reference internal" href="postprocessing/AVG_metmast.html"><span class="std std-doc">AVG_metmast.ipynb</span></a> Jupyter notebook and are shown below.</p>
+<p><img alt="Met mast average" src="../../../_images/avgmetmast_0600.png" /></p>
+<p><strong>Note</strong>: The path to the <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend">AMR-Wind front end</a> library must be provided in the <a class="reference internal" href="postprocessing/AVG_metmast.html"><span class="std std-doc">AVG_metmast.ipynb</span></a> Jupyter notebook.  If necessary, download the library and edit the lines which define <code class="docutils literal notranslate"><span class="pre">amrwindfedirs</span></code> to include any locations of that library, e.g.,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add any possible locations of amr-wind-frontend here</span>
+<span class="n">amrwindfedirs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'/projects/wind_uq/lcheung/amrwind-frontend/'</span><span class="p">,</span>
+                 <span class="s1">'/ccs/proj/cfd162/lcheung/amrwind-frontend/'</span><span class="p">]</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">shutil</span><span class="o">,</span><span class="w"> </span><span class="nn">io</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">amrwindfedirs</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="wavenumber-spectra">
+<h3>Wavenumber Spectra<a class="headerlink" href="#wavenumber-spectra" title="Link to this heading"></a></h3>
+<p>Two-dimensional (2D) wavenumber spectra are computed from the XY planes sampled from AMR-Wind using the <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend/tree/main/postproengine">post-processing engine</a> in the the <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend">AMR-Wind front end</a> library. The <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/convective_abl_nrel5mw/postprocessing/postpro_windspectra.yaml">yaml file</a> for computing 2D wavenumber spectra of vertical planes sampled in this benchmark case can be called using the <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend/blob/main/utilities/ppengine.py">ppengine.py</a> utility as</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">ppengine</span><span class="o">.</span><span class="n">py</span> <span class="n">postpro_windspectra</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+<p>Details of the 2D wavenumber computation can be found in the <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend/tree/main/postproengine/doc">documentation</a> for the post-processing engine.
+The <a class="reference internal" href="postprocessing/ABL_wavenumber_spectra.html"><span class="std std-doc">ABL_wavenumber_spectra.ipynb</span></a> Jupyter notebook plots the energy, horizontal, and vertical 2D wavenumber spectra, which are reported below at the bottom-tip and hub-height locations of the NREL5MW:</p>
+<p><img alt="wavenumber_spectra" src="../../../_images/ABL_wavenumber_spectra.png" /></p>
+</section>
+<section id="temporal-spectra">
+<h3>Temporal Spectra<a class="headerlink" href="#temporal-spectra" title="Link to this heading"></a></h3>
+<p>Temporal spectra are computed from the XY planes sampled from AMR-Wind using the <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend/tree/main/postproengine">post-processing engine</a> in the <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend">AMR-Wind front end</a> library. The <a class="reference internal" href="postprocessing/ABL_temporal_spectra.html"><span class="std std-doc">ABL_temporal_spectra.ipynb</span></a> Jupyter notebook can be used to compute the temporal spectra and to plot the results against a Kaimal spectra.
+Details of the temporal spectra computation can be found in the <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend/tree/main/postproengine/doc">documentation</a> for the post-processing engine.</p>
+<p><strong>Note</strong>: The path to the <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend">AMR-Wind front end</a> library must be provided in the <a class="reference internal" href="postprocessing/ABL_temporal_spectra.html"><span class="std std-doc">ABL_temporal_spectra.ipynb</span></a> Jupyter notebook.  If necessary, download the library and edit the lines which define <code class="docutils literal notranslate"><span class="pre">amrwindfedirs</span></code> to include any locations of that library, e.g.,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add any possible locations of amr-wind-frontend here</span>
+<span class="n">amrwindfedirs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'/projects/wind_uq/lcheung/amrwind-frontend/'</span><span class="p">,</span>
+                 <span class="s1">'/ccs/proj/cfd162/lcheung/amrwind-frontend/'</span><span class="p">]</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">shutil</span><span class="o">,</span><span class="w"> </span><span class="nn">io</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">amrwindfedirs</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The streamwise, lateral, and vertical temporal spectra sampled from XY planes at the bottom-tip and hub-height locations of the NREL5MW are reported below:</p>
+<section id="z-27m">
+<h4>z = 27m<a class="headerlink" href="#z-27m" title="Link to this heading"></a></h4>
+<p><img alt="temporal_spectra_27" src="../../../_images/ABL_temporal_spectra_z27.png" /></p>
+</section>
+<section id="z-90m">
+<h4>z = 90m<a class="headerlink" href="#z-90m" title="Link to this heading"></a></h4>
+<p><img alt="temporal_spectra_90" src="../../../_images/ABL_temporal_spectra_z90.png" /></p>
+</section>
+</section>
+<section id="integral-length-scale">
+<h3>Integral Length scale<a class="headerlink" href="#integral-length-scale" title="Link to this heading"></a></h3>
+<p>The longitudinal and latitudinal integral length scales are computed in the <a class="reference internal" href="postprocessing/ABL_integral_lengthscale.html"><span class="std std-doc">ABL_integral_lengthscale.ipynb</span></a> notebook, resulting in</p>
+<ul class="simple">
+<li><p>Longitudinal length scale = 539.61 m</p></li>
+<li><p>Latitudinal length scale  = 97.13 m</p></li>
+</ul>
+<p>The computation of the integral length scale relies on the <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend">AMR-Wind front end</a> library to compute the two-point correlation.</p>
+<p><strong>Note</strong>: The path to the <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend">AMR-Wind front end</a> library and the AMR-Wind front end <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend/tree/main/utilities">utilities</a> must be provided in the <a class="reference internal" href="postprocessing/ABL_integral_lengthscale.html"><span class="std std-doc">ABL_integral_lengthscale.ipynb</span></a> notebook. If necessary, download the library and edit the lines which define <code class="docutils literal notranslate"><span class="pre">amrwindfedirs</span></code> to include any locations of that library, e.g.,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add any possible locations of amr-wind-frontend here</span>
+<span class="n">amrwindfedirs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'/projects/wind_uq/lcheung/amrwind-frontend/'</span><span class="p">,</span>
+                 <span class="s1">'/ccs/proj/cfd162/lcheung/amrwind-frontend/'</span><span class="p">]</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">amrwindfedirs</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">amrwindfedirs</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="o">+</span><span class="s1">'/utilities'</span><span class="p">)</span>  
+</pre></div>
+</div>
+<p>The two-point correlation, <span class="math notranslate nohighlight">\(R_{ij}\)</span>, as a function of longitudinal and latitudinal separation distance <span class="math notranslate nohighlight">\(\boldsymbol{\xi}\)</span> are shown below at multiple locations, <span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span>, on the XY-plane at z=90m:</p>
+<p><img alt="intL_long" src="../../../_images/ABL_integral_lengthscale_long.png" />
+<img alt="intL_lat" src="../../../_images/ABL_integral_lengthscale_lat.png" /></p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
