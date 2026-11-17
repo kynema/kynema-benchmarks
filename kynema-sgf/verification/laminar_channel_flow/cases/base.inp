@@ -1,0 +1,34 @@
+# Shared laminar channel-flow settings
+
+# Simulation stop
+time.stop_time = 500.0
+time.max_step = -1
+
+# Time step computation
+time.fixed_dt = -1
+time.cfl = 0.95
+
+# Output
+time.plot_time_interval = 500
+time.checkpoint_time_interval = -1
+
+# Physics
+incflo.gravity = 0.0 0.0 0.0
+incflo.density = 1.0
+incflo.use_godunov = 1
+incflo.godunov_type = "weno"
+incflo.diffusion_type = 2
+
+transport.viscosity = 500.0
+transport.laminar_prandtl = 0.7
+transport.turbulent_prandtl = 0.3333
+transport.reference_temperature = 300.0
+
+turbulence.model = Laminar
+
+# Solver settings
+nodal_proj.mg_atol = 1.0E-8
+mac_proj.mg_atol = 1.0E-8
+
+# Verbosity
+incflo.verbose = 0

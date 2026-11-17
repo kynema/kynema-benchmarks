@@ -6,3 +6,4 @@ Kynema-SGF Benchmarks
 
    abl
    actuatorturbine
+   verification

@@ -1,0 +1,34 @@
+# Flat Poiseuille flow without an immersed boundary
+incflo.constant_density = true
+incflo.temperature = 300.0
+incflo.velocity = 100.0 0.0 0.0
+incflo.physics = ChannelFlow
+
+ICNS.source_terms = BodyForce
+BodyForce.magnitude = 1.600 0.0 0.0
+
+ChannelFlow.re_tau = 12.25
+ChannelFlow.normal_direction = 2
+ChannelFlow.flow_direction = 0
+ChannelFlow.perturb_velocity = false
+ChannelFlow.error_log_file = ""
+
+# Values used by post-processing to define the analytical solution
+ChannelBuilder.s1.flow_speed = 100.0000
+ChannelBuilder.s1.height_start = 500.0000
+ChannelBuilder.s1.segment_start_point = 0.0 62.5 500.0
+ChannelBuilder.s1.segment_end_point = 1000.0 62.5 500.0
+
+# Mesh and geometry
+amr.n_cell = 32 4 16
+amr.max_level = 0
+amr.blocking_factor = 4
+
+geometry.prob_lo = 0.0 0.0 250.0
+geometry.prob_hi = 1000.0 125.0 750.0
+geometry.is_periodic = 1 1 0
+
+zlo.type = "no_slip_wall"
+zlo.density = 1.0
+zhi.type = "no_slip_wall"
+zhi.density = 1.0

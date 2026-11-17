@@ -1,2 +1,2 @@
 .. include:: ../notes.md
-   :parser: myst
+	:parser: myst_parser.sphinx_
