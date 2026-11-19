@@ -1,0 +1,32 @@
+# Re_tau = 180 LES without immersed boundaries (delta = 0.005 m)
+FILE = ../base.inp
+
+# Spin-up: 20 t* (t* = delta/u_tau = 1.8197e-3 s)
+time.stop_time = 0.036393
+
+# Geometry: 6.24 delta x 3.12 delta x 2 delta, walls at z = +/- delta
+geometry.prob_lo = 0.0 0.0 -0.005
+geometry.prob_hi = 0.0312 0.0156 0.005
+
+# Pressure-gradient forcing, dp/dx = -709.79 Pa/m
+BodyForce.magnitude = 1514.0797750819656358 0.0 0.0
+
+# Mesh: level 1 covers z+ <= 45 at each wall
+amr.n_cell = 192 96 56
+
+tagging.labels = l1
+tagging.l1.type = GeometryRefinement
+tagging.l1.shapes = bottom top
+tagging.l1.max_level = 1
+
+tagging.l1.bottom.type = box
+tagging.l1.bottom.origin = 0.0 0.0 -0.005
+tagging.l1.bottom.xaxis = 0.0312 0.0 0.0
+tagging.l1.bottom.yaxis = 0.0 0.0156 0.0
+tagging.l1.bottom.zaxis = 0.0 0.0 0.00125
+
+tagging.l1.top.type = box
+tagging.l1.top.origin = 0.0 0.0 0.00375
+tagging.l1.top.xaxis = 0.0312 0.0 0.0
+tagging.l1.top.yaxis = 0.0 0.0156 0.0
+tagging.l1.top.zaxis = 0.0 0.0 0.00125

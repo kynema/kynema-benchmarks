@@ -6,4 +6,4 @@ Kynema-SGF Benchmarks
 
    abl
    actuatorturbine
-   verification
+   immersed_boundary

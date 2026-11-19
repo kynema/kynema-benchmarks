@@ -1,0 +1,27 @@
+# Statistics run: restart from the spin-up checkpoint and sample 10 t*
+FILE = inputs.inp
+io.plot_file = "pltAvg"
+io.check_file = "chkAvg"
+
+time.stop_time = 0.054590
+
+# Wall-parallel planes between the immersed-boundary walls, sampled every 100 steps
+incflo.post_processing = sampling
+sampling.fields = velocity
+sampling.output_interval = 100
+sampling.output_format = native
+
+sampling.labels = channel_stats
+sampling.channel_stats.type = PlaneSampler
+sampling.channel_stats.fields = velocity
+sampling.channel_stats.num_points = 384 192
+sampling.channel_stats.origin = 0.0 0.0 -0.005
+sampling.channel_stats.axis1 = 0.0312 0.0 0.0
+sampling.channel_stats.axis2 = 0.0 0.0156 0.0
+sampling.channel_stats.axis_normal = 2
+sampling.channel_stats.start = -0.005
+sampling.channel_stats.end = 0.005
+
+# 70 planes at level 1 and level 0 cell centers
+sampling.channel_stats.offset_vector = 0.0 0.0 1.0
+sampling.channel_stats.offsets = 0.000045 0.000134 0.000223 0.000313 0.000402 0.000491 0.000580 0.000670 0.000759 0.000848 0.000937 0.001027 0.001116 0.001205 0.001339 0.001518 0.001696 0.001875 0.002054 0.002232 0.002411 0.002589 0.002768 0.002946 0.003125 0.003304 0.003482 0.003661 0.003839 0.004018 0.004196 0.004375 0.004554 0.004732 0.004911 0.005089 0.005268 0.005446 0.005625 0.005804 0.005982 0.006161 0.006339 0.006518 0.006696 0.006875 0.007054 0.007232 0.007411 0.007589 0.007768 0.007946 0.008125 0.008304 0.008482 0.008661 0.008795 0.008884 0.008973 0.009063 0.009152 0.009241 0.009330 0.009420 0.009509 0.009598 0.009687 0.009777 0.009866 0.009955
