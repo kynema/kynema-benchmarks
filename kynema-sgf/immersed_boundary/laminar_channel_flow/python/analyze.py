@@ -3,8 +3,8 @@
 The script reads the matrix manifest created by ``generate_cases.py``, loads
 the final AMReX plot file for every selected case, compares axial velocity to
 the analytical Poiseuille solution, and writes summaries and convergence
-plots. It requires the case-specific ``kynema-sgf-env`` environment,
-including yt.
+plots. It requires the shared ``kynema-sgf-env`` environment
+(``immersed_boundary/kynema-sgf-env.yml``), including yt.
 """
 
 from __future__ import annotations

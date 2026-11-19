@@ -93,9 +93,8 @@ with `DragForcing.terrain_use_original_implementation = false`,
 Shared solver settings are in `cases/base.inp`. Each case directory contains:
 
 - `inputs.inp`, which includes `base.inp` and sets the domain, forcing, walls,
-  mesh, and spin-up stop time.
-- `averaging.inp`, which includes `inputs.inp`, extends the stop time, and
-  adds the plane sampler used to collect statistics.
+  mesh, stop time, and the plane sampler used to collect statistics. Sampling
+  starts after the spin-up time through `sampling.output_time_delay`.
 
 ## Reference data
 
@@ -115,9 +114,11 @@ using the Kynema-SGF orientation: `U` is streamwise, `V` is spanwise, and
 
 ## Statistics
 
-During the statistics run, the `channel_stats` plane sampler writes velocity
-on planes parallel to the walls every 100 steps. The planes are located at
-level 1 and level 0 cell centers between $z = -\delta$ and $z = \delta$.
+The `channel_stats` plane sampler writes velocity on planes parallel to the
+walls every $0.1t^*$ (`sampling.output_time_interval`), starting at the end of
+the spin-up (`sampling.output_time_delay`). This gives 100 samples over the
+$10t^*$ statistics window. The planes are located at level 1 and level 0 cell
+centers between $z = -\delta$ and $z = \delta$.
 
 For each plane, the analyzer accumulates the sample count, sum, and sum of
 squares of each velocity component over all sampled points and all sampler
@@ -150,13 +151,14 @@ $$
 
 ## Prerequisites
 
-Use the case-specific `kynema-sgf-env` conda environment. It contains the
-Python, NumPy, and Matplotlib dependencies required by the analyzer.
+Use the `kynema-sgf-env` conda environment shared by the immersed boundary
+cases. It contains the Python, NumPy, and Matplotlib dependencies required by
+the analyzer.
 
 From this directory, create the environment when necessary and activate it:
 
 ```bash
-conda env create -f python/kynema-sgf-env.yml
+conda env create -f ../kynema-sgf-env.yml
 conda activate kynema-sgf-env
 ```
 
@@ -165,23 +167,22 @@ resource selection are controlled by the user or the target HPC system.
 
 ## Run the solver
 
-Each case runs in two stages from its case directory. The first stage spins
-up the turbulence from a perturbed initial condition. The second stage
-restarts from the spin-up checkpoint and samples statistics. For example:
+Each case runs in a single job from its case directory. The run spins up the
+turbulence from a perturbed initial condition and then continues to the stop
+time; the sampler begins writing statistics data at the end of the spin-up.
+For example:
 
 ```bash
 cd cases/re180-default
 srun -N 2 --ntasks-per-node=50 kynema_sgf inputs.inp
-srun -N 2 --ntasks-per-node=50 kynema_sgf averaging.inp io.restart_file=chk<step>
 ```
 
-Replace `chk<step>` with the latest checkpoint written by the spin-up run.
-The statistics run writes plot files `pltAvg*`, checkpoints `chkAvg*`, and
-sampler outputs in `post_processing/sampling*/`.
+The run writes sampler outputs in `post_processing/sampling*/`. Samples taken
+before the spin-up time are not written.
 
 ## Analyze statistics
 
-After the statistics runs complete, run from this directory:
+After the runs complete, run from this directory:
 
 ```bash
 python python/analyze.py

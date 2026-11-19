@@ -78,14 +78,14 @@ distance using the in-plane unit normal
 
 ## Prerequisites
 
-Use the case-specific `kynema-sgf-env` conda environment. It contains the
-Python, NumPy, Matplotlib, and `yt` dependencies required by the generator
-and analyzer.
+Use the `kynema-sgf-env` conda environment shared by the immersed boundary
+cases. It contains the Python, NumPy, Matplotlib, and `yt` dependencies
+required by the generator and analyzer.
 
 From this directory, create the environment when necessary and activate it:
 
 ```bash
-conda env create -f python/kynema-sgf-env.yml
+conda env create -f ../kynema-sgf-env.yml
 conda activate kynema-sgf-env
 ```
 

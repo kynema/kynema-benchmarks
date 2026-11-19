@@ -1,8 +1,8 @@
 # Re_tau = 395 LES with immersed-boundary walls, default DragForcing (delta = 0.01 m)
 FILE = ../base.inp
 
-# Spin-up: 30 t* (t* = delta/u_tau = 3.3168e-3 s)
-time.stop_time = 0.099505
+# Spin-up for 30 t* (t* = delta/u_tau = 3.3168e-3 s), then 10 t* of statistics
+time.stop_time = 0.132674
 
 # Geometry: 6.24 delta x 3.12 delta x 2.25 delta. The immersed-boundary walls
 # at z = +/- delta coincide with level 0 cell faces.
@@ -52,3 +52,25 @@ tagging.l1.top.origin = 0.0 0.0 0.007188
 tagging.l1.top.xaxis = 0.0624 0.0 0.0
 tagging.l1.top.yaxis = 0.0 0.0312 0.0
 tagging.l1.top.zaxis = 0.0 0.0 0.004062
+
+# Statistics: wall-parallel planes sampled every 0.1 t* after the 30 t* spin-up
+incflo.post_processing = sampling
+sampling.output_time_interval = 3.32e-4
+sampling.output_time_delay = 0.099505
+sampling.output_format = native
+sampling.fields = velocity
+
+sampling.labels = channel_stats
+sampling.channel_stats.type = PlaneSampler
+sampling.channel_stats.fields = velocity
+sampling.channel_stats.num_points = 400 192
+sampling.channel_stats.origin = 0.0 0.0 -0.01
+sampling.channel_stats.axis1 = 0.0624 0.0 0.0
+sampling.channel_stats.axis2 = 0.0 0.0312 0.0
+sampling.channel_stats.axis_normal = 2
+sampling.channel_stats.start = -0.01
+sampling.channel_stats.end = 0.01
+
+# 82 planes at level 1 and level 0 cell centers
+sampling.channel_stats.offset_vector = 0.0 0.0 1.0
+sampling.channel_stats.offsets = 0.000078 0.000234 0.000391 0.000547 0.000703 0.000859 0.001016 0.001172 0.001328 0.001484 0.001641 0.001797 0.001953 0.002109 0.002266 0.002422 0.002578 0.002734 0.002969 0.003281 0.003594 0.003906 0.004219 0.004531 0.004844 0.005156 0.005469 0.005781 0.006094 0.006406 0.006719 0.007031 0.007344 0.007656 0.007969 0.008281 0.008594 0.008906 0.009219 0.009531 0.009844 0.010156 0.010469 0.010781 0.011094 0.011406 0.011719 0.012031 0.012344 0.012656 0.012969 0.013281 0.013594 0.013906 0.014219 0.014531 0.014844 0.015156 0.015469 0.015781 0.016094 0.016406 0.016719 0.017031 0.017266 0.017422 0.017578 0.017734 0.017891 0.018047 0.018203 0.018359 0.018516 0.018672 0.018828 0.018984 0.019141 0.019297 0.019453 0.019609 0.019766 0.019922
