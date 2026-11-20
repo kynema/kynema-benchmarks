@@ -5,6 +5,10 @@ The script reads the native AMReX particle output written by the
 averages velocity over the periodic directions and all sampled times, folds
 the lower and upper halves of the channel, scales the profiles to wall units,
 and compares them with DNS reference data.
+
+The time-averaged statistics on each sampling plane are written to
+``cases/<case>/particle_stats.txt``. If that file already exists, it is read
+instead of the sampler output; delete it to reprocess the sampler output.
 """
 
 from __future__ import annotations
@@ -25,6 +29,8 @@ DENSITY = 0.468793  # kg/m^3, air at 101325 Pa and 750 K
 VISCOSITY = 3.57816e-5  # Pa s
 VELOCITY_FIELDS = ("velocityx", "velocityy", "velocityz")
 PLANE_DECIMALS = 9
+STATS_FILE = "particle_stats.txt"
+STATS_COLUMNS = "z_coord   u_mean   u_var   v_sgf_mean   v_sgf_var   w_sgf_mean   w_sgf_var"
 DNS_LABELS = {180: "DNS, Kim et al. (1987)", 395: "DNS, Moser et al. (1999)"}
 
 
@@ -121,9 +127,15 @@ def sampling_outputs(case_dir: Path) -> list[Path]:
     """Return complete sampler outputs, ordered by time step."""
 
     root = case_dir / "post_processing"
+    # Sort by the time step number so the last entry is the latest output even
+    # if the zero-padded width of the step number changes.
+    paths = sorted(
+        root.glob("sampling*"),
+        key=lambda path: int("".join(filter(str.isdigit, path.name)) or 0),
+    )
     outputs = [
         path / "particles"
-        for path in sorted(root.glob("sampling*"))
+        for path in paths
         if (path / "sampling_info.yaml").exists() and (path / "particles" / "Header").exists()
     ]
     if not outputs:
@@ -131,11 +143,14 @@ def sampling_outputs(case_dir: Path) -> list[Path]:
     return outputs
 
 
-def accumulate_statistics(case: Case) -> dict[str, np.ndarray]:
-    """Average velocity over x, y, time, and both channel halves."""
+def accumulate_statistics(case: Case, last_time: bool = False) -> dict:
+    """Average velocity over x, y, and time on each sampling plane."""
 
     outputs = sampling_outputs(CASE_ROOT / "cases" / case.name)
-    print(f"{case.name}: averaging {len(outputs)} sampler outputs")
+    if last_time:
+        outputs = outputs[-1:]
+    print(f"{case.name}: averaging {len(outputs)} sampler output(s), "
+          f"{outputs[0].parent.name} to {outputs[-1].parent.name}")
     planes = None
     for particle_dir in outputs:
         z, velocity = read_snapshot(particle_dir)
@@ -155,15 +170,67 @@ def accumulate_statistics(case: Case) -> dict[str, np.ndarray]:
                 inverse, weights=values * values, minlength=len(planes)
             )
 
-    wall_distance = np.round(case.delta - np.abs(planes), PLANE_DECIMALS)
+    mean = sums / counts[:, None]
+    var = np.maximum(squares / counts[:, None] - mean**2, 0.0)
+    return {"z": planes, "mean": mean, "var": var, "num_outputs": len(outputs)}
+
+
+def write_plane_statistics(stats: dict, output: Path) -> None:
+    """Write per-plane statistics in the particle_stats.txt column format."""
+
+    columns = [stats["z"]]
+    for component in range(3):
+        columns += [stats["mean"][:, component], stats["var"][:, component]]
+    header = (
+        f"{STATS_COLUMNS}\n"
+        f"Averaged over x, y, and {stats['num_outputs']} sampler outputs in time; "
+        "variances are population variances"
+    )
+    np.savetxt(output, np.column_stack(columns), header=header)
+
+
+def read_plane_statistics(path: Path) -> dict:
+    data = np.loadtxt(path, ndmin=2)
+    return {"z": data[:, 0], "mean": data[:, 1::2], "var": data[:, 2::2]}
+
+
+def plane_statistics(case: Case, last_time: bool = False) -> dict:
+    """Read cached time-averaged statistics or compute and cache them.
+
+    With ``last_time``, only the latest sampler output is used and the cache
+    is neither read nor written.
+    """
+
+    if last_time:
+        return accumulate_statistics(case, last_time=True)
+    path = CASE_ROOT / "cases" / case.name / STATS_FILE
+    if path.exists():
+        print(f"{case.name}: reading {path.relative_to(CASE_ROOT)} "
+              "(delete it to reprocess the sampler output)")
+        return read_plane_statistics(path)
+    stats = accumulate_statistics(case)
+    write_plane_statistics(stats, path)
+    print(f"{case.name}: wrote {path.relative_to(CASE_ROOT)}")
+    return stats
+
+
+def fold_statistics(case: Case, stats: dict) -> dict[str, np.ndarray]:
+    """Average the lower and upper channel halves at equal wall distance.
+
+    Every plane holds the same number of samples, so planes are weighted
+    equally.
+    """
+
+    wall_distance = np.round(case.delta - np.abs(stats["z"]), PLANE_DECIMALS)
     y, fold = np.unique(wall_distance, return_inverse=True)
-    folded_counts = np.bincount(fold, weights=counts)
+    planes_per_y = np.bincount(fold)[:, None]
+    mean_square = stats["var"] + stats["mean"] ** 2
     mean = np.column_stack(
-        [np.bincount(fold, weights=sums[:, i]) for i in range(3)]
-    ) / folded_counts[:, None]
+        [np.bincount(fold, weights=stats["mean"][:, i]) for i in range(3)]
+    ) / planes_per_y
     mean_square = np.column_stack(
-        [np.bincount(fold, weights=squares[:, i]) for i in range(3)]
-    ) / folded_counts[:, None]
+        [np.bincount(fold, weights=mean_square[:, i]) for i in range(3)]
+    ) / planes_per_y
     rms = np.sqrt(np.maximum(mean_square - mean**2, 0.0))
     return {"y": y, "u_mean": mean[:, 0], "rms": rms}
 
@@ -260,8 +327,8 @@ def write_profiles(result: dict, output: Path) -> None:
         writer.writerows(zip(*(result[key] for key in keys)))
 
 
-def analyze_case(case: Case, utau_source: str) -> dict:
-    stats = accumulate_statistics(case)
+def analyze_case(case: Case, utau_source: str, last_time: bool = False) -> dict:
+    stats = fold_statistics(case, plane_statistics(case, last_time))
     u_tau = friction_velocity(case, stats, utau_source)
     viscous_length = VISCOSITY / (DENSITY * u_tau)
     print(f"{case.name}: u_tau = {u_tau:.5g} m/s ({utau_source}), "
@@ -294,6 +361,11 @@ def parse_args() -> argparse.Namespace:
         "--output-dir", type=Path, default=CASE_ROOT / "cases" / "analysis",
         help="Directory for CSV and PNG outputs (default: cases/analysis).",
     )
+    parser.add_argument(
+        "--last-time", action="store_true",
+        help="Debug option: use only the latest sampler output, ignoring and not "
+             f"writing {STATS_FILE}. Output file names get a '_last-time' suffix.",
+    )
     return parser.parse_args()
 
 
@@ -306,14 +378,15 @@ def main() -> int:
         return 2
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
+    suffix = "_last-time" if args.last_time else ""
     results = []
     for name in names:
         try:
-            result = analyze_case(CASES[name], args.utau_source)
+            result = analyze_case(CASES[name], args.utau_source, args.last_time)
         except AnalysisError as error:
             print(f"Skipping {name}: {error}", file=sys.stderr)
             continue
-        write_profiles(result, args.output_dir / f"{name}_profiles.csv")
+        write_profiles(result, args.output_dir / f"{name}{suffix}_profiles.csv")
         results.append(result)
 
     if not results:
@@ -321,8 +394,12 @@ def main() -> int:
         return 1
     for re_tau in sorted({result["re_tau"] for result in results}):
         selected = [result for result in results if result["re_tau"] == re_tau]
-        plot_mean_velocity(re_tau, selected, args.output_dir / f"re{re_tau}_mean_velocity.png")
-        plot_rms_velocity(re_tau, selected, args.output_dir / f"re{re_tau}_rms_velocity.png")
+        plot_mean_velocity(
+            re_tau, selected, args.output_dir / f"re{re_tau}{suffix}_mean_velocity.png"
+        )
+        plot_rms_velocity(
+            re_tau, selected, args.output_dir / f"re{re_tau}{suffix}_rms_velocity.png"
+        )
     print(f"Wrote analysis outputs to {args.output_dir}")
     return 0
 
