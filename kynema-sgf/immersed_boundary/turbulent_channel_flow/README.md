@@ -61,8 +61,8 @@ $$t^* = \delta / u_\tau.$$
 | Pressure gradient, $dp/dx$ | -709.79 Pa/m | -426.121 Pa/m |
 | Body force | 1514.08 m/s$^2$ | 908.975 m/s$^2$ |
 | Viscous time, $t^*$ | 1.8197e-3 s | 3.3168e-3 s |
-| Spin-up | $20t^*$ (0.036393 s) | $30t^*$ (0.099505 s) |
-| Statistics | $10t^*$ (to 0.054590 s) | $10t^*$ (to 0.132674 s) |
+| Spin-up | $40t^*$ (0.072788 s) | $70t^*$ (0.232176 s) |
+| Statistics | $10t^*$ (to 0.090985 s) | $10t^*$ (to 0.265344 s) |
 
 Each mesh uses one level of refinement near each wall. Grid spacing in wall
 units is:
@@ -116,7 +116,8 @@ using the Kynema-SGF orientation: `U` is streamwise, `V` is spanwise, and
 The `channel_stats` plane sampler writes velocity on planes parallel to the
 walls every $0.1t^*$ (`sampling.output_time_interval`), starting at the end of
 the spin-up (`sampling.output_time_delay`). This gives 100 samples over the
-$10t^*$ statistics window after a $20t^*$ spinup. The planes are located at level 1 and level 0 cell
+$10t^*$ statistics window after a $40t^*$ ($Re_\tau = 180$) or $70t^*$
+($Re_\tau = 395$) spinup. The planes are located at level 1 and level 0 cell
 centers between $z = -\delta$ and $z = \delta$.
 
 For each plane, the analyzer accumulates the sample count, sum, and sum of
@@ -193,16 +194,25 @@ python python/analyze.py
 The analyzer reads every completed sampler output in each case's
 `post_processing/` directory with a particle reader adapted from
 Kynema-SGF's `tools/amrex_particle.py`. Cases without sampler output are
-reported and skipped. Options:
+reported and skipped. The time-averaged statistics on each sampling plane are
+written to `cases/<case>/particle_stats.txt`; when that file exists, it is read
+instead of the sampler output. Delete it to reprocess the sampler output, for
+example after rerunning a case. Options:
 
 - `--cases re180-no-ib,re180-default` analyzes a subset of cases.
 - `--utau-source gradU` computes $u_\tau$ from the wall velocity gradient.
 - `--output-dir PATH` changes the output directory.
+- `--last-time` uses only the latest sampler output, for debugging. It does not
+  read or write `particle_stats.txt`, and adds a `_last-time` suffix to the
+  output file names.
 
 ## Outputs
 
 Analysis results are written to `cases/analysis/` by default:
 
+- `cases/<case>/particle_stats.txt` (in the case directory) contains, for each
+  sampling plane $z$, the mean and variance of each velocity component
+  averaged over $x$, $y$, and time, before the channel halves are folded.
 - `<case>_profiles.csv` contains the wall distance $y$, $y^+$, $u^+$, and the
   streamwise, spanwise, and wall-normal RMS velocity in wall units.
 - `re<Re_tau>_mean_velocity.png` compares $u^+$ with the DNS data, the

@@ -1,8 +1,8 @@
 # Re_tau = 395 LES with immersed-boundary walls, default DragForcing (delta = 0.01 m)
 FILE = ../base.inp
 
-# Spin-up for 30 t* (t* = delta/u_tau = 3.3168e-3 s), then 10 t* of statistics
-time.stop_time = 0.132674
+# Spin-up for 70 t* (t* = delta/u_tau = 3.3168e-3 s), then 10 t* of statistics
+time.stop_time = 0.265344
 
 # Geometry: 6.24 delta x 3.12 delta x 2.25 delta. The immersed-boundary walls
 # at z = +/- delta coincide with level 0 cell faces.
@@ -53,10 +53,10 @@ tagging.l1.top.xaxis = 0.0624 0.0 0.0
 tagging.l1.top.yaxis = 0.0 0.0312 0.0
 tagging.l1.top.zaxis = 0.0 0.0 0.004062
 
-# Statistics: wall-parallel planes sampled every 0.1 t* after the 30 t* spin-up
+# Statistics: wall-parallel planes sampled every 0.1 t* after the 70 t* spin-up
 incflo.post_processing = sampling
 sampling.output_time_interval = 3.32e-4
-sampling.output_time_delay = 0.099505
+sampling.output_time_delay = 0.232176
 sampling.output_format = native
 sampling.fields = velocity
 
