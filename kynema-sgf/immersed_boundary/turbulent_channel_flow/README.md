@@ -35,7 +35,9 @@ half-height. The domain is periodic in $x$ and $y$. In the no-IB case, the
 walls are the no-slip domain boundaries at $z = \pm\delta$. In the IB cases,
 the domain is extended in $z$ and the `ChannelBuilder` walls at
 $z = \pm\delta$ coincide with level 0 cell faces. Flow is driven by a uniform
-body force equal to $-\frac{1}{\rho}\frac{dp}{dx}$.
+body force 
+
+$$f_{b,x} = -\frac{1}{\rho}\frac{dp}{dx}.$$
 
 The fluid is air at 101325 Pa and 750 K:
 
@@ -45,10 +47,11 @@ The fluid is air at 101325 Pa and 750 K:
 | Dynamic viscosity, $\mu$ | 3.57816e-5 Pa s |
 | Subgrid model | Smagorinsky, $C_s = 0.1$ |
 
-The flow characteristics follow from
-$u_\tau = Re_\tau\,\mu / (\rho\,\delta)$,
-$\frac{dp}{dx} = -\rho u_\tau^2 / \delta$, and
-$t^* = \delta / u_\tau$:
+The flow characteristics follow from:
+
+$$u_\tau = Re_\tau\,\mu / (\rho\,\delta),$$
+$$\frac{dp}{dx} = -\rho u_\tau^2 / \delta,$$
+$$t^* = \delta / u_\tau.$$
 
 | Quantity | $Re_\tau = 180$ | $Re_\tau = 395$ |
 | --- | --- | --- |
@@ -83,12 +86,8 @@ domain boundary.
 | IB (`default`) | 180 | `ChannelBuilder` with `DragForcing` | `cases/re180-default` |
 | IB (`default`) | 395 | `ChannelBuilder` with `DragForcing` | `cases/re395-default` |
 
-The `default` configuration uses the current `DragForcing` implementation,
-with `DragForcing.terrain_use_original_implementation = false`,
-`DragForcing.terrain_use_original_limiter = false`, and
-`DragForcing.bc_forcing_time_factor = 1`. The IB cases set
-`ABL.surface_roughness_z0 = 0.00001`. The $Re_\tau = 395$ case also sets
-`ChannelBuilder.initialize_drag_cells = true`.
+The `default` IB configuration uses the current `DragForcing` implementation,
+with `ABL.surface_roughness_z0 = 0.00001`. The $Re_\tau = 395$ employs a wall model by setting `ChannelBuilder.initialize_drag_cells = true`.
 
 Shared solver settings are in `cases/base.inp`. Each case directory contains:
 
@@ -117,7 +116,7 @@ using the Kynema-SGF orientation: `U` is streamwise, `V` is spanwise, and
 The `channel_stats` plane sampler writes velocity on planes parallel to the
 walls every $0.1t^*$ (`sampling.output_time_interval`), starting at the end of
 the spin-up (`sampling.output_time_delay`). This gives 100 samples over the
-$10t^*$ statistics window. The planes are located at level 1 and level 0 cell
+$10t^*$ statistics window after a $20t^*$ spinup. The planes are located at level 1 and level 0 cell
 centers between $z = -\delta$ and $z = \delta$.
 
 For each plane, the analyzer accumulates the sample count, sum, and sum of
@@ -131,9 +130,12 @@ $$
 u_{i,\mathrm{rms}} = \sqrt{\frac{1}{N}\sum u_i^2 - \langle u_i \rangle^2}.
 $$
 
-Profiles are scaled with $y^+ = \rho u_\tau y / \mu$, $u^+ = \langle u \rangle / u_\tau$,
-and $u_{i,\mathrm{rms}}^+ = u_{i,\mathrm{rms}} / u_\tau$. By default, the
-friction velocity is computed from the imposed pressure gradient,
+Profiles are scaled with 
+$$y^+ = \rho u_\tau y / \mu,$$
+$$u^+ = \langle u \rangle / u_\tau,$$
+$$u_{i,\mathrm{rms}}^+ = u_{i,\mathrm{rms}} / u_\tau.$$
+
+By default, the friction velocity is computed from the imposed pressure gradient,
 
 $$
 u_\tau = \sqrt{-\frac{\delta}{\rho}\frac{dp}{dx}}.
