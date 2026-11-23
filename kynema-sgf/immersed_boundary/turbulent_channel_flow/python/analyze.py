@@ -15,7 +15,9 @@ from __future__ import annotations
 
 import argparse
 import csv
+import os
 import sys
+from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -143,32 +145,49 @@ def sampling_outputs(case_dir: Path) -> list[Path]:
     return outputs
 
 
-def accumulate_statistics(case: Case, last_time: bool = False) -> dict:
-    """Average velocity over x, y, and time on each sampling plane."""
+def snapshot_sums(particle_dir: Path) -> tuple:
+    """Return per-plane sample counts, velocity sums, and squared sums for one output."""
+
+    z, velocity = read_snapshot(particle_dir)
+    planes, inverse = np.unique(np.round(z, PLANE_DECIMALS), return_inverse=True)
+    counts = np.bincount(inverse, minlength=len(planes)).astype(float)
+    sums = np.column_stack(
+        [np.bincount(inverse, weights=velocity[:, i], minlength=len(planes)) for i in range(3)]
+    )
+    squares = np.column_stack(
+        [np.bincount(inverse, weights=velocity[:, i] ** 2, minlength=len(planes))
+         for i in range(3)]
+    )
+    return planes, counts, sums, squares
+
+
+def accumulate_statistics(case: Case, last_time: bool = False, nprocs: int = 1) -> dict:
+    """Average velocity over x, y, and time on each sampling plane.
+
+    Sampler outputs are read by up to ``nprocs`` worker processes, so peak
+    memory scales with the number of workers. Only the small per-plane sums
+    are returned to the parent process.
+    """
 
     outputs = sampling_outputs(CASE_ROOT / "cases" / case.name)
     if last_time:
         outputs = outputs[-1:]
-    print(f"{case.name}: averaging {len(outputs)} sampler output(s), "
-          f"{outputs[0].parent.name} to {outputs[-1].parent.name}")
+    workers = max(1, min(nprocs, len(outputs)))
+    print(f"{case.name}: averaging {len(outputs)} sampler output(s) with {workers} "
+          f"worker(s), {outputs[0].parent.name} to {outputs[-1].parent.name}", flush=True)
     planes = None
-    for particle_dir in outputs:
-        z, velocity = read_snapshot(particle_dir)
-        z_planes, inverse = np.unique(np.round(z, PLANE_DECIMALS), return_inverse=True)
-        if planes is None:
-            planes = z_planes
-            counts = np.zeros(len(planes))
-            sums = np.zeros((len(planes), 3))
-            squares = np.zeros((len(planes), 3))
-        elif not np.array_equal(planes, z_planes):
-            raise AnalysisError(f"{particle_dir}: sampling planes differ between outputs.")
-        counts += np.bincount(inverse, minlength=len(planes))
-        for component in range(3):
-            values = velocity[:, component]
-            sums[:, component] += np.bincount(inverse, weights=values, minlength=len(planes))
-            squares[:, component] += np.bincount(
-                inverse, weights=values * values, minlength=len(planes)
-            )
+    with ProcessPoolExecutor(max_workers=workers) as executor:
+        # map() preserves the time order of the outputs.
+        for particle_dir, (z_planes, n, s, q) in zip(
+            outputs, executor.map(snapshot_sums, outputs)
+        ):
+            if planes is None:
+                planes = z_planes
+                counts, sums, squares = n, s, q
+            elif not np.array_equal(planes, z_planes):
+                raise AnalysisError(f"{particle_dir}: sampling planes differ between outputs.")
+            else:
+                counts, sums, squares = counts + n, sums + s, squares + q
 
     mean = sums / counts[:, None]
     var = np.maximum(squares / counts[:, None] - mean**2, 0.0)
@@ -194,7 +213,7 @@ def read_plane_statistics(path: Path) -> dict:
     return {"z": data[:, 0], "mean": data[:, 1::2], "var": data[:, 2::2]}
 
 
-def plane_statistics(case: Case, last_time: bool = False) -> dict:
+def plane_statistics(case: Case, last_time: bool = False, nprocs: int = 1) -> dict:
     """Read cached time-averaged statistics or compute and cache them.
 
     With ``last_time``, only the latest sampler output is used and the cache
@@ -202,13 +221,13 @@ def plane_statistics(case: Case, last_time: bool = False) -> dict:
     """
 
     if last_time:
-        return accumulate_statistics(case, last_time=True)
+        return accumulate_statistics(case, last_time=True, nprocs=nprocs)
     path = CASE_ROOT / "cases" / case.name / STATS_FILE
     if path.exists():
         print(f"{case.name}: reading {path.relative_to(CASE_ROOT)} "
               "(delete it to reprocess the sampler output)")
         return read_plane_statistics(path)
-    stats = accumulate_statistics(case)
+    stats = accumulate_statistics(case, nprocs=nprocs)
     write_plane_statistics(stats, path)
     print(f"{case.name}: wrote {path.relative_to(CASE_ROOT)}")
     return stats
@@ -327,8 +346,10 @@ def write_profiles(result: dict, output: Path) -> None:
         writer.writerows(zip(*(result[key] for key in keys)))
 
 
-def analyze_case(case: Case, utau_source: str, last_time: bool = False) -> dict:
-    stats = fold_statistics(case, plane_statistics(case, last_time))
+def analyze_case(
+    case: Case, utau_source: str, last_time: bool = False, nprocs: int = 1
+) -> dict:
+    stats = fold_statistics(case, plane_statistics(case, last_time, nprocs))
     u_tau = friction_velocity(case, stats, utau_source)
     viscous_length = VISCOSITY / (DENSITY * u_tau)
     print(f"{case.name}: u_tau = {u_tau:.5g} m/s ({utau_source}), "
@@ -362,6 +383,12 @@ def parse_args() -> argparse.Namespace:
         help="Directory for CSV and PNG outputs (default: cases/analysis).",
     )
     parser.add_argument(
+        "--nprocs", type=int,
+        default=int(os.environ.get("SLURM_CPUS_PER_TASK", os.cpu_count() or 1)),
+        help="Number of worker processes used to read sampler outputs "
+             "(default: $SLURM_CPUS_PER_TASK, else the number of CPUs).",
+    )
+    parser.add_argument(
         "--last-time", action="store_true",
         help="Debug option: use only the latest sampler output, ignoring and not "
              f"writing {STATS_FILE}. Output file names get a '_last-time' suffix.",
@@ -382,7 +409,9 @@ def main() -> int:
     results = []
     for name in names:
         try:
-            result = analyze_case(CASES[name], args.utau_source, args.last_time)
+            result = analyze_case(
+                CASES[name], args.utau_source, args.last_time, max(args.nprocs, 1)
+            )
         except AnalysisError as error:
             print(f"Skipping {name}: {error}", file=sys.stderr)
             continue
