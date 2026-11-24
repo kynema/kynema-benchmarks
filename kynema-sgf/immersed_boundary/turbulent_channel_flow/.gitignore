@@ -2,5 +2,4 @@
 /cases/*/plt*/
 /cases/*/chk*/
 /cases/*/post_processing/
-/cases/analysis/*.csv
-/cases/analysis/*_last-time*.png
+/cases/analysis
