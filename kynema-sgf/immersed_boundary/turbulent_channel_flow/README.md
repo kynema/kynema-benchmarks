@@ -17,9 +17,8 @@ IB provides a solver reference at $Re_\tau = 180$.
 - [Statistics](#statistics)
 - [Prerequisites](#prerequisites)
 - [Run the solver](#run-the-solver)
-- [Analyze statistics](#analyze-statistics)
 - [Check convergence](#check-convergence)
-- [Outputs](#outputs)
+- [Analyze statistics](#analyze-statistics)
 - [Results](#results)
 
 ## Channel configurations
@@ -184,29 +183,6 @@ srun -N 2 --ntasks-per-node=50 kynema_sgf inputs.inp
 The run writes sampler outputs in `post_processing/sampling*/`. Samples taken
 before the spin-up time are not written.
 
-## Analyze statistics
-
-After the runs complete, run from this directory:
-
-```bash
-python python/analyze.py
-```
-
-The analyzer reads every completed sampler output in each case's
-`post_processing/` directory with a particle reader adapted from
-Kynema-SGF's `tools/amrex_particle.py`. Cases without sampler output are
-reported and skipped. The time-averaged statistics on each sampling plane are
-written to `cases/<case>/particle_stats.txt`; when that file exists, it is read
-instead of the sampler output. Delete it to reprocess the sampler output, for
-example after rerunning a case. Options:
-
-- `--cases re180-no-ib,re180-default` analyzes a subset of cases.
-- `--utau-source gradU` computes $u_\tau$ from the wall velocity gradient.
-- `--output-dir PATH` changes the output directory.
-- `--last-time` uses only the latest sampler output, for debugging. It does not
-  read or write `particle_stats.txt`, and adds a `_last-time` suffix to the
-  output file names.
-
 ## Check convergence
 
 Statistics are only meaningful once the flow has reached a statistically
@@ -243,7 +219,32 @@ $Re_\tau = 395$). Options:
 
 At least four sampler outputs are required.
 
-## Outputs
+## Analyze statistics
+
+After the runs complete, run from this directory:
+
+```bash
+python python/analyze.py
+```
+
+The analyzer reads every completed sampler output in each case's
+`post_processing/` directory with a particle reader adapted from
+Kynema-SGF's `tools/amrex_particle.py`. Cases without sampler output are
+reported and skipped. The time-averaged statistics on each sampling plane are
+written to `cases/<case>/particle_stats.txt`; when that file exists, it is read
+instead of the sampler output. Delete it to reprocess the sampler output, for
+example after rerunning a case. Options:
+
+- `--cases re180-no-ib,re180-default` analyzes a subset of cases.
+- `--utau-source gradU` computes $u_\tau$ from the wall velocity gradient.
+- `--output-dir PATH` changes the output directory.
+- `--last-time` uses only the latest sampler output, for debugging. It does not
+  read or write `particle_stats.txt`, and adds a `_last-time` suffix to the
+  output file names.
+
+
+
+### Outputs
 
 Analysis results are written to `cases/analysis/` by default:
 
@@ -264,20 +265,22 @@ friction velocity used for each case.
 
 ### $Re_\tau = 180$
 
-Mean velocity compared with DNS:
+#### Mean velocity compared with DNS:
 
 ![Re_tau = 180 mean velocity](figures/re180_mean_velocity.png)
 
-RMS velocity compared with DNS:
+#### RMS velocity compared with DNS:
 
 ![Re_tau = 180 RMS velocity](figures/re180_rms_velocity.png)
 
 ### $Re_\tau = 395$
 
-Mean velocity compared with DNS:
+For this case we use the wall model by setting `ChannelBuilder.initialize_drag_cells = true`. The wall model is used here because the level 1 mesh only extends to $z^+ \leq 111$, which does not resolve the viscous sublayer and buffer layer. For non-IB cases, the wall model in Kynema-SGF is only implemented on the lower $z$ boundary, therefore the non-IB reference is not used included.
+
+#### Mean velocity compared with DNS:
 
 ![Re_tau = 395 mean velocity](figures/re395_mean_velocity.png)
 
-RMS velocity compared with DNS:
+#### RMS velocity compared with DNS:
 
 ![Re_tau = 395 RMS velocity](figures/re395_rms_velocity.png)
