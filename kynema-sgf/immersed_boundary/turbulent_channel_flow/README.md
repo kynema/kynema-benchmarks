@@ -18,6 +18,7 @@ IB provides a solver reference at $Re_\tau = 180$.
 - [Prerequisites](#prerequisites)
 - [Run the solver](#run-the-solver)
 - [Analyze statistics](#analyze-statistics)
+- [Check convergence](#check-convergence)
 - [Outputs](#outputs)
 - [Results](#results)
 
@@ -206,6 +207,42 @@ example after rerunning a case. Options:
   read or write `particle_stats.txt`, and adds a `_last-time` suffix to the
   output file names.
 
+## Check convergence
+
+Statistics are only meaningful once the flow has reached a statistically
+steady state. If the spin-up is too short, the bulk velocity is still changing
+during the statistics window and the time averages are biased. Check this with:
+
+```bash
+python python/drift.py --nprocs 16
+```
+
+For each case, `drift.py` integrates the plane-averaged streamwise velocity
+from wall to wall to get the bulk velocity $U_b$ of every sampler output. It
+then compares the mean $U_b$ over the first quarter of the outputs with the
+mean over the last quarter and prints the change, for example:
+
+```text
+re180-default: U_b 41.00 -> 41.20 m/s (+0.5%) over the first and last 25 outputs
+```
+
+A change of more than a percent or two means the spin-up should be extended.
+Restart from the latest checkpoint with `io.restart_file`, and increase
+`time.stop_time` and `sampling.output_time_delay`. Move the old `sampling*`
+folders aside and delete `particle_stats.txt` before reanalyzing.
+
+The sampler outputs of a case are read in parallel, one per worker process, so
+peak memory scales with the number of workers (about 0.6 GB per worker for
+$Re_\tau = 395$). Options:
+
+- `--cases re180-no-ib,re395-default` checks a subset of cases, which are
+  processed one after another (default: all).
+- `--nprocs N` sets the number of worker processes (default:
+  `$SLURM_CPUS_PER_TASK`, otherwise the number of CPUs). Keep it within the
+  memory of the node.
+
+At least four sampler outputs are required.
+
 ## Outputs
 
 Analysis results are written to `cases/analysis/` by default:
@@ -225,5 +262,15 @@ friction velocity used for each case.
 
 ## Results
 
-Results will be added after these cases are run with a current Kynema-SGF
-release.
+### $Re_\tau = 180$
+
+Mean velocity compared with DNS:
+
+![Re_tau = 180 mean velocity](figures/re180_mean_velocity.png)
+
+RMS velocity compared with DNS:
+
+![Re_tau = 180 RMS velocity](figures/re180_rms_velocity.png)
+
+Results for $Re_\tau = 395$ will be added after the case is rerun with the
+longer spin-up.
