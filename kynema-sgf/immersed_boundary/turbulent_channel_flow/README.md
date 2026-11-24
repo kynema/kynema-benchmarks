@@ -272,5 +272,12 @@ RMS velocity compared with DNS:
 
 ![Re_tau = 180 RMS velocity](figures/re180_rms_velocity.png)
 
-Results for $Re_\tau = 395$ will be added after the case is rerun with the
-longer spin-up.
+### $Re_\tau = 395$
+
+Mean velocity compared with DNS:
+
+![Re_tau = 395 mean velocity](figures/re395_mean_velocity.png)
+
+RMS velocity compared with DNS:
+
+![Re_tau = 395 RMS velocity](figures/re395_rms_velocity.png)
