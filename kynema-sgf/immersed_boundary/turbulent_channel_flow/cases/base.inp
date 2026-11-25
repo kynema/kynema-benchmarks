@@ -1,0 +1,58 @@
+# Shared turbulent channel-flow settings (air at 101325 Pa and 750 K)
+
+# Simulation stop (stop time is set by each case)
+time.max_step = -1
+
+# Time step computation
+time.cfl = 0.95
+
+# Output
+time.plot_time_interval = 1.0e-3
+time.checkpoint_time_interval = 1.0e-2
+
+# Physics
+incflo.gravity = 0.0 0.0 0.0
+incflo.density = 0.468793
+incflo.constant_density = true
+incflo.use_godunov = 1
+incflo.diffusion_type = 0
+incflo.godunov_type = "weno_z"
+incflo.physics = ChannelFlow
+
+turbulence.model = Smagorinsky
+Smagorinsky_coeffs.Cs = 0.1
+
+transport.viscosity = 3.57816e-5
+transport.laminar_prandtl = 0.7
+transport.turbulent_prandtl = 0.3333
+transport.reference_temperature = 750.0
+
+# Pressure-gradient forcing, a_x = -(dp/dx)/rho (magnitude is set by each case)
+ICNS.source_terms = BodyForce
+
+# Initial condition: ChannelFlow profile with velocity perturbations.
+# re_tau is used for initialization only and is the same for all cases.
+ChannelFlow.re_tau = 180.0
+ChannelFlow.normal_direction = 2
+ChannelFlow.flow_direction = 0
+ChannelFlow.perturb_velocity = true
+ChannelFlow.perturb_factor = 5.0
+ChannelFlow.error_log_file = ""
+
+# Walls
+geometry.is_periodic = 1 1 0
+zlo.type = "no_slip_wall"
+zlo.density = 0.468793
+zhi.type = "no_slip_wall"
+zhi.density = 0.468793
+
+# Mesh
+amr.blocking_factor = 8
+amr.max_level = 1
+
+# Solver settings
+nodal_proj.mg_atol = 1.0E-8
+mac_proj.mg_atol = 1.0E-8
+
+# Verbosity
+incflo.verbose = 0

@@ -1,0 +1,76 @@
+# Re_tau = 180 LES with immersed-boundary walls, default DragForcing (delta = 0.005 m)
+FILE = ../base.inp
+
+# Spin-up for 40 t* (t* = delta/u_tau = 1.8197e-3 s), then 10 t* of statistics
+time.stop_time = 0.090985
+
+# Geometry: 6.24 delta x 3.12 delta x (16/7) delta. The immersed-boundary walls
+# at z = +/- delta coincide with level 0 cell faces.
+geometry.prob_lo = 0.0 0.0 -0.0057142857142857
+geometry.prob_hi = 0.0312 0.0156 0.0057142857142857
+
+# Pressure-gradient forcing, dp/dx = -709.79 Pa/m
+incflo.physics = ChannelFlow ChannelBuilder
+ICNS.source_terms = BodyForce DragForcing
+BodyForce.magnitude = 1514.0797750819656358 0.0 0.0
+
+# Immersed-boundary wall model, default DragForcing implementation
+DragForcing.is_laminar = 0
+DragForcing.terrain_use_original_implementation = false
+DragForcing.terrain_use_original_limiter = false
+DragForcing.bc_forcing_time_factor = 1
+ABL.surface_roughness_z0 = 0.00001
+
+# Immersed-boundary channel between z = -delta and z = +delta
+ChannelBuilder.initialize_velocity = false
+ChannelBuilder.zero_velocity_where_blanked = true
+ChannelBuilder.initialize_drag_cells = false
+ChannelBuilder.segment_labels = s1
+ChannelBuilder.s1.type = Trapezoid
+ChannelBuilder.s1.segment_start_point = 0.0 0.0078 0.0
+ChannelBuilder.s1.segment_end_point = 0.0312 0.0078 0.0
+ChannelBuilder.s1.top_width = 0.0156
+ChannelBuilder.s1.bottom_width = 0.0156
+ChannelBuilder.s1.height = 0.01
+
+# Mesh: level 1 covers z+ <= 45 at each wall and the solid cells beyond it
+amr.n_cell = 192 96 64
+
+tagging.labels = l1
+tagging.l1.type = GeometryRefinement
+tagging.l1.shapes = bottom top
+tagging.l1.max_level = 1
+
+tagging.l1.bottom.type = box
+tagging.l1.bottom.origin = 0.0 0.0 -0.005714
+tagging.l1.bottom.xaxis = 0.0312 0.0 0.0
+tagging.l1.bottom.yaxis = 0.0 0.0156 0.0
+tagging.l1.bottom.zaxis = 0.0 0.0 0.001964
+
+tagging.l1.top.type = box
+tagging.l1.top.origin = 0.0 0.0 0.00375
+tagging.l1.top.xaxis = 0.0312 0.0 0.0
+tagging.l1.top.yaxis = 0.0 0.0156 0.0
+tagging.l1.top.zaxis = 0.0 0.0 0.001964
+
+# Statistics: wall-parallel planes sampled every 0.1 t* after the 40 t* spin-up
+incflo.post_processing = sampling
+sampling.output_time_interval = 1.82e-4
+sampling.output_time_delay = 0.072788
+sampling.output_format = native
+sampling.fields = velocity
+
+sampling.labels = channel_stats
+sampling.channel_stats.type = PlaneSampler
+sampling.channel_stats.fields = velocity
+sampling.channel_stats.num_points = 384 192
+sampling.channel_stats.origin = 0.0 0.0 -0.005
+sampling.channel_stats.axis1 = 0.0312 0.0 0.0
+sampling.channel_stats.axis2 = 0.0 0.0156 0.0
+sampling.channel_stats.axis_normal = 2
+sampling.channel_stats.start = -0.005
+sampling.channel_stats.end = 0.005
+
+# 70 planes at level 1 and level 0 cell centers
+sampling.channel_stats.offset_vector = 0.0 0.0 1.0
+sampling.channel_stats.offsets = 0.000045 0.000134 0.000223 0.000313 0.000402 0.000491 0.000580 0.000670 0.000759 0.000848 0.000937 0.001027 0.001116 0.001205 0.001339 0.001518 0.001696 0.001875 0.002054 0.002232 0.002411 0.002589 0.002768 0.002946 0.003125 0.003304 0.003482 0.003661 0.003839 0.004018 0.004196 0.004375 0.004554 0.004732 0.004911 0.005089 0.005268 0.005446 0.005625 0.005804 0.005982 0.006161 0.006339 0.006518 0.006696 0.006875 0.007054 0.007232 0.007411 0.007589 0.007768 0.007946 0.008125 0.008304 0.008482 0.008661 0.008795 0.008884 0.008973 0.009063 0.009152 0.009241 0.009330 0.009420 0.009509 0.009598 0.009687 0.009777 0.009866 0.009955
