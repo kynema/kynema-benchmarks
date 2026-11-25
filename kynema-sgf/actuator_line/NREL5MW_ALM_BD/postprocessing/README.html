@@ -1,0 +1,264 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Postprocessing NREL5MW AMR-Wind results &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Postprocessing NREL5MW AMR-Wind results</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/kynema-sgf/actuator_line/NREL5MW_ALM_BD/postprocessing/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="postprocessing-nrel5mw-amr-wind-results">
+<h1>Postprocessing NREL5MW AMR-Wind results<a class="headerlink" href="#postprocessing-nrel5mw-amr-wind-results" title="Link to this heading"></a></h1>
+<p><strong>Contents</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#openfast-turbine-results">OpenFAST turbine results</a></p></li>
+<li><p><a class="reference internal" href="#openfast-blade-loading-profiles">OpenFAST blade loading profiles</a></p></li>
+<li><p><a class="reference internal" href="#contour-plots">Contour plots</a></p></li>
+<li><p><a class="reference internal" href="#averaged-wake-profiles">Averaged wake profiles</a></p></li>
+</ul>
+<p>The following document describes the post-processing procedures for the AMR-Wind turbine simulation.</p>
+<p><strong>Note</strong>: In many of the python scripts and Jupyter notebooks provided, the path to the <a class="reference external" href="https://github.com/Exawind/amr-wind-frontend">AMR-Wind front end</a> library must be provided.  If necessary, download the library and edit the lines in the python code which define <code class="docutils literal notranslate"><span class="pre">amrwindfedirs</span></code> to include any locations of that library.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add any possible locations of amr-wind-frontend here</span>
+<span class="n">amrwindfedirs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'/projects/wind_uq/lcheung/amrwind-frontend/'</span><span class="p">,</span>
+                 <span class="s1">'/ccs/proj/cfd162/lcheung/amrwind-frontend/'</span><span class="p">]</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">shutil</span><span class="o">,</span><span class="w"> </span><span class="nn">io</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">amrwindfedirs</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="openfast-turbine-results">
+<h2>OpenFAST turbine results<a class="headerlink" href="#openfast-turbine-results" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Jupyter notebook: <a class="reference internal" href="OpenFAST_v40_Results.html"><span class="std std-doc">OpenFAST_v40_Results.ipynb</span></a></p></li>
+<li><p>python script: <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/postprocessing/OpenFAST_v40_Results.py">OpenFAST_v40_Results.py</a></p></li>
+</ul>
+<p>These scripts extract out specific performance quantities from the OpenFAST output files and creates a time history of quantities to compare, as well as averaging them over a specific time period.  To use the scripts and notebooks above, change the <code class="docutils literal notranslate"><span class="pre">RUNDIR</span></code> variable in the <code class="docutils literal notranslate"><span class="pre">replacedict</span></code> definition:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">replacedict</span><span class="o">=</span><span class="p">{</span><span class="s1">'RUNDIR'</span><span class="p">:</span><span class="s1">'/nscratch/gyalla/HFM/exawind-benchmarks/amr-wind/NREL5MW_ALM_BD/runs/'</span><span class="p">,</span>
+             <span class="s1">'RESULTSDIR'</span><span class="p">:</span><span class="s1">'../results/OpenFAST_v402_out'</span><span class="p">,</span>
+             <span class="s1">'RESULTSOLDDIR'</span><span class="p">:</span><span class="s1">'../results/OpenFAST_out'</span>
+            <span class="p">}</span>
+</pre></div>
+</div>
+<p>Inside the <code class="docutils literal notranslate"><span class="pre">yamlstring</span></code> variable, also double-check the <code class="docutils literal notranslate"><span class="pre">trange</span></code> variable to make sure the averaging time is correct:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">trange</span><span class="p">:</span><span class="w"> </span><span class="nl">&amp;trange</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">300</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">900</span><span class="p p-Indicator">]</span><span class="w">   </span><span class="c1"># Note: add 15,000 sec to get AMR-Wind time</span>
+</pre></div>
+</div>
+<p>Then execute and run the notebook/script and it will extract the results.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python<span class="w"> </span>OpenFAST_v40_Results.py
+</pre></div>
+</div>
+<p>The outputs of the script are contained in two CSV files:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/results/OpenFAST_v402_out/NREL5MW.csv">NREL5MW.csv</a>: A time history of turbine parameters such as blade pitch, rotor speed, rotor thrust, rotor torque, and generator power.</p></li>
+<li><p><a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/results/OpenFAST_v402_out/NREL5MW_mean.csv">NREL5MW_mean.csv</a>: The time average of the turbine properties over the time period defined by <code class="docutils literal notranslate"><span class="pre">trange</span></code>.</p></li>
+</ul>
+<p>Plots of the quantities from <code class="docutils literal notranslate"><span class="pre">NREL5MW.csv</span></code> are also generated in the <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/results/images">images</a> directory, look for the <code class="docutils literal notranslate"><span class="pre">OpenFAST_T0_*.png</span></code> files.</p>
+</section>
+<section id="openfast-blade-loading-profiles">
+<h2>OpenFAST blade loading profiles<a class="headerlink" href="#openfast-blade-loading-profiles" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Jupyter notebook: <a class="reference internal" href="OpenFAST_SectionalLoading.html"><span class="std std-doc">OpenFAST_SectionalLoading.ipynb</span></a></p></li>
+<li><p>python script: <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/postprocessing/OpenFAST_SectionalLoading.py">OpenFAST_SectionalLoading.py</a></p></li>
+</ul>
+<p>Similar to the scripts which extract the time-history of the turbine quantities above, the notebook and python script above extract the blade loading profiles from the OpenFAST output file.  These include the radial distributions of angle of attack, lift/drag coefficients, and streamwise/tangential blade forces.</p>
+<p>In the notebook and python script, edit the locations of the files in these variables</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rundir</span> <span class="o">=</span> <span class="s1">'/gpfs/lcheung/HFM/exawind-benchmarks/NREL5MW_ALM_BD_OFv402_ROSCO/'</span>
+<span class="n">bladefile</span> <span class="o">=</span> <span class="n">rundir</span><span class="o">+</span><span class="s1">'/T0_NREL5MW_v402_ROSCO/openfast/5MW_Baseline/NRELOffshrBsline5MW_AeroDyn_blade.dat'</span>
+</pre></div>
+</div>
+<p>and define the list of variables to extract here:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">suffixkeys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Alpha'</span><span class="p">,</span> <span class="s1">'Phi'</span><span class="p">,</span> <span class="s1">'Cl'</span><span class="p">,</span><span class="s1">'Cd'</span><span class="p">,</span> <span class="s1">'Fx'</span><span class="p">,</span><span class="s1">'Fy'</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The time range to average the data is defined in <code class="docutils literal notranslate"><span class="pre">trange</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">trange</span><span class="p">:</span><span class="w"> </span><span class="nl">&amp;trange</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">300</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">900</span><span class="p p-Indicator">]</span><span class="w">   </span><span class="c1"># Note: add 15,000 sec to get AMR-Wind time</span>
+</pre></div>
+</div>
+<p>The raw output will be stored in the file <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/results/OpenFAST_v402_out/NREL5MW_SECLOADS_mean_rpts.csv">NREL5MW_SECLOADS_mean_rpts.csv</a>.  Plots of the blade loading are also generated in the <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/results/images">images</a> directory, in the files:</p>
+<ul class="simple">
+<li><p>OpenFAST_T0_AOA.png</p></li>
+<li><p>OpenFAST_T0_ClCd.png</p></li>
+<li><p>OpenFAST_T0_FxFy.png</p></li>
+</ul>
+</section>
+<section id="contour-plots">
+<h2>Contour plots<a class="headerlink" href="#contour-plots" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Jupyter notebook: <a class="reference internal" href="InstantaneousAvgPlanes.html"><span class="std std-doc">InstantaneousAvgPlanes.ipynb</span></a></p></li>
+<li><p>python script: <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/postprocessing/InstantaneousAvgPlanes.py">InstantaneousAvgPlanes.py</a></p></li>
+</ul>
+<p>Images of the domain and the flow-field around the turbine are generated using the Jupyter notebook and python script above.  The notebook and script will extract hub-height and streamwise slices from the sampling planes that were generated from AMR-Wind.  They will also perform a time-average of the hub-height plane through the entire domain for a quick visualization.</p>
+<p>To use the postprocessing script and notebook, edit the <code class="docutils literal notranslate"><span class="pre">RUNDIR</span></code> to reflect the location of the AMR-Wind run.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">replacedict</span><span class="o">=</span><span class="p">{</span><span class="s1">'RUNDIR'</span><span class="p">:</span><span class="s1">'/gpfs/lcheung/HFM/exawind-benchmarks/NREL5MW_ALM_BD_OFv402_ROSCO/'</span><span class="p">,</span>
+            <span class="p">}</span>
+</pre></div>
+</div>
+<p>Also, if necessary, change the time period specified in <code class="docutils literal notranslate"><span class="pre">trange</span></code>.  Currently it is set to do a 10-min average of the simulation after the initial transient period.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">trange</span><span class="p">:</span><span class="w"> </span><span class="nl">&amp;trange</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">15300</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">15900</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p>After running the notebook, it should generate the following images from the domain:</p>
+<ul class="simple">
+<li><p><a class="reference download internal" download="" href="../../../../_downloads/7959d6f2f791b605266fb62f0f838221/XYdomain_AVG_15300_15900.png"><span class="xref download myst">XYdomain_AVG_15300_15900.png</span></a></p></li>
+<li><p><a class="reference download internal" download="" href="../../../../_downloads/1392867cff64c586d22854a245e82ecd/XYdomain_INST_15300.png"><span class="xref download myst">XYdomain_INST_15300.png</span></a></p></li>
+<li><p><a class="reference download internal" download="" href="../../../../_downloads/6a7059f4be8118e8f9fd0c10931bf0d9/XYdomain_INST_15900.png"><span class="xref download myst">XYdomain_INST_15900.png</span></a></p></li>
+<li><p><a class="reference download internal" download="" href="../../../../_downloads/0858f0b642c83013cc5a9f2cc9cfb40a/turbineHH_INST_15300.png"><span class="xref download myst">turbineHH_INST_15300.png</span></a></p></li>
+<li><p><a class="reference download internal" download="" href="../../../../_downloads/d7eb6e9ee341f4f09bc35b139700ed54/turbineHH_INST_15900.png"><span class="xref download myst">turbineHH_INST_15900.png</span></a></p></li>
+<li><p><a class="reference download internal" download="" href="../../../../_downloads/7c80d466f37af501f7c493b4fad1c628/turbineSW_INST_15300.png"><span class="xref download myst">turbineSW_INST_15300.png</span></a></p></li>
+<li><p><a class="reference download internal" download="" href="../../../../_downloads/33297047b1c550a3ae17889367128e06/turbineSW_INST_15900.png"><span class="xref download myst">turbineSW_INST_15900.png</span></a></p></li>
+</ul>
+</section>
+<section id="averaged-wake-profiles">
+<h2>Averaged wake profiles<a class="headerlink" href="#averaged-wake-profiles" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Jupyter notebook: <a class="reference internal" href="AVGPlanes.html"><span class="std std-doc">AVGPlanes.ipynb</span></a></p></li>
+<li><p>python script: <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/actuator_line/NREL5MW_ALM_BD/postprocessing/AVGPlanes.py">AVGPlanes.py</a></p></li>
+</ul>
+<p>These postprocesssing notebook and python script will extract hub-height and streamwise wake profiles from the sampling planes generated by AMR-Wind.</p>
+<p>The time range to average the profiles is defined by the <code class="docutils literal notranslate"><span class="pre">trange</span></code> variable.  Currently it is set to compute a 10 minute average after an initial 5 minute transient period:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">trange</span><span class="p">:</span><span class="w"> </span><span class="nl">&amp;trange</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">15300</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">15900</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p>The locations of the hub-height wake profiles are defined by the <code class="docutils literal notranslate"><span class="pre">interpXY</span></code> user-defined function.  Currently it creates profiles at x/D = 1,2,3, … 9 downstream, and from -2 &lt;= y/D &lt;= 2 laterally with 1 meter resolution.  The results are stored in the <code class="docutils literal notranslate"><span class="pre">results/HHProfiles_300_900</span></code> subdirectory.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">interpXY</span><span class="p">(</span><span class="n">xD</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Interpolate on the XY hub-height plane plane </span>
+<span class="sd">    """</span>
+    <span class="n">D</span>  <span class="o">=</span> <span class="mf">126.0</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">D</span><span class="o">*</span><span class="mf">4.0</span>
+    <span class="n">y0</span> <span class="o">=</span> <span class="n">D</span><span class="o">*</span><span class="mf">2.0</span>
+    <span class="n">z0</span> <span class="o">=</span> <span class="mf">90.0</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">D</span><span class="o">*</span><span class="n">xD</span>
+    <span class="n">ptlist</span> <span class="o">=</span> <span class="p">[[</span><span class="n">x</span><span class="o">+</span><span class="n">x0</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="n">y0</span><span class="p">]</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">D</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">D</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">D</span><span class="o">*</span><span class="mi">4</span><span class="o">+</span><span class="mi">1</span><span class="p">))]</span>
+    <span class="k">return</span> <span class="n">ptlist</span>
+
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">]:</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">ppeng</span><span class="p">,</span> <span class="s1">'interpXY'</span><span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">partial</span><span class="p">(</span><span class="n">interpXY</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The locations of the streamwise profiles are defined by the <code class="docutils literal notranslate"><span class="pre">interpXZ</span></code> user-defined function.  Currently it creates profiles at x/D = 1,2,3, … 10 downstream, and from 0 &lt; z/D &lt;= 2 with 1 meter resolution.  The results are stored in the <code class="docutils literal notranslate"><span class="pre">results/XZProfiles_300_900</span></code> subdirectory.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">interpXZ</span><span class="p">(</span><span class="n">xD</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Interpolate on the XZ streamwise plane </span>
+<span class="sd">    """</span>
+    <span class="n">D</span>  <span class="o">=</span> <span class="mf">126.0</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">D</span><span class="o">*</span><span class="mf">4.0</span>
+    <span class="n">y0</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">D</span><span class="o">*</span><span class="n">xD</span>
+    <span class="n">ptlist</span> <span class="o">=</span> <span class="p">[[</span><span class="n">x</span><span class="o">+</span><span class="n">x0</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="n">y0</span><span class="p">]</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">D</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">D</span><span class="o">*</span><span class="mi">2</span><span class="p">))]</span>
+    <span class="k">return</span> <span class="n">ptlist</span>
+
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">]:</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">ppeng</span><span class="p">,</span> <span class="s1">'interpXZ'</span><span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">partial</span><span class="p">(</span><span class="n">interpXZ</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Averaged contour plots for both the hub-height and the streamwise cases are also created and saved:</p>
+<ul class="simple">
+<li><p><a class="reference download internal" download="" href="../../../../_downloads/ded7f8e39470dd858521db25a1f2e933/turbineHH_AVG_300_900.png"><span class="xref download myst">turbineHH_AVG_300_900.png</span></a></p></li>
+<li><p><a class="reference download internal" download="" href="../../../../_downloads/ed61c5a37da0fcb2a74952cd082be8fa/turbineSW_AVG_300_900.png"><span class="xref download myst">turbineSW_AVG_300_900.png</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

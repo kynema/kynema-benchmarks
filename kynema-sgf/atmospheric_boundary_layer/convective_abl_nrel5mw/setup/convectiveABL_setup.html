@@ -1,0 +1,625 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create the convective ABL case for NREL5MW runs &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Create the convective ABL case for NREL5MW runs</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/setup/convectiveABL_setup.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="create-the-convective-abl-case-for-nrel5mw-runs">
+<h1>Create the convective ABL case for NREL5MW runs<a class="headerlink" href="#create-the-convective-abl-case-for-nrel5mw-runs" title="Link to this heading"></a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add any possible locations of amr-wind-frontend here</span>
+<span class="n">amrwindfedirs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'/projects/wind_uq/lcheung/amrwind-frontend'</span><span class="p">,</span>
+                 <span class="s1">'/ccs/proj/cfd162/lcheung/amrwind-frontend/'</span><span class="p">]</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">amrwindfedirs</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># Load the libraries</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">amrwind_frontend</span><span class="w">  </span><span class="k">as</span><span class="w"> </span><span class="nn">amrwind</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w">             </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">postproamrwindsample</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ppsample</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">utm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+
+<span class="c1"># Also ignore warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">)</span>
+
+<span class="c1"># Make all plots inline </span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/ascldap/users/lcheung/.local/lib/python3.9/site-packages/pandas/core/computation/expressions.py:21: UserWarning: Pandas requires version '2.8.4' or newer of 'numexpr' (version '2.8.1' currently installed).
+  from pandas.core.computation.check import NUMEXPR_INSTALLED
+/ascldap/users/lcheung/.local/lib/python3.9/site-packages/pandas/core/arrays/masked.py:60: UserWarning: Pandas requires version '1.3.6' or newer of 'bottleneck' (version '1.3.4' currently installed).
+  from pandas.core import (
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start the AMR-Wind case</span>
+<span class="n">case</span> <span class="o">=</span> <span class="n">amrwind</span><span class="o">.</span><span class="n">MyApp</span><span class="o">.</span><span class="n">init_nogui</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rundir</span> <span class="o">=</span> <span class="s1">'./'</span>
+<span class="n">originalinput</span> <span class="o">=</span> <span class="s1">'abl.inp'</span>
+<span class="n">outputfile</span>    <span class="o">=</span> <span class="s1">'../input_files/convective_abl.inp'</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load the starting point</span>
+<span class="c1"># This assumes that rundir was already set up with setup.sh (see https://github.com/Exawind/exawind-cases/blob/main/16_turb_abl_fsi/setup.sh)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">rundir</span><span class="p">)</span>
+<span class="k">case</span><span class="o">.</span><span class="n">loadAMRWindInput</span><span class="p">(</span><span class="n">originalinput</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CANNOT update: ABLMeanBoussinesq use forcechange=True in setval()
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>OrderedDict([('io.line_plot_int', '1'),
+             ('CoriolisForcing.turn_off_vertical_force', 'True'),
+             ('tagging.static_refinement', 'false'),
+             ('tagging.static_refinement_def', 'static_box.txt')])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Remove static refinement from the static_box.txt file</span>
+<span class="k">case</span><span class="o">.</span><span class="n">extradictparams</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'tagging.static_refinement'</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="k">case</span><span class="o">.</span><span class="n">extradictparams</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'tagging.static_refinement_def'</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>'static_box.txt'
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set the tolerances to match other ABL runs</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'diffusion.mg_rtol'</span><span class="p">,</span>  <span class="mf">1.0e-8</span><span class="p">)</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'diffusion.mg_atol'</span><span class="p">,</span>  <span class="mf">1.0e-8</span><span class="p">)</span>
+
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'mac_proj.mg_rtol'</span><span class="p">,</span>   <span class="mf">1.0e-8</span><span class="p">)</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'mac_proj.mg_atol'</span><span class="p">,</span>   <span class="mf">1.0e-8</span><span class="p">)</span>
+
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'nodal_proj.mg_rtol'</span><span class="p">,</span> <span class="mf">1.0e-8</span><span class="p">)</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'nodal_proj.mg_atol'</span><span class="p">,</span> <span class="mf">1.0e-8</span><span class="p">)</span>
+
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'temperature_diffusion.mg_rtol'</span><span class="p">,</span> <span class="mf">1.0e-8</span><span class="p">)</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'temperature_diffusion.mg_atol'</span><span class="p">,</span> <span class="mf">1.0e-8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="add-a-turbine">
+<h2>Add a turbine<a class="headerlink" href="#add-a-turbine" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># This is a dummy turbine, just to get the dimensions of the turbine placement correct</span>
+<span class="n">turbinetype</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">get_default_turbinetypedict</span><span class="p">()</span>
+<span class="n">turbinetype</span><span class="p">[</span><span class="s1">'turbinetype_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'NREL5MW_junk'</span>
+<span class="n">turbinetype</span><span class="p">[</span><span class="s1">'Actuator_type'</span><span class="p">]</span>    <span class="o">=</span> <span class="s1">'UniformCtDisk'</span>
+<span class="n">turbinetype</span><span class="p">[</span><span class="s1">'Actuator_rotor_diameter'</span><span class="p">]</span>     <span class="o">=</span> <span class="mf">126.0</span>
+<span class="n">turbinetype</span><span class="p">[</span><span class="s1">'Actuator_hub_height'</span><span class="p">]</span>         <span class="o">=</span> <span class="mf">90.0</span>
+<span class="n">turbinetype</span><span class="p">[</span><span class="s1">'Actuator_epsilon'</span><span class="p">]</span>            <span class="o">=</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">]</span>
+<span class="n">turbinetype</span><span class="p">[</span><span class="s1">'Actuator_output_frequency'</span><span class="p">]</span>   <span class="o">=</span> <span class="mi">1</span>
+<span class="n">turbinetype</span><span class="p">[</span><span class="s1">'Actuator_diameters_to_sample'</span><span class="p">]</span><span class="o">=</span> <span class="mf">5.0</span> 
+<span class="n">turbinetype</span><span class="p">[</span><span class="s1">'Actuator_num_points_r'</span><span class="p">]</span>       <span class="o">=</span> <span class="mi">20</span>
+<span class="n">turbinetype</span><span class="p">[</span><span class="s1">'Actuator_num_points_t'</span><span class="p">]</span>       <span class="o">=</span> <span class="mi">3</span>
+<span class="n">turbinetype</span><span class="p">[</span><span class="s1">'Actuator_thrust_coeff'</span><span class="p">]</span>       <span class="o">=</span> <span class="mf">0.2</span>
+<span class="k">case</span><span class="o">.</span><span class="n">add_populatefromdict</span><span class="p">(</span><span class="s1">'listboxturbinetype'</span><span class="p">,</span> <span class="n">turbinetype</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build the CSV input file of turbine layouts for amrwind-frontend</span>
+<span class="n">options</span><span class="o">=</span><span class="s2">""</span>
+
+<span class="n">turbinescsv</span><span class="o">=</span><span class="s2">"""</span>
+<span class="s2"># CSV file should have columns with</span>
+<span class="s2"># name, x, y, type, yaw, hubheight, options</span>
+<span class="s2">T1,  1800, 1800, NREL5MW_junk, 240.0, , </span>
+<span class="s2">"""</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'turbines_csvtextbox'</span><span class="p">,</span>  <span class="n">turbinescsv</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'turbines_deleteprev'</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'turbines_createnewdomain'</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+<span class="k">case</span><span class="o">.</span><span class="n">turbines_createAllTurbines</span><span class="p">()</span>
+
+<span class="c1"># Print out existing list of turbines, just to confirm that the turbines got made</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxactuator'</span><span class="p">]</span><span class="o">.</span><span class="n">getitemlist</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>['T1']
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="add-refinement-regions-optional">
+<h2>Add refinement regions (optional)<a class="headerlink" href="#add-refinement-regions-optional" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Add refinement zones</span>
+<span class="n">refinementcsv</span><span class="o">=</span><span class="s2">"""</span>
+<span class="s2"># CSV file should have columns with</span>
+<span class="s2"># level, upstream, downstream, lateral, below, above, options</span>
+<span class="s2">level, upstream, downstream, lateral, below, above, options</span>
+<span class="s2">#0,     2160,     2160,       2160,    90,   200,   center:specified units:meter orientation:x centerx:2560 centery:2560 centerz:90 name:level1</span>
+<span class="s2">#1,     1600,     1600,       1600,    90,   200,   center:specified units:meter orientation:x centerx:2000 centery:2000 centerz:90 name:level2</span>
+<span class="s2">0,     5,        10,         5,     0.75,   2,</span>
+<span class="s2">1,     2.5,      5,          2,     0.75,   1.5,</span>
+<span class="s2">2,     1.25,     2.0,        1.25,  0.75,   1.0, </span>
+<span class="s2">3,     0.75,     0.75,       1.00,  0.75,   0.75, </span>
+<span class="s2">"""</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'refine_csvtextbox'</span><span class="p">,</span> <span class="n">refinementcsv</span><span class="p">)</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'refine_deleteprev'</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Uncomment this to create refinement zones</span>
+<span class="c1">#case.refine_createAllZones()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">estimateMeshSize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ESTIMATED MESH SIZE
+   Level       Ncells                      Cell Size
+       0     50331648             10.0 x 10.0 x 10.0
+  TOTAL:     50331648
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="add-some-sampling-planes">
+<h2>Add some sampling planes<a class="headerlink" href="#add-some-sampling-planes" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># First delete everything that already exists</span>
+<span class="k">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxsampling'</span><span class="p">]</span><span class="o">.</span><span class="n">deleteall</span><span class="p">()</span>
+<span class="k">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxpostprosetup'</span><span class="p">]</span><span class="o">.</span><span class="n">deleteall</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## virtual metmast measurements</span>
+<span class="n">metmastpprosetup</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">get_default_postprosetupdict</span><span class="p">()</span>
+<span class="n">metmastpprosetup</span><span class="p">[</span><span class="s1">'postprocessing_setup_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'metmast_'</span>
+<span class="n">metmastpprosetup</span><span class="p">[</span><span class="s1">'postprocessing_setup_type'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Sampling'</span>
+<span class="n">metmastpprosetup</span><span class="p">[</span><span class="s1">'postprocessing_setup_output_frequency'</span><span class="p">]</span> <span class="o">=</span>  <span class="mi">1</span>
+<span class="n">metmastpprosetup</span><span class="p">[</span><span class="s1">'postprocessing_setup_fields'</span><span class="p">]</span>           <span class="o">=</span>  <span class="p">[</span><span class="s1">'velocity'</span><span class="p">,</span> <span class="s1">'temperature'</span><span class="p">,</span> <span class="s1">'tke'</span><span class="p">]</span>
+<span class="k">case</span><span class="o">.</span><span class="n">add_postprosetup</span><span class="p">(</span><span class="n">metmastpprosetup</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">sampledict</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">get_default_samplingdict</span><span class="p">()</span>
+<span class="n">sampledict</span><span class="p">[</span><span class="s1">'sampling_name'</span><span class="p">]</span>     <span class="o">=</span> <span class="s1">'virtualmast'</span>
+<span class="n">sampledict</span><span class="p">[</span><span class="s1">'sampling_outputto'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'metmast_'</span>
+<span class="n">sampledict</span><span class="p">[</span><span class="s1">'sampling_type'</span><span class="p">]</span>     <span class="o">=</span> <span class="s1">'LineSampler'</span>
+<span class="n">sampledict</span><span class="p">[</span><span class="s1">'sampling_l_num_points'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">sampledict</span><span class="p">[</span><span class="s1">'sampling_l_start'</span><span class="p">]</span>      <span class="o">=</span> <span class="p">[</span><span class="mi">1800</span><span class="p">,</span> <span class="mi">1800</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">]</span>
+<span class="n">sampledict</span><span class="p">[</span><span class="s1">'sampling_l_end'</span><span class="p">]</span>        <span class="o">=</span> <span class="p">[</span><span class="mi">1800</span><span class="p">,</span> <span class="mi">1800</span><span class="p">,</span> <span class="mf">200.0</span><span class="p">]</span>
+<span class="k">case</span><span class="o">.</span><span class="n">add_sampling</span><span class="p">(</span><span class="n">sampledict</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>postprocessing_setup_name: 'metmast_'
+postprocessing_setup_type: 'Sampling'
+postprocessing_setup_output_frequency: 1
+postprocessing_setup_fields: ['velocity', 'temperature', 'tke']
+postprocessing_setup_derived_fields: None
+postprocessing_setup_averaging_window: None
+postprocessing_setup_averaging_start_time: None
+postprocessing_setup_averaging_stop_time: None
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outputoptions</span><span class="o">=</span><span class="s2">"outputvars:velocity;tke;temperature outputfreq:100"</span>
+<span class="n">samplingcsv</span><span class="o">=</span><span class="s2">"""</span>
+<span class="s2"># CSV file should have columns withturbinescsv</span>
+<span class="s2"># name, type, upstream, downstream, lateral, below, above, n1, n2, options</span>
+<span class="s2">name,      type, upstream, downstream, lateral, below, above, n1, n2,  options</span>
+<span class="s2">rotorplaneUP,  rotorplane, 4,     0,       2,    0.7,      1,  11, 11,           usedx:0.05 outputto:rotorplaneUP_  orientation:nacdir </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:4</span>
+<span class="s2">rotorplaneDN,  rotorplane, 0,     10,      2,    0.7,      1,  11, 11,           usedx:0.05 outputto:rotorplaneDN_  orientation:nacdir </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:10</span>
+<span class="s2">turbsw,      streamwise, 4,       10,      0,    0.7,     1.5, 11, 11,           usedx:0.05 outputto:turbsw_        orientation:nacdir </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:0</span>
+<span class="s2">turbhh,      hubheight,  4,       10,      2,       0,    0,   11, 11,           usedx:0.05 outputto:turbhh_        orientation:nacdir </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:0</span>
+<span class="s2">XYdomain027, hubheight,  8,       8,       2,       0,    90,  11, 11, units:meter usedx:10 outputto:XYdomain_027_ orientation:nacdir center:specified centerx:100 centery:100 centerz:27 wholedomain:1  </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:0</span>
+<span class="s2">XYdomain090, hubheight,  8,       8,       2,       0,    90,  11, 11, units:meter usedx:10 outputto:XYdomain_090_ orientation:nacdir center:specified centerx:100 centery:100 centerz:90 wholedomain:1  </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:0</span>
+<span class="s2">XYdomain153, hubheight,  8,       8,       2,       0,    153, 11, 11, units:meter usedx:10 outputto:XYdomain_153_ orientation:nacdir center:specified centerx:100 centery:100 centerz:153 wholedomain:1  </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:0</span>
+<span class="s2">"""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">outputoptions</span><span class="o">=</span><span class="n">outputoptions</span><span class="p">)</span>
+
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'sampling_csvtextbox'</span><span class="p">,</span> <span class="n">samplingcsv</span><span class="p">)</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'sampling_deleteprev'</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">sampling_createAllProbes</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="c1"># Print out existing list of turbines</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxsampling'</span><span class="p">]</span><span class="o">.</span><span class="n">getitemlist</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>['virtualmast', 'T1_rotorplaneUP', 'T1_rotorplaneDN', 'T1_turbsw', 'T1_turbhh', 'Farm_XYdomain027', 'Farm_XYdomain090', 'Farm_XYdomain153']
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">125</span><span class="p">)</span>
+
+<span class="c1"># Set any additional items to plot</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_turbines'</span><span class="p">]</span>        <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxactuator'</span><span class="p">]</span><span class="o">.</span><span class="n">getitemlist</span><span class="p">()</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_refineboxes'</span><span class="p">]</span>     <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxtagging'</span><span class="p">]</span><span class="o">.</span><span class="n">getitemlist</span><span class="p">()</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_sampleprobes'</span><span class="p">]</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">'T1_rotorplaneUP'</span><span class="p">,</span> <span class="s1">'T1_rotorplaneDN'</span><span class="p">,</span> <span class="s1">'T1_turbhh'</span><span class="p">,</span> <span class="s1">'T1_turbsw'</span><span class="p">,]</span> <span class="c1">#case.listboxpopupwindict['listboxsampling'].getitemlist() #['p_hub']</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_sampleprobes_style'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"{'markersize':.25, 'marker':'.', 'linestyle':'None', 'alpha':0.1}"</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_chooseview'</span><span class="p">]</span>      <span class="o">=</span> <span class="s1">'XY'</span>
+<span class="k">case</span><span class="o">.</span><span class="n">plotDomain</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../../_images/1d8fa3d9c22fdbe6efa682028269e1c98fff39a524ee02978fa8cb5310841566.png" src="../../../../_images/1d8fa3d9c22fdbe6efa682028269e1c98fff39a524ee02978fa8cb5310841566.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">125</span><span class="p">)</span>
+
+<span class="c1"># Set any additional items to plot</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_turbines'</span><span class="p">]</span>        <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxactuator'</span><span class="p">]</span><span class="o">.</span><span class="n">getitemlist</span><span class="p">()</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_refineboxes'</span><span class="p">]</span>     <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxtagging'</span><span class="p">]</span><span class="o">.</span><span class="n">getitemlist</span><span class="p">()</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_sampleprobes'</span><span class="p">]</span>    <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxsampling'</span><span class="p">]</span><span class="o">.</span><span class="n">getitemlist</span><span class="p">()</span> <span class="c1">#['p_hub']</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_sampleprobes_style'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"{'markersize':.1, 'marker':'.', 'linestyle':'None', 'alpha':0.1}"</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_chooseview'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'XZ'</span>
+<span class="k">case</span><span class="o">.</span><span class="n">plotDomain</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../../_images/e2a1156c3bc2567a847f173811489e38d6c6a61aad3c80a58867744245a0549d.png" src="../../../../_images/e2a1156c3bc2567a847f173811489e38d6c6a61aad3c80a58867744245a0549d.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">removeturbines</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">case</span><span class="o">.</span><span class="n">writeAMRWindInput</span><span class="p">(</span><span class="n">outputfile</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># --- Simulation time control parameters ---
+time.stop_time                           = 15000.0             # Max (simulated) time to evolve [s]
+time.max_step                            = -1                  
+time.fixed_dt                            = 0.5                 # Fixed timestep size (in seconds). If negative, then time.cfl is used
+time.checkpoint_interval                 = 10000               
+incflo.physics                           = ABL                 # List of physics models to include in simulation.
+incflo.verbose                           = 0                   
+io.check_file                            = chk                 
+incflo.use_godunov                       = true                
+incflo.godunov_type                      = weno_z              
+turbulence.model                         = OneEqKsgsM84        
+TKE.source_terms                         = KsgsM84Src          
+nodal_proj.mg_rtol                       = 1e-08               
+nodal_proj.mg_atol                       = 1e-08               
+mac_proj.mg_rtol                         = 1e-08               
+mac_proj.mg_atol                         = 1e-08               
+diffusion.mg_rtol                        = 1e-08               
+diffusion.mg_atol                        = 1e-08               
+temperature_diffusion.mg_rtol            = 1e-08               
+temperature_diffusion.mg_atol            = 1e-08               
+incflo.gravity                           = 0.0 0.0 -9.81       # Gravitational acceleration vector (x,y,z) [m/s^2]
+incflo.density                           = 1.0                 # Fluid density [kg/m^3]
+transport.viscosity                      = 0.0                 # Fluid dynamic viscosity [kg/m-s]
+transport.laminar_prandtl                = 0.7                 # Laminar prandtl number
+transport.turbulent_prandtl              = 0.3333              # Turbulent prandtl number
+
+# --- Geometry and Mesh ---
+geometry.prob_lo                         = 0.0 0.0 0.0         
+geometry.prob_hi                         = 5120.0 5120.0 1920.0
+amr.n_cell                               = 512 512 192         # Number of cells in x, y, and z directions
+amr.max_level                            = 0                   
+geometry.is_periodic                     = 1 1 0               
+zlo.type                                 = wall_model          
+zlo.temperature_type                     = wall_model          
+zlo.tke_type                             = zero_gradient       
+zhi.type                                 = slip_wall           
+zhi.temperature_type                     = fixed_gradient      
+zhi.temperature                          = 0.003               
+
+# --- ABL parameters ---
+ICNS.source_terms                        = ABLForcing BoussinesqBuoyancy CoriolisForcing ABLMeanBoussinesq
+ABL.stats_output_frequency               = 1                   
+ABL.stats_output_format                  = netcdf              
+ABL.tendency_forcing                     = false               
+ABL.bndry_io_mode                        = 0                   
+ABL.bndry_file                           = bndry_file          
+ABL.bndry_planes                         = xlo ylo             
+ABL.bndry_output_start_time              = 15000.0             
+ABL.bndry_var_names                      = velocity temperature tke
+ABL.bndry_output_format                  = native              
+incflo.velocity                          = 9.8726896031426 5.7 0.0
+ABLForcing.abl_forcing_height            = 90.0                
+ABL.kappa                                = 0.41                
+ABL.normal_direction                     = 2                   
+ABL.surface_roughness_z0                 = 0.01                
+ABL.reference_temperature                = 300.0               
+ABL.surface_temp_rate                    = 0.0                 
+ABL.surface_temp_flux                    = 0.005               # Surface temperature flux [K-m/s]
+ABL.log_law_height                       = 5.0                 
+CoriolisForcing.latitude                 = 40.0                
+CoriolisForcing.rotational_time_period   = 86400.0             
+CoriolisForcing.north_vector             = 0.0 1.0 0.0         
+CoriolisForcing.east_vector              = 1.0 0.0 0.0         
+BoussinesqBuoyancy.reference_temperature = 300.0               
+ABL.temperature_heights                  = 0.0 750.0 850.0 2000.0
+ABL.temperature_values                   = 300.0 300.0 308.0 311.45
+ABLMeanBoussinesq.read_temperature_profile = false               
+ABL.perturb_velocity                     = true                
+ABL.perturb_ref_height                   = 50.0                
+ABL.Uperiods                             = 4.0                 
+ABL.Vperiods                             = 4.0                 
+ABL.deltaU                               = 1.0                 
+ABL.deltaV                               = 1.0                 
+ABL.perturb_temperature                  = true                
+ABL.theta_amplitude                      = 0.8                 
+ABL.cutoff_height                        = 50.0                
+time.plot_interval                       = 10000               
+io.plot_file                             = plt                 
+io.KE_int                                = -1                  
+
+#---- postprocessing defs ----
+incflo.post_processing                   = metmast_ rotorplaneUP_ rotorplaneDN_ turbsw_ turbhh_ XYdomain_027_ XYdomain_090_ XYdomain_153_
+metmast_.type                            = Sampling            
+metmast_.output_frequency                = 1                   
+metmast_.fields                          = velocity temperature tke
+rotorplaneUP_.type                       = Sampling            
+rotorplaneUP_.output_frequency           = 100                 
+rotorplaneUP_.fields                     = velocity temperature tke
+rotorplaneDN_.type                       = Sampling            
+rotorplaneDN_.output_frequency           = 100                 
+rotorplaneDN_.fields                     = velocity temperature tke
+turbsw_.type                             = Sampling            
+turbsw_.output_frequency                 = 100                 
+turbsw_.fields                           = velocity temperature tke
+turbhh_.type                             = Sampling            
+turbhh_.output_frequency                 = 100                 
+turbhh_.fields                           = velocity temperature tke
+XYdomain_027_.type                       = Sampling            
+XYdomain_027_.output_frequency           = 100                 
+XYdomain_027_.fields                     = velocity temperature tke
+XYdomain_090_.type                       = Sampling            
+XYdomain_090_.output_frequency           = 100                 
+XYdomain_090_.fields                     = velocity temperature tke
+XYdomain_153_.type                       = Sampling            
+XYdomain_153_.output_frequency           = 100                 
+XYdomain_153_.fields                     = velocity temperature tke
+
+#---- sample defs ----
+metmast_.labels                          = virtualmast         
+rotorplaneUP_.labels                     = T1_rotorplaneUP     
+rotorplaneDN_.labels                     = T1_rotorplaneDN     
+turbsw_.labels                           = T1_turbsw           
+turbhh_.labels                           = T1_turbhh           
+XYdomain_027_.labels                     = Farm_XYdomain027    
+XYdomain_090_.labels                     = Farm_XYdomain090    
+XYdomain_153_.labels                     = Farm_XYdomain153    
+metmast_.virtualmast.type                = LineSampler         
+metmast_.virtualmast.num_points          = 20                  
+metmast_.virtualmast.start               = 1800.0 1800.0 10.0  
+metmast_.virtualmast.end                 = 1800.0 1800.0 200.0 
+rotorplaneUP_.T1_rotorplaneUP.type       = PlaneSampler        
+rotorplaneUP_.T1_rotorplaneUP.num_points = 81 35               
+rotorplaneUP_.T1_rotorplaneUP.origin     = 1489.523196492643 1329.7615982463215 1.8000000000000114
+rotorplaneUP_.T1_rotorplaneUP.axis1      = -251.99999999999994 436.47680350735703 -0.0
+rotorplaneUP_.T1_rotorplaneUP.axis2      = 0.0 0.0 214.2       
+rotorplaneUP_.T1_rotorplaneUP.offset_vector = 0.8660254037844386 0.4999999999999999 0.0
+rotorplaneUP_.T1_rotorplaneUP.offsets    = 0.0 126.0 252.0 378.0 504.0
+rotorplaneDN_.T1_rotorplaneDN.type       = PlaneSampler        
+rotorplaneDN_.T1_rotorplaneDN.num_points = 81 35               
+rotorplaneDN_.T1_rotorplaneDN.origin     = 1926.0 1581.7615982463215 1.8000000000000114
+rotorplaneDN_.T1_rotorplaneDN.axis1      = -251.99999999999994 436.47680350735703 -0.0
+rotorplaneDN_.T1_rotorplaneDN.axis2      = 0.0 0.0 214.2       
+rotorplaneDN_.T1_rotorplaneDN.offset_vector = 0.8660254037844386 0.4999999999999999 0.0
+rotorplaneDN_.T1_rotorplaneDN.offsets    = 0.0 126.0 252.0 378.0 504.0 630.0 756.0 882.0 1008.0 1134.0 1260.0
+turbsw_.T1_turbsw.type                   = PlaneSampler        
+turbsw_.T1_turbsw.num_points             = 281 45              
+turbsw_.T1_turbsw.origin                 = 1363.523196492643 1548.0 1.8000000000000114
+turbsw_.T1_turbsw.axis1                  = 1527.6688122757496 881.9999999999998 0.0
+turbsw_.T1_turbsw.axis2                  = 0.0 0.0 277.2       
+turbsw_.T1_turbsw.offset_vector          = 0.0 0.0 0.0         
+turbhh_.T1_turbhh.type                   = PlaneSampler        
+turbhh_.T1_turbhh.num_points             = 281 81              
+turbhh_.T1_turbhh.origin                 = 1489.523196492643 1329.7615982463215 90.0
+turbhh_.T1_turbhh.axis1                  = 1527.6688122757496 881.9999999999998 0.0
+turbhh_.T1_turbhh.axis2                  = -251.99999999999994 436.47680350735703 -0.0
+turbhh_.T1_turbhh.offset_vector          = 0.0 0.0 0.0         
+XYdomain_027_.Farm_XYdomain027.type      = PlaneSampler        
+XYdomain_027_.Farm_XYdomain027.num_points = 513 513             
+XYdomain_027_.Farm_XYdomain027.origin    = 0.0001 0.0001 27.0  
+XYdomain_027_.Farm_XYdomain027.axis1     = 5119.9998 0.0 0.0   
+XYdomain_027_.Farm_XYdomain027.axis2     = 0.0 5119.9998 0.0   
+XYdomain_027_.Farm_XYdomain027.offset_vector = 0.0 0.0 0.0         
+XYdomain_090_.Farm_XYdomain090.type      = PlaneSampler        
+XYdomain_090_.Farm_XYdomain090.num_points = 513 513             
+XYdomain_090_.Farm_XYdomain090.origin    = 0.0001 0.0001 90.0  
+XYdomain_090_.Farm_XYdomain090.axis1     = 5119.9998 0.0 0.0   
+XYdomain_090_.Farm_XYdomain090.axis2     = 0.0 5119.9998 0.0   
+XYdomain_090_.Farm_XYdomain090.offset_vector = 0.0 0.0 0.0         
+XYdomain_153_.Farm_XYdomain153.type      = PlaneSampler        
+XYdomain_153_.Farm_XYdomain153.num_points = 513 513             
+XYdomain_153_.Farm_XYdomain153.origin    = 0.0001 0.0001 153.0 
+XYdomain_153_.Farm_XYdomain153.axis1     = 5119.9998 0.0 0.0   
+XYdomain_153_.Farm_XYdomain153.axis2     = 0.0 5119.9998 0.0   
+XYdomain_153_.Farm_XYdomain153.offset_vector = 0.0 0.0 0.0         
+
+#---- extra params ----
+io.line_plot_int                         = 1                   
+CoriolisForcing.turn_off_vertical_force  = True                
+#== END AMR-WIND INPUT ==
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

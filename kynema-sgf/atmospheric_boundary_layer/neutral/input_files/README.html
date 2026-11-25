@@ -1,0 +1,201 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setting up the neutral ABL case in AMR-Wind &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Setting up the neutral ABL case in AMR-Wind</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/kynema-sgf/atmospheric_boundary_layer/neutral/input_files/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="setting-up-the-neutral-abl-case-in-amr-wind">
+<h1>Setting up the neutral ABL case in AMR-Wind<a class="headerlink" href="#setting-up-the-neutral-abl-case-in-amr-wind" title="Link to this heading"></a></h1>
+<p><strong>Contents</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#prerequisites">Prerequisites</a></p></li>
+<li><p><a class="reference internal" href="#step-1-create-the-run-directory">Step 1: create the run directory</a></p></li>
+<li><p><a class="reference internal" href="#step-2-edit-the-input-files-optional">Step 2: edit the input files</a></p></li>
+<li><p><a class="reference internal" href="#step-3-submit-the-run">Step 3: submit the run</a></p></li>
+<li><p><a class="reference internal" href="#appendix-grid-refinement-study">Appendix: Grid refinement study</a></p></li>
+</ul>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Download the benchmarks repository</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>--recursive<span class="w"> </span>git@github.com:Exawind/exawind-benchmarks.git<span class="w"> </span>BENCHMARKDIR
+</pre></div>
+</div>
+<p>Here the optional argument <code class="docutils literal notranslate"><span class="pre">BENCHMARKDIR</span></code> is the location where you’d like the
+benchmark repository to be cloned.  If it not provided, then the repo will be cloned into <code class="docutils literal notranslate"><span class="pre">exawind-benchmarks</span></code> in the current directory.</p>
+</li>
+<li><p>This case is run using AMR-Wind. Please see the <a class="reference external" href="https://exawind.github.io/amr-wind/">AMR-Wind documentation page</a> for further instructions on how to compile and use the code.</p></li>
+</ol>
+</section>
+<section id="step-1-create-the-run-directory">
+<h2>Step 1: create the run directory<a class="headerlink" href="#step-1-create-the-run-directory" title="Link to this heading"></a></h2>
+<p>Prepare a location where this case can be run.  This will likely be a location on the HPC where larger jobs can be run, and where lots of data (many gigabytes) can be stored.  First create the directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mkdir<span class="w"> </span>RUNDIR
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">RUNDIR</span></code> can be an arbitrary name or location chosen to be convenient for the user or HPC system.  Then copy the necessary input files into <code class="docutils literal notranslate"><span class="pre">RUNDIR</span></code></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>cp<span class="w"> </span>BENCHMARKDIR/kynema-sgf/atmospheric_boundary_layer/neutral/input_files/abl_neutral.inp<span class="w"> </span>RUNDIR
+$<span class="w"> </span>cp<span class="w"> </span>BENCHMARKDIR/kynema-sgf/atmospheric_boundary_layer/neutral/input_files/abl_neutral_sampling.inp<span class="w"> </span>RUNDIR
+</pre></div>
+</div>
+</section>
+<section id="step-2-edit-the-input-files-optional">
+<h2>Step 2: edit the input files (optional)<a class="headerlink" href="#step-2-edit-the-input-files-optional" title="Link to this heading"></a></h2>
+<p>This case requires two input files:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral.inp">abl_neutral.inp</a>: This file initializes the ABL simulation from scratch and runs for a total simulation time of 120,000s.</p></li>
+<li><p><a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral_sampling.inp">abl_neutral_sampling.inp</a>: This file continues the ABL simulation for an additional 5,000s and collecting data from the XY sampling planes.</p></li>
+</ul>
+<p>Note that an ABL statistics file will be generated for the entire run.</p>
+<p>To modify the time interval over which sampling planes are collected, follow these steps:</p>
+<ol class="arabic simple">
+<li><p>Update the <code class="docutils literal notranslate"><span class="pre">time.stop_time</span></code> parameter in <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral.inp">abl_neutral.inp</a> to the desired time at which sampling plane should first be collected.</p></li>
+<li><p>Update the <code class="docutils literal notranslate"><span class="pre">io.restart_file</span> <span class="pre">=</span> <span class="pre">chk240000</span></code> parameter to reference the checkpoint file that corresponds to the time specified in step 1.</p></li>
+</ol>
+<p>Additionally, the sampling planes themselves can be adjusted by editing the <code class="docutils literal notranslate"><span class="pre">incflo.post_processing</span></code> line of the <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral_sampling.inp">abl_neutral_sampling.inp</a> input file and the subsequent parameters that follow.</p>
+</section>
+<section id="step-3-submit-the-run">
+<h2>Step 3: submit the run<a class="headerlink" href="#step-3-submit-the-run" title="Link to this heading"></a></h2>
+<p>On many HPC platforms, a submission script needs to used to launch the case.  For slurm based systems, a submit script like this <code class="docutils literal notranslate"><span class="pre">submit.sh</span></code> file is used:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1">#SBATCH --nodes=20              </span>
+<span class="c1">#SBATCH --time=47:59:59        # Wall clock time (HH:MM:SS) - once the job exceeds this time, the job will be terminated (default is 5 minutes)</span>
+<span class="c1">#SBATCH --job-name=ABL # Name of job</span>
+<span class="c1">#SBATCH --partition=batch      # partition/queue name: short or batch</span>
+<span class="c1">#SBATCH --qos=normal           # Quality of Service: long, large, priority or normal </span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">nodes</span><span class="o">=</span><span class="nv">$SLURM_JOB_NUM_NODES</span>
+
+<span class="c1"># Load any required modules here</span>
+<span class="c1">#module purge</span>
+<span class="c1">#module load ...</span>
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">EXE</span><span class="o">=</span>/projects/wind_uq/lcheung/AMRWindBuilds/hfm.20250211/amr-wind/build/amr_wind
+
+<span class="c1"># Number MPI processes to run on each node (a.k.a. PPN)</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">cores</span><span class="o">=</span><span class="m">112</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ncpus</span><span class="o">=</span><span class="k">$((</span><span class="nv">nodes</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nv">cores</span><span class="k">))</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OMP_PROC_BIND</span><span class="o">=</span>spread<span class="w"> </span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OMP_PLACES</span><span class="o">=</span>threads
+
+<span class="nb">time</span><span class="w"> </span>mpiexec<span class="w"> </span>--bind-to<span class="w"> </span>core<span class="w"> </span>--npernode<span class="w"> </span><span class="nv">$cores</span><span class="w"> </span>--n<span class="w"> </span><span class="nv">$ncpus</span><span class="w"> </span><span class="nv">$EXE</span><span class="w"> </span>abl_neutral.inp
+</pre></div>
+</div>
+<p>Then, for slurm based queueing systems, submit the run with a command like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sbatch submit.sh
+</pre></div>
+</div>
+<p>Once this case has finished, re-submit the job but change the input file to point to <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral_sampling.inp">abl_neutral_sampling.inp</a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">time</span> <span class="pre">mpiexec</span> <span class="pre">--bind-to</span> <span class="pre">core</span> <span class="pre">--npernode</span> <span class="pre">$cores</span> <span class="pre">--n</span> <span class="pre">$ncpus</span> <span class="pre">$EXE</span> <span class="pre">abl_neutral_sampling.inp</span></code></p>
+</section>
+<section id="appendix-grid-refinement-study">
+<h2>Appendix: grid refinement study<a class="headerlink" href="#appendix-grid-refinement-study" title="Link to this heading"></a></h2>
+<p>To run the finer grid case detailed in the <a class="reference internal" href="../README.html"><span class="std std-doc">main documentation</span></a> (grid D), follow the same procedure outline here, but use the <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral_D_grid.inp">abl_neutral_D_grid.inp</a> and <a class="reference external" href="https://github.com/Kynema/kynema-benchmarks/blob/main/amr-wind/atmospheric_boundary_layer/neutral/abl_neutral_D_grid_sampling.inp">abl_neutral_D_grid_sampling.inp</a> input files.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,168 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Three-dimensional (3D) flow past airfoils &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../kynema-sgf/benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Three-dimensional (3D) flow past airfoils</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/kynema-ugf/3D_airfoil_IDDES/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <!-- This file is automatically compiled into the website. Please copy linked files into .website_src/ paths to enable website rendering -->
+<section class="tex2jax_ignore mathjax_ignore" id="three-dimensional-3d-flow-past-airfoils">
+<h1>Three-dimensional (3D) flow past airfoils<a class="headerlink" href="#three-dimensional-3d-flow-past-airfoils" title="Link to this heading"></a></h1>
+<p>These benchmark cases use IDDES for turbulence modeling, and they simulate flow past a NACA 0021 airfoil. Input files are provided for 4 angles of attack: 30, 45, 60 and 90 degrees.</p>
+<p>The Nalu-Wind hash used was <code class="docutils literal notranslate"><span class="pre">4faf299</span></code>. Every case was run on Kestrel for at least 100 iterations to confirm input-file compatibility and provide profiling information in the log file footer. The 30 degree case was run with different numbers of nodes to establish scaling behavior, and the 45 degree case was run for 8000 steps to output force and moment results.</p>
+<p>These cases correspond to the following publication:
+Bidadi, S.; Vijayakumar, G.; Sharma, A.; Sprague, M.A. Mesh and model requirements for capturing deep-stall aerodynamics in low-Mach-number flows. J. Turbul. 2023, 24, 393–418.</p>
+<section id="running-the-simulation">
+<h2>Running the simulation<a class="headerlink" href="#running-the-simulation" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Download the benchmarks repository</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>--recursive<span class="w"> </span>git@github.com:Exawind/exawind-benchmarks.git<span class="w"> </span>BENCHMARKDIR
+</pre></div>
+</div>
+<p>Here BENCHMARKDIR is the location where you’d like the benchmark repository to be cloned and cases to be run. After cloning, download the meshes using DVC.
+The mesh files for each AOA can be found in the corresponding ‘input_files’ subdirectory.</p>
+</li>
+<li><p>To run one of AOA cases, load the ExaWind environment and execute the following command to run the simulation</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mpirun<span class="w"> </span>-np<span class="w"> </span>NCPU<span class="w"> </span>naluX<span class="w"> </span>-i<span class="w"> </span>naca0021_aoa&lt;AOA&gt;.yaml<span class="w"> </span>
+</pre></div>
+</div>
+<p>Here NCPU is the number of ranks to use in the simulation. Note the exact mpirun command to launch the case may differ between platforms, and might require a submission script to run on various clusters.</p>
+<p>In the above command, <AOA> must be replaced the desired value of AOA.</p>
+<p>The yaml input file for each AOA, can be found in the “input_files” subdirectory.</p>
+<p>Note that, the subdirectory ‘run_info’ under each of the AOA directories contains a slurm example file to run the Nalu-Wind simulation with the corresponding yaml file.</p>
+</li>
+</ol>
+</section>
+<section id="results">
+<h2>Results<a class="headerlink" href="#results" title="Link to this heading"></a></h2>
+<p><img alt="Cl" src="../../_images/NACA_0021_cl_240_257_x.png" /></p>
+<p><img alt="Cd" src="../../_images/NACA_0021_cd_240_257_x.png" /></p>
+<p>The above figure taken from the paper presents mesh resolution study results for the
+lift (<span class="math notranslate nohighlight">\(C_l\)</span>) and drag (<span class="math notranslate nohighlight">\(C_d\)</span>) profiles
+at <span class="math notranslate nohighlight">\(Re = 2.7\times10^5\)</span>. The number of spanwise points chosen are 41, 96 and 121,
+which correspond to 10, 24 and 30 cells per chord length.
+In the chordwise and wall-normal directions, the number of points are fixed at
+240 and 257, respectively. The finer meshes provide good agreement with experiments for all
+angles of attack except at <span class="math notranslate nohighlight">\(17^\circ\)</span>. At this angle, the peak in <span class="math notranslate nohighlight">\(C_l\)</span> is substantially
+higher and is delayed compared to Swalwell et al. (2001) experimental results.
+In the deep stall regime, the percentage difference between the CFD and experimental results
+is within or close to the <span class="math notranslate nohighlight">\(10\%\)</span> threshold level on the finer spanwise grids.
+The results show that, in the deep-stall regime, the IDDES model combined with atleast 24 cells per chord
+accurately predicts the aerodynamic loads.</p>
+<ol class="arabic simple">
+<li><p>The experimental results for the left and drag coefficients can be found in NACA-0021/experimental_data directory.</p></li>
+<li><p>The raw data from the Nalu-Wind runs corresponding to each AOA and spanwise resolution
+can be found in the raw_data subdirectory under each AOA directory.</p></li>
+<li><p>To generate the plots, execute the Python script in NACA-0021/plots. The script takes the location of
+the NACA-0021 directory as an argument.</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

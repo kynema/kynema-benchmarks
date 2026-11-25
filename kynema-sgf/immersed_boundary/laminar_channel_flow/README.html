@@ -1,0 +1,279 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Laminar channel flow with immersed boundaries &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Laminar channel flow with immersed boundaries</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/kynema-sgf/immersed_boundary/laminar_channel_flow/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <!-- This file is compiled into the website through .website_src. -->
+<section class="tex2jax_ignore mathjax_ignore" id="laminar-channel-flow-with-immersed-boundaries">
+<h1>Laminar channel flow with immersed boundaries<a class="headerlink" href="#laminar-channel-flow-with-immersed-boundaries" title="Link to this heading"></a></h1>
+<p>This verification case measures the spatial convergence of pressure-driven,
+single-phase laminar channel flow. It verifies both a flat channel aligned to
+cell faces and a <span class="math notranslate nohighlight">\(45^\circ\)</span> slanted channel represented with
+<code class="docutils literal notranslate"><span class="pre">ChannelBuilder</span></code> immersed boundaries. Non-immersed-boundary channel-flow
+simulations provide a solver reference.</p>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#channel-configurations">Channel configurations</a></p></li>
+<li><p><a class="reference internal" href="#verification-matrix">Verification matrix</a></p></li>
+<li><p><a class="reference internal" href="#analytical-solution">Analytical solution</a></p></li>
+<li><p><a class="reference internal" href="#prerequisites">Prerequisites</a></p></li>
+<li><p><a class="reference internal" href="#generate-solver-inputs">Generate solver inputs</a></p></li>
+<li><p><a class="reference internal" href="#run-the-solver">Run the solver</a></p></li>
+<li><p><a class="reference internal" href="#analyze-convergence">Analyze convergence</a></p></li>
+<li><p><a class="reference internal" href="#outputs">Outputs</a></p></li>
+<li><p><a class="reference internal" href="#results">Results</a></p></li>
+</ul>
+</section>
+<section id="channel-configurations">
+<h2>Channel configurations<a class="headerlink" href="#channel-configurations" title="Link to this heading"></a></h2>
+<p>In the flat channel configuration, the channel is aligned with the cell faces. This is accomplished by setting the channel position based on the coarsest mesh <span class="math notranslate nohighlight">\((N_x, N_y, N_z) = (32, 4, 32)\)</span>. This way each consecutive refinement remains aligned with the IB.
+<img alt="Flat-channel geometry" src="../../../_images/flat_geometry_setup.png" /></p>
+<p>In the slanted channel configuration, periodicty is maintained by defining three channels with the following start and end points for the <code class="docutils literal notranslate"><span class="pre">ChannelBuilder</span></code> segments:</p>
+<ol class="arabic simple">
+<li><p><span class="math notranslate nohighlight">\((0, 0, 0) \rightarrow (L_x, 0, L_z)\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\((-L_x/2, 0, L_z/2) \rightarrow (L_x/2, 0, 3L_z/2)\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\((L_x/2, 0, -L_z/2) \rightarrow (3L_x/2, 0, L_z/2)\)</span></p></li>
+</ol>
+<p>Channel 1 is shown in the figure below:</p>
+<p><img alt="Slanted-channel geometry" src="../../../_images/slanted_geometry_setup.png" /></p>
+</section>
+<section id="verification-matrix">
+<h2>Verification matrix<a class="headerlink" href="#verification-matrix" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Case</p></th>
+<th class="head"><p>Geometry</p></th>
+<th class="head"><p>Implementation</p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(N_x\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Flat IB</p></td>
+<td><p>Cell-face-aligned channel</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">default</span></code>, <code class="docutils literal notranslate"><span class="pre">original</span></code></p></td>
+<td><p>32, 64, 128, 256, 512, 1024</p></td>
+</tr>
+<tr class="row-odd"><td><p>Flat No IB</p></td>
+<td><p>Flat channel w/o IB</p></td>
+<td><p>N/A</p></td>
+<td><p>32, 64, 128, 256</p></td>
+</tr>
+<tr class="row-even"><td><p>Slanted IB</p></td>
+<td><p><span class="math notranslate nohighlight">\(45^\circ\)</span> channel</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">default</span></code>, <code class="docutils literal notranslate"><span class="pre">original</span></code></p></td>
+<td><p>32, 64, 128, 256, 512, 1024</p></td>
+</tr>
+</tbody>
+</table>
+<p>This produces 28 runs: 24 IB cases and four non-IB cases for reference. The
+<code class="docutils literal notranslate"><span class="pre">default</span></code> configuration utilizes the current <code class="docutils literal notranslate"><span class="pre">DragForcing</span></code> implementation. <code class="docutils literal notranslate"><span class="pre">original</span></code> sets <code class="docutils literal notranslate"><span class="pre">DragForcing.terrain_use_original_implementation</span> <span class="pre">=</span> <span class="pre">true</span></code>.</p>
+<p>Shared solver settings are provided in <code class="docutils literal notranslate"><span class="pre">base.inp</span></code>, and geometry-specific
+settings are in <code class="docutils literal notranslate"><span class="pre">flat-ib.inp</span></code>, <code class="docutils literal notranslate"><span class="pre">flat-no-ib.inp</span></code>, and <code class="docutils literal notranslate"><span class="pre">slanted.inp</span></code>.
+Each generated case explicitly includes the shared settings first and its
+geometry-specific settings second. Generated immersed-boundary cases set <code class="docutils literal notranslate"><span class="pre">DragForcing</span></code> switches explicitly.</p>
+</section>
+<section id="analytical-solution">
+<h2>Analytical solution<a class="headerlink" href="#analytical-solution" title="Link to this heading"></a></h2>
+<p>For channel height <span class="math notranslate nohighlight">\(H\)</span>, viscosity <span class="math notranslate nohighlight">\(\mu\)</span>, and axial body-force magnitude
+<span class="math notranslate nohighlight">\(F\)</span>, the fully developed Poiseuille solution is</p>
+<div class="math notranslate nohighlight">
+\[u(r) = U_{\max}\left(1 - \left(\frac{2r}{H}\right)^2\right),
+\qquad
+U_{\max} = \frac{F H^2}{8\mu}.\]</div>
+<p>For a centerline with unit tangent <span class="math notranslate nohighlight">\(\boldsymbol{t}=(t_x,t_z)\)</span>, the analyzer
+projects numerical velocity onto that tangent and calculates the perpendicular
+distance using the in-plane unit normal
+<span class="math notranslate nohighlight">\(\boldsymbol{n}=(-t_z,t_x)\)</span>. The analytical profile is zero outside the
+physical channel. Flat and no-IB reference errors are evaluated in the
+physical channel, <span class="math notranslate nohighlight">\(r \leq H/2\)</span>. Slanted-channel errors use
+<span class="math notranslate nohighlight">\(r \leq 0.6H\)</span> to include a small surrounding region while excluding the
+periodic companion segments; this measures any velocity leakage there against
+the zero analytical solution. The reported metric is relative <span class="math notranslate nohighlight">\(L_\infty\)</span>
+velocity error; the analyzer also reports the observed order between adjacent
+resolutions.</p>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">kynema-sgf-env</span></code> conda environment shared by the immersed boundary
+cases. It contains the Python, NumPy, Matplotlib, and <code class="docutils literal notranslate"><span class="pre">yt</span></code> dependencies
+required by the generator and analyzer.</p>
+<p>From this directory, create the environment when necessary and activate it:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>../kynema-sgf-env.yml
+conda<span class="w"> </span>activate<span class="w"> </span>kynema-sgf-env
+</pre></div>
+</div>
+<p>An available Kynema-SGF executable is also required to run the generated
+inputs. Solver launch and resource selection are intentionally controlled by
+the user or the target HPC system.</p>
+</section>
+<section id="generate-solver-inputs">
+<h2>Generate solver inputs<a class="headerlink" href="#generate-solver-inputs" title="Link to this heading"></a></h2>
+<p>Generate the complete matrix with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>python/generate_cases.py
+</pre></div>
+</div>
+<p>The command writes solver directories and a <code class="docutils literal notranslate"><span class="pre">manifest.json</span></code> file directly in
+<code class="docutils literal notranslate"><span class="pre">cases/</span></code>. Each directory contains <code class="docutils literal notranslate"><span class="pre">inputs.inp</span></code>, which includes the checked-in
+shared and geometry-specific inputs, then overrides <code class="docutils literal notranslate"><span class="pre">amr.n_cell</span></code> and, where
+needed, the drag-implementation settings.</p>
+</section>
+<section id="run-the-solver">
+<h2>Run the solver<a class="headerlink" href="#run-the-solver" title="Link to this heading"></a></h2>
+<p>Run the Kynema-SGF executable from every generated case directory with its
+<code class="docutils literal notranslate"><span class="pre">inputs.inp</span></code> file. For example, after generating the full matrix:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>cases/flat-default-n128
+srun<span class="w"> </span>-N<span class="w"> </span><span class="m">1</span><span class="w"> </span>--ntasks-per-node<span class="o">=</span><span class="m">50</span><span class="w"> </span>kynema_sgf<span class="w"> </span>inputs.inp
+</pre></div>
+</div>
+<p>The solver must produce AMReX plot-file directories named <code class="docutils literal notranslate"><span class="pre">plt*</span></code> in the same
+case directory. The analyzer selects the plot file with the largest numerical
+suffix, so each run may retain intermediate outputs and checkpoints.</p>
+</section>
+<section id="analyze-convergence">
+<h2>Analyze convergence<a class="headerlink" href="#analyze-convergence" title="Link to this heading"></a></h2>
+<p>After all jobs complete, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>python/analyze.py
+</pre></div>
+</div>
+<p>The analyzer reads <code class="docutils literal notranslate"><span class="pre">cases/manifest.json</span></code>, validates each required velocity
+component through <code class="docutils literal notranslate"><span class="pre">yt</span></code>, and loads each case’s final plot file. Cases without
+a plot file are reported and skipped.</p>
+</section>
+<section id="outputs">
+<h2>Outputs<a class="headerlink" href="#outputs" title="Link to this heading"></a></h2>
+<p>Analysis results are written to <code class="docutils literal notranslate"><span class="pre">cases/analysis/</span></code> by default:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">flat_error_summary.csv</span></code> (flat and no-IB reference cases) and
+<code class="docutils literal notranslate"><span class="pre">slanted_error_summary.csv</span></code> contain the case metadata, selected plot file, sampled
+cell count, absolute and relative <span class="math notranslate nohighlight">\(L_\infty\)</span> error, and observed order.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">flat_convergence.png</span></code> compares the two flat immersed-boundary implementations and overlays the no-IB reference (with a slope-2 line) when reference results are available.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slanted_convergence.png</span></code> compares the two slanted immersed-boundary implementations.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slanted_&lt;implementation&gt;_velocity_profiles.png</span></code> shows the numerical and analytical
+axial-velocity profiles and their error at 0.25L, 0.5L, and 0.75L along the
+centerline, for the finest slanted case with <span class="math notranslate nohighlight">\(N_x \leq 512\)</span>.</p></li>
+</ul>
+<p>For a converged steady solution, the reference series should demonstrate the
+expected second-order trend. The immersed-boundary series quantify how
+alignment, orientation, and implementation selection affect that behavior.</p>
+</section>
+<section id="results">
+<h2>Results<a class="headerlink" href="#results" title="Link to this heading"></a></h2>
+<p>Results were produced with <a class="reference external" href="https://github.com/kynema/kynema-sgf/releases/tag/v4.2.0">Kynema-SGF v4.2.0</a>. The default temporal implementation outperforms the original implementation for both flat and slanted channels. Both immersed-boundary implementations show <span class="math notranslate nohighlight">\(\mathcal{O}(h^{1/2})\)</span> convergence for the flat and slanted channels, with the default implementation consistently producing lower errors. The flat channel without immersed boundaries converges at the expected <span class="math notranslate nohighlight">\(\mathcal{O}(h^2)\)</span> rate.</p>
+<p><img alt="Flat-channel results" src="../../../_images/flat_convergence.png" /></p>
+<p><img alt="Slanted-channel results" src="../../../_images/slanted_convergence.png" /></p>
+<p>The velocity profiles for the slanted channel show that the default implementation produces a more accurate representation of the analytical solution, particularly near the channel walls. The original implementation overestimates the velocity everywhere, leading to larger errors in the velocity profiles.</p>
+<p><img alt="Slanted-channel original profile" src="../../../_images/slanted_original_velocity_profiles.png" />
+<img alt="Slanted-channel default profile" src="../../../_images/slanted_default_velocity_profiles.png" /></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

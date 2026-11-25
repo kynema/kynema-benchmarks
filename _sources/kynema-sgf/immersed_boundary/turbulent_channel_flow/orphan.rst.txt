@@ -1,0 +1,6 @@
+:orphan:
+
+.. toctree::
+   :hidden:
+
+   README

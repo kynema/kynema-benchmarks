@@ -1,0 +1,1846 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create ALM NREL 5MW case (RIGID) &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Create ALM NREL 5MW case (RIGID)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/kynema-sgf/actuator_line/NREL5MW_ALM_RIGID/setup/SetupALM_OFv402_RIGID.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="create-alm-nrel-5mw-case-rigid">
+<h1>Create ALM NREL 5MW case (RIGID)<a class="headerlink" href="#create-alm-nrel-5mw-case-rigid" title="Link to this heading"></a></h1>
+<p>This one uses OpenFAST v4.0.2 model of the NREL5MW using rigid blades and no controllers</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add any possible locations of amr-wind-frontend here</span>
+<span class="n">amrwindfedirs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'/projects/wind_uq/lcheung/amrwind-frontend'</span><span class="p">,</span>
+                 <span class="s1">'/projects/wind_uq/lcheung/amrwind-frontend/utilities'</span><span class="p">,</span>
+                <span class="p">]</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">amrwindfedirs</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># Load the libraries</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">amrwind_frontend</span><span class="w">  </span><span class="k">as</span><span class="w"> </span><span class="nn">amrwind</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">downloadOFmodel</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w">             </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">postproamrwindsample</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ppsample</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">utm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+
+<span class="c1"># Also ignore warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">)</span>
+
+<span class="c1"># Make all plots inline </span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/ascldap/users/lcheung/.local/lib/python3.9/site-packages/pandas/core/computation/expressions.py:21: UserWarning: Pandas requires version '2.8.4' or newer of 'numexpr' (version '2.8.1' currently installed).
+  from pandas.core.computation.check import NUMEXPR_INSTALLED
+/ascldap/users/lcheung/.local/lib/python3.9/site-packages/pandas/core/arrays/masked.py:60: UserWarning: Pandas requires version '1.3.6' or newer of 'bottleneck' (version '1.3.4' currently installed).
+  from pandas.core import (
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start the AMR-Wind case</span>
+<span class="n">case</span> <span class="o">=</span> <span class="n">amrwind</span><span class="o">.</span><span class="n">MyApp</span><span class="o">.</span><span class="n">init_nogui</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="load-the-turbine-model">
+<h2>Load the turbine model<a class="headerlink" href="#load-the-turbine-model" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">downloadrecipe</span>    <span class="o">=</span> <span class="s1">'nrel5mw_v402_rigid.yaml'</span>
+<span class="n">downloadturbmodel</span> <span class="o">=</span> <span class="kc">True</span>                       <span class="c1"># if True, download the turbine model from github</span>
+<span class="n">turbdeffile</span>       <span class="o">=</span> <span class="s1">'NREL5MW_v402_RIGID.yaml'</span>
+<span class="n">addturbdef</span>        <span class="o">=</span> <span class="kc">True</span>                       <span class="c1"># if True, add turbine model type to amr-wind-frontend turbine models</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">curdir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">downloadturbmodel</span><span class="p">:</span>
+    <span class="c1"># Load the turbine type from the download recipe file</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">downloadrecipe</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">yamldict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">downloadOFmodel</span><span class="o">.</span><span class="n">processModelDict</span><span class="p">(</span><span class="n">yamldict</span><span class="p">)</span>
+        
+<span class="k">if</span> <span class="n">addturbdef</span><span class="p">:</span>
+    <span class="c1"># Load the turbine type from the download recipe file</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">turbdeffile</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">yamldict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    
+        <span class="c1">#copy stuff over from the YAML definition</span>
+        <span class="n">turbinetype</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">get_default_turbinetypedict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">yamldict</span><span class="p">[</span><span class="s1">'turbines'</span><span class="p">][</span><span class="s1">'nre5mwFSIROSCO'</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">turbinetype</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="s1">' = '</span><span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="n">g</span><span class="p">))</span>
+        
+        <span class="n">turbinetype</span><span class="p">[</span><span class="s1">'turbinetype_filelocation'</span><span class="p">]</span>  <span class="o">=</span> <span class="n">curdir</span>
+    
+        <span class="c1"># Add it to the list of turbine types</span>
+        <span class="k">case</span><span class="o">.</span><span class="n">add_populatefromdict</span><span class="p">(</span><span class="s1">'listboxturbinetype'</span><span class="p">,</span> <span class="n">turbinetype</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>EXECUTING git clone -b v4.0.2 -n --depth=1 --filter=tree:0 git@github.com:OpenFAST/r-test.git
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Cloning into 'r-test'...
+Warning: the ECDSA host key for 'github.com' differs from the key for the IP address '140.82.112.4'
+Offending key for IP in /ascldap/users/lcheung/.ssh/known_hosts:364
+Matching host key in /ascldap/users/lcheung/.ssh/known_hosts:125
+Warning: No xauth data; using fake authentication data for X11 forwarding.
+X11 forwarding request failed on channel 0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>EXECUTING git sparse-checkout set --no-cone glue-codes/openfast/5MW_Baseline glue-codes/openfast-cpp/5MW_Land_DLL_WTurb_cpp
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning: the ECDSA host key for 'github.com' differs from the key for the IP address '140.82.112.4'
+Offending key for IP in /ascldap/users/lcheung/.ssh/known_hosts:364
+Matching host key in /ascldap/users/lcheung/.ssh/known_hosts:125
+Warning: No xauth data; using fake authentication data for X11 forwarding.
+X11 forwarding request failed on channel 0
+Warning: the ECDSA host key for 'github.com' differs from the key for the IP address '140.82.112.4'
+Offending key for IP in /ascldap/users/lcheung/.ssh/known_hosts:364
+Matching host key in /ascldap/users/lcheung/.ssh/known_hosts:125
+Warning: No xauth data; using fake authentication data for X11 forwarding.
+X11 forwarding request failed on channel 0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GITHASH = df9ee7d
+Editing NREL5MW_v402_RIGID/openfast-cpp/5MW_Land_DLL_WTurb_cpp/5MW_Land_DLL_WTurb_cpp.fst
+['EDFile', 'AeroFile']
+Editing /projects/wind_uq/lcheung/exawind-benchmarks.redoALM/amr-wind/actuator_line/NREL5MW_ALM_RIGID/setup/NREL5MW_v402_RIGID/openfast-cpp/5MW_Land_DLL_WTurb_cpp/NRELOffshrBsline5MW_Onshore_ElastoDyn.dat
+Editing /projects/wind_uq/lcheung/exawind-benchmarks.redoALM/amr-wind/actuator_line/NREL5MW_ALM_RIGID/setup/NREL5MW_v402_RIGID/openfast-cpp/5MW_Land_DLL_WTurb_cpp/NRELOffshrBsline5MW_Onshore_AeroDyn.dat
+NREL5MW_v402_RIGID.yaml
+Saved turbine setup to NREL5MW_v402_RIGID.yaml
+turbinetype_name = 'NREL5MW_v402_ALM_RIGID'
+turbinetype_comment = None
+Actuator_type = 'TurbineFastLine'
+Actuator_openfast_input_file = 'NREL5MW_v402_RIGID/openfast-cpp/5MW_Land_DLL_WTurb_cpp/5MW_Land_DLL_WTurb_cpp.fst'
+Actuator_rotor_diameter = 126
+Actuator_hub_height = 90
+Actuator_num_points_blade = 25
+Actuator_num_points_tower = 11
+Actuator_epsilon = [2.0, 2.0, 2.0]
+Actuator_epsilon_tower = [2.0, 2.0, 2.0]
+Actuator_openfast_start_time = 0.0
+Actuator_openfast_stop_time = 2000.0
+Actuator_nacelle_drag_coeff = 0.0
+Actuator_nacelle_area = 0.0
+Actuator_output_frequency = 10
+turbinetype_filedir = 'NREL5MW_v402_RIGID'
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0008608815426997245 DT - Recommended module time step (s) [EDITED]
+         1 CompElast - Compute structural dynamics (switch) {1=ElastoDyn 2=ElastoDyn + BeamDyn for blades 3=Simplified ElastoDyn} [EDITED]
+         2 CompInflow - Compute inflow wind velocities (switch) {0=still air 1=InflowWind 2=external from ExtInflow} [EDITED]
+         0 CompServo - Compute control and electrical-drive dynamics (switch) {0=None 1=ServoDyn} [EDITED]
+       1.0 AirDens - Air density (kg/m^3) [EDITED]
+0.0215220385675 DT_Out - Time step for tabular output (s) (or "default") [EDITED]
+         3 OutFileFmt - Format for tabular (time-marching) output file (switch) {1: text file [&lt;RootName&gt;.out] 2: binary file [&lt;RootName&gt;.outb] 3: both 1 and 2 4: uncompressed binary [&lt;RootName&gt;.outb 5: both 1 and 4} [EDITED]
+     False FlapDOF1 - First flapwise blade mode DOF (flag) [EDITED]
+     False FlapDOF2 - Second flapwise blade mode DOF (flag) [EDITED]
+     False EdgeDOF - First edgewise blade mode DOF (flag) [EDITED]
+     False DrTrDOF - Drivetrain rotational-flexibility DOF (flag) [EDITED]
+     False GenDOF - Generator DOF (flag) [EDITED]
+     False YawDOF - Yaw DOF (flag) [EDITED]
+     False TwFADOF1 - First fore-aft tower bending-mode DOF (flag) [EDITED]
+     False TwFADOF2 - Second fore-aft tower bending-mode DOF (flag) [EDITED]
+     False TwSSDOF1 - First side-to-side tower bending-mode DOF (flag) [EDITED]
+     False TwSSDOF2 - Second side-to-side tower bending-mode DOF (flag) [EDITED]
+       0.0 BlPitch(1) - Blade 1 initial pitch (degrees) [EDITED]
+       0.0 BlPitch(2) - Blade 2 initial pitch (degrees) [EDITED]
+       0.0 BlPitch(3) - Blade 3 initial pitch (degrees) [unused for 2 blades] [EDITED]
+      12.1 RotSpeed - Initial or fixed rotor speed (rpm) [EDITED]
+      30.0 NacYaw - Initial or fixed nacelle-yaw angle (degrees) [EDITED]
+         0 Wake_Mod - Wake/induction model (switch) {0=none 1=BEMT 3=OLAF} [Wake_Mod cannot be 2 or 3 when linearizing] [EDITED]
+         0 UA_Mod - Unsteady Aero Model Switch (switch) {0=Quasi-steady (no UA) 2=B-L Gonzalez 3=B-L Minnema/Pierce 4=B-L HGM 4-states 5=B-L HGM+vortex 5 states 6=Oye 7=Boeing-Vertol} [EDITED]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="load-the-precursor-data">
+<h2>Load the precursor data<a class="headerlink" href="#load-the-precursor-data" title="Link to this heading"></a></h2>
+<p><strong>Note</strong>: in order to run this notebook correctly, you need access to the precursor run directory, and the setup/postprocessing files in there.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Location of precursor run with boundary data</span>
+<span class="n">precursordir</span>  <span class="o">=</span> <span class="s1">'/gpfs/lcheung/HFM/exawind-benchmarks/convective_abl'</span>
+<span class="n">precursorsetup</span><span class="o">=</span> <span class="n">precursordir</span><span class="o">+</span><span class="s1">'/neutral_abl_bndry.inp'</span>
+
+<span class="c1"># Location of farm run dir</span>
+<span class="n">farmrundir</span>       <span class="o">=</span> <span class="s1">'../input_files'</span>              <span class="c1"># Put all </span>
+<span class="n">outputfile</span>       <span class="o">=</span> <span class="s1">'NREL5MW_ALM_RIGID_OFv402.inp'</span>
+<span class="n">noturboutputfile</span> <span class="o">=</span> <span class="s1">'NREL5MW_ALM_RIGID_noturb.inp'</span>
+<span class="n">BRoutputfile</span>     <span class="o">=</span> <span class="s1">'NREL5MW_BR.inp'</span>
+
+<span class="n">verbose</span>          <span class="o">=</span> <span class="kc">True</span>
+<span class="n">cwd</span>              <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+
+<span class="c1"># Go to the run directory</span>
+<span class="c1">#if os.path.exists(farmrundir):</span>
+<span class="c1">#    shutil.rmtree(farmrundir)</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">farmrundir</span><span class="p">,</span> <span class="n">exist_ok</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">farmrundir</span><span class="p">)</span>
+
+<span class="c1"># Load the starting point</span>
+<span class="k">case</span><span class="o">.</span><span class="n">loadAMRWindInput</span><span class="p">(</span><span class="n">precursorsetup</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CANNOT update: ABLMeanBoussinesq use forcechange=True in setval()
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>OrderedDict([('io.KE_int', '-1'),
+             ('io.line_plot_int', '1'),
+             ('CoriolisForcing.turn_off_vertical_force', 'True')])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tstart</span> <span class="o">=</span> <span class="mi">15000</span>
+<span class="n">tstop</span>  <span class="o">=</span> <span class="n">tstart</span><span class="o">+</span><span class="mi">1000</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">OFdt</span> <span class="o">=</span> <span class="mf">0.0008608815426997245</span>      <span class="c1"># Time step for OpenFAST beamdyn</span>
+
+<span class="c1"># Set the time constants</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'time.stop_time'</span><span class="p">,</span> <span class="n">tstop</span><span class="p">)</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'time.fixed_dt'</span><span class="p">,</span> <span class="n">OFdt</span><span class="o">*</span><span class="mi">20</span><span class="p">)</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'time.max_step'</span><span class="p">,</span>  <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># set verbosity</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'incflo.verbose'</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set the restart point</span>
+<span class="n">chkdir</span> <span class="o">=</span> <span class="n">precursordir</span><span class="o">+</span><span class="s1">'/chk30000/'</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'restart_file'</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">chkdir</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set the boundary input file parameters</span>
+<span class="n">ablstatfile</span> <span class="o">=</span> <span class="n">precursordir</span><span class="o">+</span><span class="s1">'/post_processing/abl_statistics30000.nc'</span>
+<span class="c1">#tavg        =  [tstart, tstop]</span>
+<span class="n">tavg</span>        <span class="o">=</span> <span class="p">[</span><span class="mi">15000</span><span class="p">,</span> <span class="mi">16000</span><span class="p">]</span>
+<span class="n">forcingdict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'ablstatfile'</span><span class="p">:</span><span class="n">ablstatfile</span><span class="p">,</span> <span class="s1">'tavg'</span><span class="p">:</span><span class="n">tavg</span><span class="p">}</span>
+<span class="n">inflowplanes</span><span class="o">=</span> <span class="p">[</span><span class="s1">'xlo'</span><span class="p">,</span> <span class="s1">'ylo'</span><span class="p">]</span> 
+<span class="n">bndryfiles</span>  <span class="o">=</span> <span class="n">precursordir</span><span class="o">+</span><span class="s1">'/bndry_file'</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">boundaryplane_restart</span><span class="p">(</span><span class="n">bndryfiles</span><span class="o">=</span><span class="n">bndryfiles</span><span class="p">,</span> 
+                           <span class="n">forcingdict</span><span class="o">=</span><span class="n">forcingdict</span><span class="p">,</span> 
+                           <span class="n">inflowplanes</span><span class="o">=</span><span class="n">inflowplanes</span><span class="p">,</span> 
+                           <span class="n">checkpointdir</span><span class="o">=</span><span class="n">chkdir</span><span class="p">,</span>
+                           <span class="n">autoset_wf_properties</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                           <span class="n">ABLMeanBoussinesqTemperatureFile</span><span class="o">=</span><span class="s1">'avg_theta.dat'</span><span class="p">,</span>
+                           <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SET ABL_bndry_io_mode = '1'
+SET ABL_bndry_file = '/gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/bndry_file'
+SET ABL_bndry_planes = ['xlo', 'ylo']
+SET is_periodicx = False
+SET is_periodicy = False
+SET xlo_type = 'mass_inflow'
+SET xlo_density = 1.0
+SET xlo_temperature = 0.0
+SET xlo_tke = 0.0
+SET ylo_type = 'mass_inflow'
+SET ylo_density = 1.0
+SET ylo_temperature = 0.0
+SET ylo_tke = 0.0
+SET xhi_type = 'pressure_outflow'
+SET xhi_density = None
+SET xhi_temperature = None
+SET xhi_tke = None
+SET yhi_type = 'pressure_outflow'
+SET yhi_density = None
+SET yhi_temperature = None
+SET yhi_tke = None
+SET BodyForce = True
+SET BodyForce_magnitude = [-0.0002743665569299508, 0.0011708563286373845, 0.0]
+SET ABLForcing = False
+SET ABLMeanBoussinesq = True
+Loading theta
+SET read_temperature_profile = True
+SET temperature_profile_filename = 'avg_theta.dat'
+Loading u
+Loading v
+Loading theta
+Loading hvelmag
+SET wf_velocity = [6.0977889026612075, 3.6097639593035185]
+SET wf_vmag = 7.103916682319445
+SET wf_theta = 300.20261481689676
+SET wall_shear_stress_type = 'local'
+SET checkpoint_start = 30000
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="add-the-turbine">
+<h2>Add the turbine<a class="headerlink" href="#add-the-turbine" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">turbbase_xy</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1800</span><span class="p">,</span> <span class="mi">1800</span><span class="p">]]</span>
+<span class="n">eps</span>         <span class="o">=</span> <span class="mf">2.0</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build the CSV input file of turbine layouts for amrwind-frontend</span>
+<span class="n">OFoptions</span><span class="o">=</span><span class="p">(</span>
+           <span class="c1"># "FSTparam_CompServo:0 "</span>
+           <span class="s2">"FSTparam_DT:0.0008608815426997245 "</span>
+           <span class="s2">"EDparam_YawDOF:False "</span>
+           <span class="s2">"AMRparam_Actuator_epsilon:[</span><span class="si">{eps}</span><span class="s2">;</span><span class="si">{eps}</span><span class="s2">;</span><span class="si">{eps}</span><span class="s2">] "</span>
+           <span class="s2">"AMRparam_Actuator_epsilon_tower:[</span><span class="si">{eps}</span><span class="s2">;</span><span class="si">{eps}</span><span class="s2">;</span><span class="si">{eps}</span><span class="s2">] "</span>
+           <span class="s2">"AMRparam_Actuator_openfast_stop_time:3000.0 "</span>
+          <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">)</span>
+<span class="c1">#"ADparam_TwrAero:False ADparam_TwrShadow:0 ADparam_TwrPotent:0 "</span>
+
+<span class="n">turbinescsv</span><span class="o">=</span><span class="s2">"""</span>
+<span class="s2"># CSV file should have columns with</span>
+<span class="s2"># name, x, y, type, yaw, hubheight, options</span>
+<span class="s2">"""</span>
+<span class="n">rowformat</span><span class="o">=</span><span class="s2">"T</span><span class="si">%i</span><span class="s2">, </span><span class="si">%f</span><span class="s2">, </span><span class="si">%f</span><span class="s2">, NREL5MW_v402_ALM_RIGID, 240.0, ,</span><span class="si">%s</span><span class="se">\n</span><span class="s2">"</span>
+<span class="k">for</span> <span class="n">iturb</span><span class="p">,</span> <span class="n">xy</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">turbbase_xy</span><span class="p">):</span>
+    <span class="n">turboptions</span>  <span class="o">=</span> <span class="n">OFoptions</span>
+    <span class="n">turbinescsv</span> <span class="o">+=</span> <span class="n">rowformat</span><span class="o">%</span><span class="p">(</span><span class="n">iturb</span><span class="p">,</span> <span class="n">xy</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xy</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">turboptions</span><span class="p">)</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'turbines_csvtextbox'</span><span class="p">,</span>  <span class="n">turbinescsv</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">turbinescsv</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># CSV file should have columns with
+# name, x, y, type, yaw, hubheight, options
+T0, 1800.000000, 1800.000000, NREL5MW_v402_ALM_RIGID, 240.0, ,FSTparam_DT:0.0008608815426997245 EDparam_YawDOF:False AMRparam_Actuator_epsilon:[2.0;2.0;2.0] AMRparam_Actuator_epsilon_tower:[2.0;2.0;2.0] AMRparam_Actuator_openfast_stop_time:3000.0 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'turbines_createnewdomain'</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'turbines_deleteprev'</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="k">case</span><span class="o">.</span><span class="n">turbines_createAllTurbines</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>docopy = True from /projects/wind_uq/lcheung/exawind-benchmarks.redoALM/amr-wind/actuator_line/NREL5MW_ALM_RIGID/setup/NREL5MW_v402_RIGID to T0_NREL5MW_v402_RIGID
+copy /projects/wind_uq/lcheung/exawind-benchmarks.redoALM/amr-wind/actuator_line/NREL5MW_ALM_RIGID/setup/NREL5MW_v402_RIGID failed
+T0_NREL5MW_v402_RIGID/openfast-cpp/5MW_Land_DLL_WTurb_cpp/5MW_Land_DLL_WTurb_cpp.fst
+Setting Actuator_epsilon to [2.0, 2.0, 2.0]
+Setting Actuator_epsilon_tower to [2.0, 2.0, 2.0]
+Setting Actuator_openfast_stop_time to 3000.0
+OrderedDict([('DT', 0.0008608815426997245)])
+OrderedDict([('YawDOF', 'False')])
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0008608815426997245 DT - Recommended module time step (s) [EDITED] [EDITED] [EDITED]
+     False YawDOF - Yaw DOF (flag) [EDITED] [EDITED] [EDITED]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">125</span><span class="p">)</span>
+
+<span class="c1"># Set any additional items to plot</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_turbines'</span><span class="p">]</span>        <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxactuator'</span><span class="p">]</span><span class="o">.</span><span class="n">getitemlist</span><span class="p">()</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_refineboxes'</span><span class="p">]</span>     <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxtagging'</span><span class="p">]</span><span class="o">.</span><span class="n">getitemlist</span><span class="p">()</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_sampleprobes'</span><span class="p">]</span>    <span class="o">=</span> <span class="p">[]</span> <span class="c1">#['p_hub']</span>
+<span class="k">case</span><span class="o">.</span><span class="n">plotDomain</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">iturb</span><span class="p">,</span> <span class="n">xy</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">turbbase_xy</span><span class="p">):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xy</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xy</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">'ks'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../../_images/b156609cc42953f18050c2de8db15bfe1a1053b486f0ed5eb83388a3e89e91ff.png" src="../../../../_images/b156609cc42953f18050c2de8db15bfe1a1053b486f0ed5eb83388a3e89e91ff.png" />
+</div>
+</div>
+</section>
+<section id="add-refinement-regions">
+<h2>Add refinement regions<a class="headerlink" href="#add-refinement-regions" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Add refinement zones</span>
+<span class="n">refinementcsv</span><span class="o">=</span><span class="s2">"""</span>
+<span class="s2"># CSV file should have columns with</span>
+<span class="s2"># level, upstream, downstream, lateral, below, above, options</span>
+<span class="s2">level, upstream, downstream, lateral, below, above, options</span>
+<span class="s2">0,     5,        10,         5,     0.75,   2,</span>
+<span class="s2">1,     2.5,      5,          2,     0.75,   1.5,</span>
+<span class="s2">2,     1.25,     2.0,        1.25,  0.75,   1.0, </span>
+<span class="s2">3,     0.75,     0.75,       1.00,  0.75,   0.75, </span>
+<span class="s2">"""</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'refine_csvtextbox'</span><span class="p">,</span> <span class="n">refinementcsv</span><span class="p">)</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'refine_deleteprev'</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Uncomment this to create refinement zones</span>
+<span class="k">case</span><span class="o">.</span><span class="n">refine_createAllZones</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">125</span><span class="p">)</span>
+
+<span class="c1"># Set any additional items to plot</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_turbines'</span><span class="p">]</span>        <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxactuator'</span><span class="p">]</span><span class="o">.</span><span class="n">getitemlist</span><span class="p">()</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_refineboxes'</span><span class="p">]</span>     <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxtagging'</span><span class="p">]</span><span class="o">.</span><span class="n">getitemlist</span><span class="p">()</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_sampleprobes'</span><span class="p">]</span>    <span class="o">=</span> <span class="p">[]</span> <span class="c1">#case.listboxpopupwindict['listboxsampling'].getitemlist() </span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_sampleprobes_style'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"{'markersize':.25, 'marker':'.', 'linestyle':'None', 'alpha':0.1}"</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_chooseview'</span><span class="p">]</span>      <span class="o">=</span> <span class="s1">'XY'</span>
+<span class="k">case</span><span class="o">.</span><span class="n">plotDomain</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../../_images/3bdf15f798798c558c28ec3ea01f0b39db661f2354c6f4897a169b4a76da8d4c.png" src="../../../../_images/3bdf15f798798c558c28ec3ea01f0b39db661f2354c6f4897a169b4a76da8d4c.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">estimateMeshSize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Refinement T0_level_0_zone: level 1: 6601240 cells
+Refinement T0_level_1_zone: level 2: 8641624 cells
+Refinement T0_level_2_zone: level 3: 14562737 cells
+Refinement T0_level_3_zone: level 4: 36870930 cells
+ESTIMATED MESH SIZE
+   Level       Ncells                      Cell Size
+       0     50331648             10.0 x 10.0 x 10.0
+       1      6601240                5.0 x 5.0 x 5.0
+       2      8641624                2.5 x 2.5 x 2.5
+       3     14562737             1.25 x 1.25 x 1.25
+       4     36870930          0.625 x 0.625 x 0.625
+  TOTAL:    117008179
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="add-sampling-planes">
+<h2>Add sampling planes<a class="headerlink" href="#add-sampling-planes" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># First delete everything that already exists</span>
+<span class="k">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxsampling'</span><span class="p">]</span><span class="o">.</span><span class="n">deleteall</span><span class="p">()</span>
+<span class="k">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxpostprosetup'</span><span class="p">]</span><span class="o">.</span><span class="n">deleteall</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## virtual metmast measurements</span>
+<span class="n">metmastpprosetup</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">get_default_postprosetupdict</span><span class="p">()</span>
+<span class="n">metmastpprosetup</span><span class="p">[</span><span class="s1">'postprocessing_setup_name'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'metmast_'</span>
+<span class="n">metmastpprosetup</span><span class="p">[</span><span class="s1">'postprocessing_setup_type'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Sampling'</span>
+<span class="n">metmastpprosetup</span><span class="p">[</span><span class="s1">'postprocessing_setup_output_frequency'</span><span class="p">]</span> <span class="o">=</span>  <span class="mi">1</span>
+<span class="n">metmastpprosetup</span><span class="p">[</span><span class="s1">'postprocessing_setup_fields'</span><span class="p">]</span>           <span class="o">=</span>  <span class="p">[</span><span class="s1">'velocity'</span><span class="p">,</span> <span class="s1">'temperature'</span><span class="p">,</span> <span class="s1">'tke'</span><span class="p">]</span>
+<span class="k">case</span><span class="o">.</span><span class="n">add_postprosetup</span><span class="p">(</span><span class="n">metmastpprosetup</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">sampledict</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">get_default_samplingdict</span><span class="p">()</span>
+<span class="n">sampledict</span><span class="p">[</span><span class="s1">'sampling_name'</span><span class="p">]</span>     <span class="o">=</span> <span class="s1">'virtualmast'</span>
+<span class="n">sampledict</span><span class="p">[</span><span class="s1">'sampling_outputto'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'metmast_'</span>
+<span class="n">sampledict</span><span class="p">[</span><span class="s1">'sampling_type'</span><span class="p">]</span>     <span class="o">=</span> <span class="s1">'LineSampler'</span>
+<span class="n">sampledict</span><span class="p">[</span><span class="s1">'sampling_l_num_points'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">sampledict</span><span class="p">[</span><span class="s1">'sampling_l_start'</span><span class="p">]</span>      <span class="o">=</span> <span class="p">[</span><span class="mi">1800</span><span class="p">,</span> <span class="mi">1800</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">]</span>
+<span class="n">sampledict</span><span class="p">[</span><span class="s1">'sampling_l_end'</span><span class="p">]</span>        <span class="o">=</span> <span class="p">[</span><span class="mi">1800</span><span class="p">,</span> <span class="mi">1800</span><span class="p">,</span> <span class="mf">200.0</span><span class="p">]</span>
+<span class="k">case</span><span class="o">.</span><span class="n">add_sampling</span><span class="p">(</span><span class="n">sampledict</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>postprocessing_setup_name: 'metmast_'
+postprocessing_setup_type: 'Sampling'
+postprocessing_setup_output_frequency: 1
+postprocessing_setup_fields: ['velocity', 'temperature', 'tke']
+postprocessing_setup_derived_fields: None
+postprocessing_setup_averaging_window: None
+postprocessing_setup_averaging_start_time: None
+postprocessing_setup_averaging_stop_time: None
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outputoptions</span><span class="o">=</span><span class="s2">"outputvars:velocity;tke;temperature outputfreq:50"</span>
+<span class="n">samplingcsv</span><span class="o">=</span><span class="s2">"""</span>
+<span class="s2"># CSV file should have columns withturbinescsv</span>
+<span class="s2"># name, type, upstream, downstream, lateral, below, above, n1, n2, options</span>
+<span class="s2">name,      type, upstream, downstream, lateral, below, above, n1, n2,  options</span>
+<span class="s2">rotorplaneUP,  rotorplane, 4,     0,       2,    0.7,      1,  11, 11,           usedx:0.05 outputto:rotorplaneUP_  orientation:nacdir </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:4</span>
+<span class="s2">rotorplaneDN,  rotorplane, 0,     10,      2,    0.7,      1,  11, 11,           usedx:0.05 outputto:rotorplaneDN_  orientation:nacdir </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:10</span>
+<span class="s2">nearwake,    rotorplane, 0,       2,      2,    0.7,      1,  11, 11,            usedx:0.05 outputto:nearwake_      orientation:nacdir </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:4</span>
+<span class="s2">turbsw,      streamwise, 4,       10,      0,    0.7,     1.5, 11, 11,           usedx:0.05 outputto:turbsw_        orientation:nacdir </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:0</span>
+<span class="s2">turbhh,      hubheight,  4,       10,      2,       0,    0,   11, 11,           usedx:0.05 outputto:turbhh_        orientation:nacdir </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:0</span>
+<span class="s2">turb027,     hubheight,  4,       10,      2,    0.50,    0,   11, 11,           usedx:0.05 outputto:turb027_       orientation:nacdir </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:0</span>
+<span class="s2">turb153,     hubheight,  4,       10,      2,    -0.50,  0.50, 11, 11,           usedx:0.05 outputto:turb153_       orientation:nacdir </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:0</span>
+<span class="s2">turb216,     hubheight,  4,       10,      2,      -1,    1,   11, 11,           usedx:0.05 outputto:turb216_       orientation:nacdir </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:0</span>
+<span class="s2">sideplane1,  streamwise, 4,       10,      2,    0.7,     1.5, 11, 11,           usedx:0.05 outputto:sideplane1_    orientation:nacdir </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:1</span>
+<span class="s2">sideplane2,  streamwise, 4,       10,     -2,    0.7,     1.5, 11, 11,           usedx:0.05 outputto:sideplane2_    orientation:nacdir </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:1</span>
+<span class="s2">XYdomain027, hubheight,  8,       8,       2,       0,    90,  11, 11, units:meter usedx:10 outputto:XYdomain_027_ orientation:nacdir center:specified centerx:100 centery:100 centerz:27 wholedomain:1  </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:0</span>
+<span class="s2">XYdomain090, hubheight,  8,       8,       2,       0,    90,  11, 11, units:meter usedx:10 outputto:XYdomain_090_ orientation:nacdir center:specified centerx:100 centery:100 centerz:90 wholedomain:1  </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:0</span>
+<span class="s2">XYdomain153, hubheight,  8,       8,       2,       0,    153, 11, 11, units:meter usedx:10 outputto:XYdomain_153_ orientation:nacdir center:specified centerx:100 centery:100 centerz:153 wholedomain:1  </span><span class="si">{outputoptions}</span><span class="s2"> noffsets:0</span>
+<span class="s2">"""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">outputoptions</span><span class="o">=</span><span class="n">outputoptions</span><span class="p">)</span>
+
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'sampling_csvtextbox'</span><span class="p">,</span> <span class="n">samplingcsv</span><span class="p">)</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'sampling_deleteprev'</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">sampling_createAllProbes</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="c1"># Print out existing list of turbines</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxsampling'</span><span class="p">]</span><span class="o">.</span><span class="n">getitemlist</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>['virtualmast', 'T0_rotorplaneUP', 'T0_rotorplaneDN', 'T0_nearwake', 'T0_turbsw', 'T0_turbhh', 'T0_turb027', 'T0_turb153', 'T0_turb216', 'T0_sideplane1', 'T0_sideplane2', 'Farm_XYdomain027', 'Farm_XYdomain090', 'Farm_XYdomain153']
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">125</span><span class="p">)</span>
+
+<span class="c1"># Set any additional items to plot</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_turbines'</span><span class="p">]</span>        <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxactuator'</span><span class="p">]</span><span class="o">.</span><span class="n">getitemlist</span><span class="p">()</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_refineboxes'</span><span class="p">]</span>     <span class="o">=</span> <span class="p">[]</span> <span class="c1">#case.listboxpopupwindict['listboxtagging'].getitemlist()</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_sampleprobes'</span><span class="p">]</span>    <span class="o">=</span> <span class="p">[</span><span class="s1">'T0_rotorplaneUP'</span><span class="p">,</span> <span class="s1">'T0_rotorplaneDN'</span><span class="p">,</span> <span class="s1">'T0_turbhh'</span><span class="p">,</span> <span class="s1">'T0_turbsw'</span><span class="p">,</span><span class="s1">'T0_nearwake'</span><span class="p">,</span>
+                                                               <span class="s1">'T0_sideplane1'</span><span class="p">,</span> <span class="s1">'T0_sideplane2'</span><span class="p">]</span> <span class="c1">#case.listboxpopupwindict['listboxsampling'].getitemlist()</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_sampleprobes_style'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"{'markersize':.25, 'marker':'.', 'linestyle':'None', 'alpha':0.1}"</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_chooseview'</span><span class="p">]</span>      <span class="o">=</span> <span class="s1">'XY'</span>
+<span class="k">case</span><span class="o">.</span><span class="n">plotDomain</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../../_images/216f092b46e999bdb9d6cf2b5e13183bfc164c006578a62441e358875add5540.png" src="../../../../_images/216f092b46e999bdb9d6cf2b5e13183bfc164c006578a62441e358875add5540.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">125</span><span class="p">)</span>
+
+<span class="c1"># Set any additional items to plot</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_turbines'</span><span class="p">]</span>        <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxactuator'</span><span class="p">]</span><span class="o">.</span><span class="n">getitemlist</span><span class="p">()</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_refineboxes'</span><span class="p">]</span>     <span class="o">=</span> <span class="p">[]</span> <span class="c1">#case.listboxpopupwindict['listboxtagging'].getitemlist()</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_sampleprobes'</span><span class="p">]</span>    <span class="o">=</span> <span class="p">[</span><span class="c1">#'T0_rotorplaneUP', 'T0_rotorplaneDN', 'T0_turbhh', 'T0_turbsw','T0_nearwake',</span>
+                                                               <span class="s1">'T0_turb027'</span><span class="p">,</span> <span class="s1">'T0_turbhh'</span><span class="p">,</span> <span class="s1">'T0_turb153'</span><span class="p">,</span><span class="s1">'T0_turb216'</span><span class="p">]</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_sampleprobes_style'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"{'markersize':.25, 'marker':'.', 'linestyle':'None', 'alpha':0.1}"</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_chooseview'</span><span class="p">]</span>      <span class="o">=</span> <span class="s1">'XZ'</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_sampleprobes_legend'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"{'title':'Sampling probes', 'fontsize':6, 'loc':'upper right', 'markerscale':6}"</span>
+<span class="k">case</span><span class="o">.</span><span class="n">plotDomain</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../../_images/7929154b1066b04e851bbc13b485e628191f7b73dcab4c3150fd8ac6f4899f7f.png" src="../../../../_images/7929154b1066b04e851bbc13b485e628191f7b73dcab4c3150fd8ac6f4899f7f.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">125</span><span class="p">)</span>
+
+<span class="c1"># Set any additional items to plot</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_turbines'</span><span class="p">]</span>        <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxactuator'</span><span class="p">]</span><span class="o">.</span><span class="n">getitemlist</span><span class="p">()</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_refineboxes'</span><span class="p">]</span>     <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxtagging'</span><span class="p">]</span><span class="o">.</span><span class="n">getitemlist</span><span class="p">()</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_sampleprobes'</span><span class="p">]</span>    <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">listboxpopupwindict</span><span class="p">[</span><span class="s1">'listboxsampling'</span><span class="p">]</span><span class="o">.</span><span class="n">getitemlist</span><span class="p">()</span> <span class="c1">#['p_hub']</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_sampleprobes_style'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"{'markersize':.1, 'marker':'.', 'linestyle':'None', 'alpha':0.1}"</span>
+<span class="k">case</span><span class="o">.</span><span class="n">popup_storteddata</span><span class="p">[</span><span class="s1">'plotdomain'</span><span class="p">][</span><span class="s1">'plot_chooseview'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'XZ'</span>
+<span class="k">case</span><span class="o">.</span><span class="n">plotDomain</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../../../_images/0af65fe3eb1a1b88f65fcf6fc5a3ea8a89c0aab744953d6300de634d6fd2d584.png" src="../../../../_images/0af65fe3eb1a1b88f65fcf6fc5a3ea8a89c0aab744953d6300de634d6fd2d584.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">validate</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-- Checking inputs --
+[ PASS] max_level:           max_level = 4 &gt;= 0
+[ PASS] dt &amp; CFL:            DT and CFL OK
+[ PASS] restart dir:         Restart directory /gpfs/lcheung/HFM/exawind-benchmarks/Neutral_ABL/chk30000 exists
+[ PASS] boundary plane dir:  Restart directory /gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/bndry_file exists
+[ PASS] Actuator physics:    incflo.physics and ICNS.source_terms OK for Actuators
+[ PASS] Actuator FST:T0      [T0_NREL5MW_v402_RIGID/openfast-cpp/5MW_Land_DLL_WTurb_cpp/5MW_Land_DLL_WTurb_cpp.fst] exists
+[ PASS] Actuator FST:T0      Actuator density=1.000000, matches incflo.density=1.000000
+[ PASS] Actuator FST:T0      CompInflow OK
+[ PASS] Actuator FST:T0      [T0_NREL5MW_v402_RIGID/openfast-cpp/5MW_Land_DLL_WTurb_cpp/NRELOffshrBsline5MW_Onshore_AeroDyn.dat] exists
+[ PASS] Actuator FST:T0      WakeMod=0 OK
+[ PASS] Actuator FST:T0      AirDens=1.000000, matches incflo.density=1.000000
+[ SKIP] Actuator FST:T0      Skipping DISCON density check
+[ PASS] Sampling probes:virtualmast is inside domain
+[ PASS] Sampling probes:T0_rotorplaneUP 
+[ PASS] Sampling probes:T0_rotorplaneDN 
+[ PASS] Sampling probes:T0_nearwake 
+[ PASS] Sampling probes:T0_turbsw 
+[ PASS] Sampling probes:T0_turbhh 
+[ PASS] Sampling probes:T0_turb027 
+[ PASS] Sampling probes:T0_turb153 
+[ PASS] Sampling probes:T0_turb216 
+[ PASS] Sampling probes:T0_sideplane1 
+[ PASS] Sampling probes:T0_sideplane2 
+[ PASS] Sampling probes:Farm_XYdomain027 
+[ PASS] Sampling probes:Farm_XYdomain090 
+[ PASS] Sampling probes:Farm_XYdomain153 
+
+Results: 
+ 25 PASS
+ 1 SKIP
+ 0 FAIL
+ 0 WARN
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#raise ValueError('Stop')</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="write-out-the-input-file">
+<h2>Write out the input file<a class="headerlink" href="#write-out-the-input-file" title="Link to this heading"></a></h2>
+<section id="for-the-w-turbine-alm-case">
+<h3>For the w/turbine ALM case<a class="headerlink" href="#for-the-w-turbine-alm-case" title="Link to this heading"></a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># For the w/turbine ALM case</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'amr.max_level'</span><span class="p">,</span>  <span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">case</span><span class="o">.</span><span class="n">writeAMRWindInput</span><span class="p">(</span><span class="n">outputfile</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># --- Simulation time control parameters ---
+time.stop_time                           = 16000.0             # Max (simulated) time to evolve [s]
+time.max_step                            = -1                  
+time.fixed_dt                            = 0.01721763085399449 # Fixed timestep size (in seconds). If negative, then time.cfl is used
+time.checkpoint_interval                 = 10000               
+time.checkpoint_start                    = 30000               
+incflo.physics                           = ABL Actuator        # List of physics models to include in simulation.
+incflo.verbose                           = 0                   
+io.check_file                            = chk                 
+io.restart_file                          = /gpfs/lcheung/HFM/exawind-benchmarks/Neutral_ABL/chk30000
+incflo.use_godunov                       = true                
+incflo.godunov_type                      = weno_z              
+turbulence.model                         = OneEqKsgsM84        
+TKE.source_terms                         = KsgsM84Src          
+nodal_proj.mg_rtol                       = 1e-08               
+nodal_proj.mg_atol                       = 1e-08               
+mac_proj.mg_rtol                         = 1e-08               
+mac_proj.mg_atol                         = 1e-08               
+diffusion.mg_rtol                        = 1e-08               
+diffusion.mg_atol                        = 1e-08               
+temperature_diffusion.mg_rtol            = 1e-08               
+temperature_diffusion.mg_atol            = 1e-08               
+incflo.gravity                           = 0.0 0.0 -9.81       # Gravitational acceleration vector (x,y,z) [m/s^2]
+incflo.density                           = 1.0                 # Fluid density [kg/m^3]
+transport.viscosity                      = 0.0                 # Fluid dynamic viscosity [kg/m-s]
+transport.laminar_prandtl                = 0.7                 # Laminar prandtl number
+transport.turbulent_prandtl              = 0.3333              # Turbulent prandtl number
+
+# --- Geometry and Mesh ---
+geometry.prob_lo                         = 0.0 0.0 0.0         
+geometry.prob_hi                         = 5120.0 5120.0 1920.0
+amr.n_cell                               = 512 512 192         # Number of cells in x, y, and z directions
+amr.max_level                            = 2                   
+geometry.is_periodic                     = 0 0 0               
+xlo.type                                 = mass_inflow         
+xlo.density                              = 1.0                 
+xlo.temperature                          = 0.0                 
+xlo.tke                                  = 0.0                 
+xhi.type                                 = pressure_outflow    
+ylo.type                                 = mass_inflow         
+ylo.density                              = 1.0                 
+ylo.temperature                          = 0.0                 
+ylo.tke                                  = 0.0                 
+yhi.type                                 = pressure_outflow    
+zlo.type                                 = wall_model          
+zlo.temperature_type                     = wall_model          
+zlo.tke_type                             = zero_gradient       
+zhi.type                                 = slip_wall           
+zhi.temperature_type                     = fixed_gradient      
+zhi.temperature                          = 0.003               
+
+# --- ABL parameters ---
+ICNS.source_terms                        = BoussinesqBuoyancy CoriolisForcing ActuatorForcing BodyForce ABLMeanBoussinesq
+ABL.stats_output_frequency               = 1                   
+ABL.stats_output_format                  = netcdf              
+ABL.tendency_forcing                     = false               
+ABL.bndry_io_mode                        = 1                   
+ABL.bndry_file                           = /gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/bndry_file
+ABL.bndry_planes                         = xlo ylo             
+ABL.bndry_output_start_time              = 15000.0             
+ABL.bndry_var_names                      = velocity temperature tke
+ABL.bndry_output_format                  = native              
+incflo.velocity                          = 9.8726896031426 5.7 0.0
+ABLForcing.abl_forcing_height            = 90.0                
+ABL.kappa                                = 0.41                
+ABL.normal_direction                     = 2                   
+ABL.surface_roughness_z0                 = 0.01                
+ABL.reference_temperature                = 300.0               
+ABL.surface_temp_rate                    = 0.0                 
+ABL.surface_temp_flux                    = 0.005               # Surface temperature flux [K-m/s]
+ABL.log_law_height                       = 5.0                 
+ABL.wall_shear_stress_type               = local               
+ABL.wf_velocity                          = 6.0977889026612075 3.6097639593035185
+ABL.wf_vmag                              = 7.103916682319445   
+ABL.wf_theta                             = 300.20261481689676  
+CoriolisForcing.latitude                 = 40.0                
+CoriolisForcing.rotational_time_period   = 86400.0             
+CoriolisForcing.north_vector             = 0.0 1.0 0.0         
+CoriolisForcing.east_vector              = 1.0 0.0 0.0         
+BoussinesqBuoyancy.reference_temperature = 300.0               
+BodyForce.magnitude                      = -0.0002743665569299508 0.0011708563286373845 0.0
+ABL.temperature_heights                  = 0.0 750.0 850.0 2000.0
+ABL.temperature_values                   = 300.0 300.0 308.0 311.45
+ABLMeanBoussinesq.read_temperature_profile = true                
+ABLMeanBoussinesq.temperature_profile_filename = avg_theta.dat       
+ABL.perturb_velocity                     = true                
+ABL.perturb_ref_height                   = 50.0                
+ABL.Uperiods                             = 4.0                 
+ABL.Vperiods                             = 4.0                 
+ABL.deltaU                               = 1.0                 
+ABL.deltaV                               = 1.0                 
+ABL.perturb_temperature                  = true                
+ABL.theta_amplitude                      = 0.8                 
+ABL.cutoff_height                        = 50.0                
+time.plot_interval                       = 10000               
+io.plot_file                             = plt                 
+
+#---- tagging defs ----
+tagging.labels                           = T0_level_0_zone T0_level_1_zone T0_level_2_zone T0_level_3_zone
+tagging.T0_level_0_zone.type             = GeometryRefinement  
+tagging.T0_level_0_zone.shapes           = T0_level_0_zone     
+tagging.T0_level_0_zone.level            = 0                   
+tagging.T0_level_0_zone.T0_level_0_zone.type = box                 
+tagging.T0_level_0_zone.T0_level_0_zone.origin = 1569.4039956158035 939.4039956158036 -4.5
+tagging.T0_level_0_zone.T0_level_0_zone.xaxis = 1636.788013152589 944.9999999999998 0.0
+tagging.T0_level_0_zone.T0_level_0_zone.yaxis = -629.9999999999999 1091.1920087683927 -0.0
+tagging.T0_level_0_zone.T0_level_0_zone.zaxis = 0.0 0.0 346.5       
+tagging.T0_level_1_zone.type             = GeometryRefinement  
+tagging.T0_level_1_zone.shapes           = T0_level_1_zone     
+tagging.T0_level_1_zone.level            = 1                   
+tagging.T0_level_1_zone.T0_level_1_zone.type = box                 
+tagging.T0_level_1_zone.T0_level_1_zone.origin = 1653.2019978079018 1424.2615982463215 -4.5
+tagging.T0_level_1_zone.T0_level_1_zone.xaxis = 818.3940065762945 472.4999999999999 0.0
+tagging.T0_level_1_zone.T0_level_1_zone.yaxis = -251.99999999999994 436.47680350735703 -0.0
+tagging.T0_level_1_zone.T0_level_1_zone.zaxis = 0.0 0.0 283.5       
+tagging.T0_level_2_zone.type             = GeometryRefinement  
+tagging.T0_level_2_zone.shapes           = T0_level_2_zone     
+tagging.T0_level_2_zone.level            = 2                   
+tagging.T0_level_2_zone.T0_level_2_zone.type = box                 
+tagging.T0_level_2_zone.T0_level_2_zone.origin = 1742.350998903951 1584.850998903951 -4.5
+tagging.T0_level_2_zone.T0_level_2_zone.xaxis = 354.6374028497276 204.74999999999994 0.0
+tagging.T0_level_2_zone.T0_level_2_zone.yaxis = -157.49999999999997 272.7980021920982 -0.0
+tagging.T0_level_2_zone.T0_level_2_zone.zaxis = 0.0 0.0 220.5       
+tagging.T0_level_3_zone.type             = GeometryRefinement  
+tagging.T0_level_3_zone.shapes           = T0_level_3_zone     
+tagging.T0_level_3_zone.level            = 3                   
+tagging.T0_level_3_zone.T0_level_3_zone.type = box                 
+tagging.T0_level_3_zone.T0_level_3_zone.origin = 1781.1605993423705 1643.6307991231608 -4.5
+tagging.T0_level_3_zone.T0_level_3_zone.xaxis = 163.6788013152589 94.49999999999999 0.0
+tagging.T0_level_3_zone.T0_level_3_zone.yaxis = -125.99999999999997 218.23840175367852 -0.0
+tagging.T0_level_3_zone.T0_level_3_zone.zaxis = 0.0 0.0 189.0       
+
+#---- actuator defs ----
+Actuator.labels                          = T0                  
+Actuator.T0.type                         = TurbineFastLine     
+Actuator.T0.openfast_input_file          = T0_NREL5MW_v402_RIGID/openfast-cpp/5MW_Land_DLL_WTurb_cpp/5MW_Land_DLL_WTurb_cpp.fst
+Actuator.T0.base_position                = 1800.0 1800.0 0.0   
+Actuator.T0.rotor_diameter               = 126.0               
+Actuator.T0.hub_height                   = 90.0                
+Actuator.T0.num_points_blade             = 25                  
+Actuator.T0.num_points_tower             = 11                  
+Actuator.T0.epsilon                      = 2.0 2.0 2.0         
+Actuator.T0.epsilon_tower                = 2.0 2.0 2.0         
+Actuator.T0.openfast_start_time          = 0.0                 
+Actuator.T0.openfast_stop_time           = 3000.0              
+Actuator.T0.fllc                         = false               
+Actuator.T0.nacelle_drag_coeff           = 0.0                 
+Actuator.T0.nacelle_area                 = 0.0                 
+Actuator.T0.yaw                          = 240.0               
+Actuator.T0.output_frequency             = 10                  
+Actuator.T0.density                      = 1.0                 
+Actuator.T0.num_blades                   = 3                   
+Actuator.T0.use_tip_correction           = true                
+Actuator.T0.use_root_correction          = true                
+
+#---- postprocessing defs ----
+incflo.post_processing                   = metmast_ rotorplaneUP_ rotorplaneDN_ nearwake_ turbsw_ turbhh_ turb027_ turb153_ turb216_ sideplane1_ sideplane2_ XYdomain_027_ XYdomain_090_ XYdomain_153_
+metmast_.type                            = Sampling            
+metmast_.output_frequency                = 1                   
+metmast_.fields                          = velocity temperature tke
+rotorplaneUP_.type                       = Sampling            
+rotorplaneUP_.output_frequency           = 50                  
+rotorplaneUP_.fields                     = velocity temperature tke
+rotorplaneDN_.type                       = Sampling            
+rotorplaneDN_.output_frequency           = 50                  
+rotorplaneDN_.fields                     = velocity temperature tke
+nearwake_.type                           = Sampling            
+nearwake_.output_frequency               = 50                  
+nearwake_.fields                         = velocity temperature tke
+turbsw_.type                             = Sampling            
+turbsw_.output_frequency                 = 50                  
+turbsw_.fields                           = velocity temperature tke
+turbhh_.type                             = Sampling            
+turbhh_.output_frequency                 = 50                  
+turbhh_.fields                           = velocity temperature tke
+turb027_.type                            = Sampling            
+turb027_.output_frequency                = 50                  
+turb027_.fields                          = velocity temperature tke
+turb153_.type                            = Sampling            
+turb153_.output_frequency                = 50                  
+turb153_.fields                          = velocity temperature tke
+turb216_.type                            = Sampling            
+turb216_.output_frequency                = 50                  
+turb216_.fields                          = velocity temperature tke
+sideplane1_.type                         = Sampling            
+sideplane1_.output_frequency             = 50                  
+sideplane1_.fields                       = velocity temperature tke
+sideplane2_.type                         = Sampling            
+sideplane2_.output_frequency             = 50                  
+sideplane2_.fields                       = velocity temperature tke
+XYdomain_027_.type                       = Sampling            
+XYdomain_027_.output_frequency           = 50                  
+XYdomain_027_.fields                     = velocity temperature tke
+XYdomain_090_.type                       = Sampling            
+XYdomain_090_.output_frequency           = 50                  
+XYdomain_090_.fields                     = velocity temperature tke
+XYdomain_153_.type                       = Sampling            
+XYdomain_153_.output_frequency           = 50                  
+XYdomain_153_.fields                     = velocity temperature tke
+
+#---- sample defs ----
+metmast_.labels                          = virtualmast         
+rotorplaneUP_.labels                     = T0_rotorplaneUP     
+rotorplaneDN_.labels                     = T0_rotorplaneDN     
+nearwake_.labels                         = T0_nearwake         
+turbsw_.labels                           = T0_turbsw           
+turbhh_.labels                           = T0_turbhh           
+turb027_.labels                          = T0_turb027          
+turb153_.labels                          = T0_turb153          
+turb216_.labels                          = T0_turb216          
+sideplane1_.labels                       = T0_sideplane1       
+sideplane2_.labels                       = T0_sideplane2       
+XYdomain_027_.labels                     = Farm_XYdomain027    
+XYdomain_090_.labels                     = Farm_XYdomain090    
+XYdomain_153_.labels                     = Farm_XYdomain153    
+metmast_.virtualmast.type                = LineSampler         
+metmast_.virtualmast.num_points          = 20                  
+metmast_.virtualmast.start               = 1800.0 1800.0 10.0  
+metmast_.virtualmast.end                 = 1800.0 1800.0 200.0 
+rotorplaneUP_.T0_rotorplaneUP.type       = PlaneSampler        
+rotorplaneUP_.T0_rotorplaneUP.num_points = 81 35               
+rotorplaneUP_.T0_rotorplaneUP.origin     = 1489.523196492643 1329.7615982463215 1.8000000000000114
+rotorplaneUP_.T0_rotorplaneUP.axis1      = -251.99999999999994 436.47680350735703 -0.0
+rotorplaneUP_.T0_rotorplaneUP.axis2      = 0.0 0.0 214.2       
+rotorplaneUP_.T0_rotorplaneUP.offset_vector = 0.8660254037844386 0.4999999999999999 0.0
+rotorplaneUP_.T0_rotorplaneUP.offsets    = 0.0 126.0 252.0 378.0 504.0
+rotorplaneDN_.T0_rotorplaneDN.type       = PlaneSampler        
+rotorplaneDN_.T0_rotorplaneDN.num_points = 81 35               
+rotorplaneDN_.T0_rotorplaneDN.origin     = 1926.0 1581.7615982463215 1.8000000000000114
+rotorplaneDN_.T0_rotorplaneDN.axis1      = -251.99999999999994 436.47680350735703 -0.0
+rotorplaneDN_.T0_rotorplaneDN.axis2      = 0.0 0.0 214.2       
+rotorplaneDN_.T0_rotorplaneDN.offset_vector = 0.8660254037844386 0.4999999999999999 0.0
+rotorplaneDN_.T0_rotorplaneDN.offsets    = 0.0 126.0 252.0 378.0 504.0 630.0 756.0 882.0 1008.0 1134.0 1260.0
+nearwake_.T0_nearwake.type               = PlaneSampler        
+nearwake_.T0_nearwake.num_points         = 81 35               
+nearwake_.T0_nearwake.origin             = 1926.0 1581.7615982463215 1.8000000000000114
+nearwake_.T0_nearwake.axis1              = -251.99999999999994 436.47680350735703 -0.0
+nearwake_.T0_nearwake.axis2              = 0.0 0.0 214.2       
+nearwake_.T0_nearwake.offset_vector      = 0.8660254037844386 0.4999999999999999 0.0
+nearwake_.T0_nearwake.offsets            = 0.0 63.0 126.0 189.0 252.0
+turbsw_.T0_turbsw.type                   = PlaneSampler        
+turbsw_.T0_turbsw.num_points             = 281 45              
+turbsw_.T0_turbsw.origin                 = 1363.523196492643 1548.0 1.8000000000000114
+turbsw_.T0_turbsw.axis1                  = 1527.6688122757496 881.9999999999998 0.0
+turbsw_.T0_turbsw.axis2                  = 0.0 0.0 277.2       
+turbsw_.T0_turbsw.offset_vector          = 0.0 0.0 0.0         
+turbhh_.T0_turbhh.type                   = PlaneSampler        
+turbhh_.T0_turbhh.num_points             = 281 81              
+turbhh_.T0_turbhh.origin                 = 1489.523196492643 1329.7615982463215 90.0
+turbhh_.T0_turbhh.axis1                  = 1527.6688122757496 881.9999999999998 0.0
+turbhh_.T0_turbhh.axis2                  = -251.99999999999994 436.47680350735703 -0.0
+turbhh_.T0_turbhh.offset_vector          = 0.0 0.0 0.0         
+turb027_.T0_turb027.type                 = PlaneSampler        
+turb027_.T0_turb027.num_points           = 281 81              
+turb027_.T0_turb027.origin               = 1489.523196492643 1329.7615982463215 27.0
+turb027_.T0_turb027.axis1                = 1527.6688122757496 881.9999999999998 0.0
+turb027_.T0_turb027.axis2                = -251.99999999999994 436.47680350735703 -0.0
+turb027_.T0_turb027.offset_vector        = 0.0 0.0 0.0         
+turb153_.T0_turb153.type                 = PlaneSampler        
+turb153_.T0_turb153.num_points           = 281 81              
+turb153_.T0_turb153.origin               = 1489.523196492643 1329.7615982463215 153.0
+turb153_.T0_turb153.axis1                = 1527.6688122757496 881.9999999999998 0.0
+turb153_.T0_turb153.axis2                = -251.99999999999994 436.47680350735703 -0.0
+turb153_.T0_turb153.offset_vector        = 0.0 0.0 0.0         
+turb216_.T0_turb216.type                 = PlaneSampler        
+turb216_.T0_turb216.num_points           = 281 81              
+turb216_.T0_turb216.origin               = 1489.523196492643 1329.7615982463215 216.0
+turb216_.T0_turb216.axis1                = 1527.6688122757496 881.9999999999998 0.0
+turb216_.T0_turb216.axis2                = -251.99999999999994 436.47680350735703 -0.0
+turb216_.T0_turb216.offset_vector        = 0.0 0.0 0.0         
+sideplane1_.T0_sideplane1.type           = PlaneSampler        
+sideplane1_.T0_sideplane1.num_points     = 281 45              
+sideplane1_.T0_sideplane1.origin         = 1363.523196492643 1548.0 1.8000000000000114
+sideplane1_.T0_sideplane1.axis1          = 1527.6688122757496 881.9999999999998 0.0
+sideplane1_.T0_sideplane1.axis2          = 0.0 0.0 277.2       
+sideplane1_.T0_sideplane1.offset_vector  = -0.4999999999999999 0.8660254037844386 -0.0
+sideplane1_.T0_sideplane1.offsets        = 0.0 252.0           
+sideplane2_.T0_sideplane2.type           = PlaneSampler        
+sideplane2_.T0_sideplane2.num_points     = 281 45              
+sideplane2_.T0_sideplane2.origin         = 1363.523196492643 1548.0 1.8000000000000114
+sideplane2_.T0_sideplane2.axis1          = 1527.6688122757496 881.9999999999998 0.0
+sideplane2_.T0_sideplane2.axis2          = 0.0 0.0 277.2       
+sideplane2_.T0_sideplane2.offset_vector  = -0.4999999999999999 0.8660254037844386 -0.0
+sideplane2_.T0_sideplane2.offsets        = 0.0 -252.0          
+XYdomain_027_.Farm_XYdomain027.type      = PlaneSampler        
+XYdomain_027_.Farm_XYdomain027.num_points = 513 513             
+XYdomain_027_.Farm_XYdomain027.origin    = 0.0001 0.0001 27.0  
+XYdomain_027_.Farm_XYdomain027.axis1     = 5119.9998 0.0 0.0   
+XYdomain_027_.Farm_XYdomain027.axis2     = 0.0 5119.9998 0.0   
+XYdomain_027_.Farm_XYdomain027.offset_vector = 0.0 0.0 0.0         
+XYdomain_090_.Farm_XYdomain090.type      = PlaneSampler        
+XYdomain_090_.Farm_XYdomain090.num_points = 513 513             
+XYdomain_090_.Farm_XYdomain090.origin    = 0.0001 0.0001 90.0  
+XYdomain_090_.Farm_XYdomain090.axis1     = 5119.9998 0.0 0.0   
+XYdomain_090_.Farm_XYdomain090.axis2     = 0.0 5119.9998 0.0   
+XYdomain_090_.Farm_XYdomain090.offset_vector = 0.0 0.0 0.0         
+XYdomain_153_.Farm_XYdomain153.type      = PlaneSampler        
+XYdomain_153_.Farm_XYdomain153.num_points = 513 513             
+XYdomain_153_.Farm_XYdomain153.origin    = 0.0001 0.0001 153.0 
+XYdomain_153_.Farm_XYdomain153.axis1     = 5119.9998 0.0 0.0   
+XYdomain_153_.Farm_XYdomain153.axis2     = 0.0 5119.9998 0.0   
+XYdomain_153_.Farm_XYdomain153.offset_vector = 0.0 0.0 0.0         
+
+#---- extra params ----
+io.KE_int                                = -1                  
+io.line_plot_int                         = 1                   
+CoriolisForcing.turn_off_vertical_force  = True                
+#== END AMR-WIND INPUT ==
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="for-the-without-turbine-alm-case">
+<h3>For the without turbine ALM case<a class="headerlink" href="#for-the-without-turbine-alm-case" title="Link to this heading"></a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># For the w/o turbine ALM case</span>
+<span class="k">case</span><span class="o">.</span><span class="n">removeturbines</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">case</span><span class="o">.</span><span class="n">writeAMRWindInput</span><span class="p">(</span><span class="n">noturboutputfile</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># --- Simulation time control parameters ---
+time.stop_time                           = 16000.0             # Max (simulated) time to evolve [s]
+time.max_step                            = -1                  
+time.fixed_dt                            = 0.01721763085399449 # Fixed timestep size (in seconds). If negative, then time.cfl is used
+time.checkpoint_interval                 = 10000               
+time.checkpoint_start                    = 30000               
+incflo.physics                           = ABL                 # List of physics models to include in simulation.
+incflo.verbose                           = 0                   
+io.check_file                            = chk                 
+io.restart_file                          = /gpfs/lcheung/HFM/exawind-benchmarks/Neutral_ABL/chk30000
+incflo.use_godunov                       = true                
+incflo.godunov_type                      = weno_z              
+turbulence.model                         = OneEqKsgsM84        
+TKE.source_terms                         = KsgsM84Src          
+nodal_proj.mg_rtol                       = 1e-08               
+nodal_proj.mg_atol                       = 1e-08               
+mac_proj.mg_rtol                         = 1e-08               
+mac_proj.mg_atol                         = 1e-08               
+diffusion.mg_rtol                        = 1e-08               
+diffusion.mg_atol                        = 1e-08               
+temperature_diffusion.mg_rtol            = 1e-08               
+temperature_diffusion.mg_atol            = 1e-08               
+incflo.gravity                           = 0.0 0.0 -9.81       # Gravitational acceleration vector (x,y,z) [m/s^2]
+incflo.density                           = 1.0                 # Fluid density [kg/m^3]
+transport.viscosity                      = 0.0                 # Fluid dynamic viscosity [kg/m-s]
+transport.laminar_prandtl                = 0.7                 # Laminar prandtl number
+transport.turbulent_prandtl              = 0.3333              # Turbulent prandtl number
+
+# --- Geometry and Mesh ---
+geometry.prob_lo                         = 0.0 0.0 0.0         
+geometry.prob_hi                         = 5120.0 5120.0 1920.0
+amr.n_cell                               = 512 512 192         # Number of cells in x, y, and z directions
+amr.max_level                            = 2                   
+geometry.is_periodic                     = 0 0 0               
+xlo.type                                 = mass_inflow         
+xlo.density                              = 1.0                 
+xlo.temperature                          = 0.0                 
+xlo.tke                                  = 0.0                 
+xhi.type                                 = pressure_outflow    
+ylo.type                                 = mass_inflow         
+ylo.density                              = 1.0                 
+ylo.temperature                          = 0.0                 
+ylo.tke                                  = 0.0                 
+yhi.type                                 = pressure_outflow    
+zlo.type                                 = wall_model          
+zlo.temperature_type                     = wall_model          
+zlo.tke_type                             = zero_gradient       
+zhi.type                                 = slip_wall           
+zhi.temperature_type                     = fixed_gradient      
+zhi.temperature                          = 0.003               
+
+# --- ABL parameters ---
+ICNS.source_terms                        = BoussinesqBuoyancy CoriolisForcing BodyForce ABLMeanBoussinesq
+ABL.stats_output_frequency               = 1                   
+ABL.stats_output_format                  = netcdf              
+ABL.tendency_forcing                     = false               
+ABL.bndry_io_mode                        = 1                   
+ABL.bndry_file                           = /gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/bndry_file
+ABL.bndry_planes                         = xlo ylo             
+ABL.bndry_output_start_time              = 15000.0             
+ABL.bndry_var_names                      = velocity temperature tke
+ABL.bndry_output_format                  = native              
+incflo.velocity                          = 9.8726896031426 5.7 0.0
+ABLForcing.abl_forcing_height            = 90.0                
+ABL.kappa                                = 0.41                
+ABL.normal_direction                     = 2                   
+ABL.surface_roughness_z0                 = 0.01                
+ABL.reference_temperature                = 300.0               
+ABL.surface_temp_rate                    = 0.0                 
+ABL.surface_temp_flux                    = 0.005               # Surface temperature flux [K-m/s]
+ABL.log_law_height                       = 5.0                 
+ABL.wall_shear_stress_type               = local               
+ABL.wf_velocity                          = 6.0977889026612075 3.6097639593035185
+ABL.wf_vmag                              = 7.103916682319445   
+ABL.wf_theta                             = 300.20261481689676  
+CoriolisForcing.latitude                 = 40.0                
+CoriolisForcing.rotational_time_period   = 86400.0             
+CoriolisForcing.north_vector             = 0.0 1.0 0.0         
+CoriolisForcing.east_vector              = 1.0 0.0 0.0         
+BoussinesqBuoyancy.reference_temperature = 300.0               
+BodyForce.magnitude                      = -0.0002743665569299508 0.0011708563286373845 0.0
+ABL.temperature_heights                  = 0.0 750.0 850.0 2000.0
+ABL.temperature_values                   = 300.0 300.0 308.0 311.45
+ABLMeanBoussinesq.read_temperature_profile = true                
+ABLMeanBoussinesq.temperature_profile_filename = avg_theta.dat       
+ABL.perturb_velocity                     = true                
+ABL.perturb_ref_height                   = 50.0                
+ABL.Uperiods                             = 4.0                 
+ABL.Vperiods                             = 4.0                 
+ABL.deltaU                               = 1.0                 
+ABL.deltaV                               = 1.0                 
+ABL.perturb_temperature                  = true                
+ABL.theta_amplitude                      = 0.8                 
+ABL.cutoff_height                        = 50.0                
+time.plot_interval                       = 10000               
+io.plot_file                             = plt                 
+
+#---- tagging defs ----
+tagging.labels                           = T0_level_0_zone T0_level_1_zone T0_level_2_zone T0_level_3_zone
+tagging.T0_level_0_zone.type             = GeometryRefinement  
+tagging.T0_level_0_zone.shapes           = T0_level_0_zone     
+tagging.T0_level_0_zone.level            = 0                   
+tagging.T0_level_0_zone.T0_level_0_zone.type = box                 
+tagging.T0_level_0_zone.T0_level_0_zone.origin = 1569.4039956158035 939.4039956158036 -4.5
+tagging.T0_level_0_zone.T0_level_0_zone.xaxis = 1636.788013152589 944.9999999999998 0.0
+tagging.T0_level_0_zone.T0_level_0_zone.yaxis = -629.9999999999999 1091.1920087683927 -0.0
+tagging.T0_level_0_zone.T0_level_0_zone.zaxis = 0.0 0.0 346.5       
+tagging.T0_level_1_zone.type             = GeometryRefinement  
+tagging.T0_level_1_zone.shapes           = T0_level_1_zone     
+tagging.T0_level_1_zone.level            = 1                   
+tagging.T0_level_1_zone.T0_level_1_zone.type = box                 
+tagging.T0_level_1_zone.T0_level_1_zone.origin = 1653.2019978079018 1424.2615982463215 -4.5
+tagging.T0_level_1_zone.T0_level_1_zone.xaxis = 818.3940065762945 472.4999999999999 0.0
+tagging.T0_level_1_zone.T0_level_1_zone.yaxis = -251.99999999999994 436.47680350735703 -0.0
+tagging.T0_level_1_zone.T0_level_1_zone.zaxis = 0.0 0.0 283.5       
+tagging.T0_level_2_zone.type             = GeometryRefinement  
+tagging.T0_level_2_zone.shapes           = T0_level_2_zone     
+tagging.T0_level_2_zone.level            = 2                   
+tagging.T0_level_2_zone.T0_level_2_zone.type = box                 
+tagging.T0_level_2_zone.T0_level_2_zone.origin = 1742.350998903951 1584.850998903951 -4.5
+tagging.T0_level_2_zone.T0_level_2_zone.xaxis = 354.6374028497276 204.74999999999994 0.0
+tagging.T0_level_2_zone.T0_level_2_zone.yaxis = -157.49999999999997 272.7980021920982 -0.0
+tagging.T0_level_2_zone.T0_level_2_zone.zaxis = 0.0 0.0 220.5       
+tagging.T0_level_3_zone.type             = GeometryRefinement  
+tagging.T0_level_3_zone.shapes           = T0_level_3_zone     
+tagging.T0_level_3_zone.level            = 3                   
+tagging.T0_level_3_zone.T0_level_3_zone.type = box                 
+tagging.T0_level_3_zone.T0_level_3_zone.origin = 1781.1605993423705 1643.6307991231608 -4.5
+tagging.T0_level_3_zone.T0_level_3_zone.xaxis = 163.6788013152589 94.49999999999999 0.0
+tagging.T0_level_3_zone.T0_level_3_zone.yaxis = -125.99999999999997 218.23840175367852 -0.0
+tagging.T0_level_3_zone.T0_level_3_zone.zaxis = 0.0 0.0 189.0       
+
+#---- postprocessing defs ----
+incflo.post_processing                   = metmast_ rotorplaneUP_ rotorplaneDN_ nearwake_ turbsw_ turbhh_ turb027_ turb153_ turb216_ sideplane1_ sideplane2_ XYdomain_027_ XYdomain_090_ XYdomain_153_
+metmast_.type                            = Sampling            
+metmast_.output_frequency                = 1                   
+metmast_.fields                          = velocity temperature tke
+rotorplaneUP_.type                       = Sampling            
+rotorplaneUP_.output_frequency           = 50                  
+rotorplaneUP_.fields                     = velocity temperature tke
+rotorplaneDN_.type                       = Sampling            
+rotorplaneDN_.output_frequency           = 50                  
+rotorplaneDN_.fields                     = velocity temperature tke
+nearwake_.type                           = Sampling            
+nearwake_.output_frequency               = 50                  
+nearwake_.fields                         = velocity temperature tke
+turbsw_.type                             = Sampling            
+turbsw_.output_frequency                 = 50                  
+turbsw_.fields                           = velocity temperature tke
+turbhh_.type                             = Sampling            
+turbhh_.output_frequency                 = 50                  
+turbhh_.fields                           = velocity temperature tke
+turb027_.type                            = Sampling            
+turb027_.output_frequency                = 50                  
+turb027_.fields                          = velocity temperature tke
+turb153_.type                            = Sampling            
+turb153_.output_frequency                = 50                  
+turb153_.fields                          = velocity temperature tke
+turb216_.type                            = Sampling            
+turb216_.output_frequency                = 50                  
+turb216_.fields                          = velocity temperature tke
+sideplane1_.type                         = Sampling            
+sideplane1_.output_frequency             = 50                  
+sideplane1_.fields                       = velocity temperature tke
+sideplane2_.type                         = Sampling            
+sideplane2_.output_frequency             = 50                  
+sideplane2_.fields                       = velocity temperature tke
+XYdomain_027_.type                       = Sampling            
+XYdomain_027_.output_frequency           = 50                  
+XYdomain_027_.fields                     = velocity temperature tke
+XYdomain_090_.type                       = Sampling            
+XYdomain_090_.output_frequency           = 50                  
+XYdomain_090_.fields                     = velocity temperature tke
+XYdomain_153_.type                       = Sampling            
+XYdomain_153_.output_frequency           = 50                  
+XYdomain_153_.fields                     = velocity temperature tke
+
+#---- sample defs ----
+metmast_.labels                          = virtualmast         
+rotorplaneUP_.labels                     = T0_rotorplaneUP     
+rotorplaneDN_.labels                     = T0_rotorplaneDN     
+nearwake_.labels                         = T0_nearwake         
+turbsw_.labels                           = T0_turbsw           
+turbhh_.labels                           = T0_turbhh           
+turb027_.labels                          = T0_turb027          
+turb153_.labels                          = T0_turb153          
+turb216_.labels                          = T0_turb216          
+sideplane1_.labels                       = T0_sideplane1       
+sideplane2_.labels                       = T0_sideplane2       
+XYdomain_027_.labels                     = Farm_XYdomain027    
+XYdomain_090_.labels                     = Farm_XYdomain090    
+XYdomain_153_.labels                     = Farm_XYdomain153    
+metmast_.virtualmast.type                = LineSampler         
+metmast_.virtualmast.num_points          = 20                  
+metmast_.virtualmast.start               = 1800.0 1800.0 10.0  
+metmast_.virtualmast.end                 = 1800.0 1800.0 200.0 
+rotorplaneUP_.T0_rotorplaneUP.type       = PlaneSampler        
+rotorplaneUP_.T0_rotorplaneUP.num_points = 81 35               
+rotorplaneUP_.T0_rotorplaneUP.origin     = 1489.523196492643 1329.7615982463215 1.8000000000000114
+rotorplaneUP_.T0_rotorplaneUP.axis1      = -251.99999999999994 436.47680350735703 -0.0
+rotorplaneUP_.T0_rotorplaneUP.axis2      = 0.0 0.0 214.2       
+rotorplaneUP_.T0_rotorplaneUP.offset_vector = 0.8660254037844386 0.4999999999999999 0.0
+rotorplaneUP_.T0_rotorplaneUP.offsets    = 0.0 126.0 252.0 378.0 504.0
+rotorplaneDN_.T0_rotorplaneDN.type       = PlaneSampler        
+rotorplaneDN_.T0_rotorplaneDN.num_points = 81 35               
+rotorplaneDN_.T0_rotorplaneDN.origin     = 1926.0 1581.7615982463215 1.8000000000000114
+rotorplaneDN_.T0_rotorplaneDN.axis1      = -251.99999999999994 436.47680350735703 -0.0
+rotorplaneDN_.T0_rotorplaneDN.axis2      = 0.0 0.0 214.2       
+rotorplaneDN_.T0_rotorplaneDN.offset_vector = 0.8660254037844386 0.4999999999999999 0.0
+rotorplaneDN_.T0_rotorplaneDN.offsets    = 0.0 126.0 252.0 378.0 504.0 630.0 756.0 882.0 1008.0 1134.0 1260.0
+nearwake_.T0_nearwake.type               = PlaneSampler        
+nearwake_.T0_nearwake.num_points         = 81 35               
+nearwake_.T0_nearwake.origin             = 1926.0 1581.7615982463215 1.8000000000000114
+nearwake_.T0_nearwake.axis1              = -251.99999999999994 436.47680350735703 -0.0
+nearwake_.T0_nearwake.axis2              = 0.0 0.0 214.2       
+nearwake_.T0_nearwake.offset_vector      = 0.8660254037844386 0.4999999999999999 0.0
+nearwake_.T0_nearwake.offsets            = 0.0 63.0 126.0 189.0 252.0
+turbsw_.T0_turbsw.type                   = PlaneSampler        
+turbsw_.T0_turbsw.num_points             = 281 45              
+turbsw_.T0_turbsw.origin                 = 1363.523196492643 1548.0 1.8000000000000114
+turbsw_.T0_turbsw.axis1                  = 1527.6688122757496 881.9999999999998 0.0
+turbsw_.T0_turbsw.axis2                  = 0.0 0.0 277.2       
+turbsw_.T0_turbsw.offset_vector          = 0.0 0.0 0.0         
+turbhh_.T0_turbhh.type                   = PlaneSampler        
+turbhh_.T0_turbhh.num_points             = 281 81              
+turbhh_.T0_turbhh.origin                 = 1489.523196492643 1329.7615982463215 90.0
+turbhh_.T0_turbhh.axis1                  = 1527.6688122757496 881.9999999999998 0.0
+turbhh_.T0_turbhh.axis2                  = -251.99999999999994 436.47680350735703 -0.0
+turbhh_.T0_turbhh.offset_vector          = 0.0 0.0 0.0         
+turb027_.T0_turb027.type                 = PlaneSampler        
+turb027_.T0_turb027.num_points           = 281 81              
+turb027_.T0_turb027.origin               = 1489.523196492643 1329.7615982463215 27.0
+turb027_.T0_turb027.axis1                = 1527.6688122757496 881.9999999999998 0.0
+turb027_.T0_turb027.axis2                = -251.99999999999994 436.47680350735703 -0.0
+turb027_.T0_turb027.offset_vector        = 0.0 0.0 0.0         
+turb153_.T0_turb153.type                 = PlaneSampler        
+turb153_.T0_turb153.num_points           = 281 81              
+turb153_.T0_turb153.origin               = 1489.523196492643 1329.7615982463215 153.0
+turb153_.T0_turb153.axis1                = 1527.6688122757496 881.9999999999998 0.0
+turb153_.T0_turb153.axis2                = -251.99999999999994 436.47680350735703 -0.0
+turb153_.T0_turb153.offset_vector        = 0.0 0.0 0.0         
+turb216_.T0_turb216.type                 = PlaneSampler        
+turb216_.T0_turb216.num_points           = 281 81              
+turb216_.T0_turb216.origin               = 1489.523196492643 1329.7615982463215 216.0
+turb216_.T0_turb216.axis1                = 1527.6688122757496 881.9999999999998 0.0
+turb216_.T0_turb216.axis2                = -251.99999999999994 436.47680350735703 -0.0
+turb216_.T0_turb216.offset_vector        = 0.0 0.0 0.0         
+sideplane1_.T0_sideplane1.type           = PlaneSampler        
+sideplane1_.T0_sideplane1.num_points     = 281 45              
+sideplane1_.T0_sideplane1.origin         = 1363.523196492643 1548.0 1.8000000000000114
+sideplane1_.T0_sideplane1.axis1          = 1527.6688122757496 881.9999999999998 0.0
+sideplane1_.T0_sideplane1.axis2          = 0.0 0.0 277.2       
+sideplane1_.T0_sideplane1.offset_vector  = -0.4999999999999999 0.8660254037844386 -0.0
+sideplane1_.T0_sideplane1.offsets        = 0.0 252.0           
+sideplane2_.T0_sideplane2.type           = PlaneSampler        
+sideplane2_.T0_sideplane2.num_points     = 281 45              
+sideplane2_.T0_sideplane2.origin         = 1363.523196492643 1548.0 1.8000000000000114
+sideplane2_.T0_sideplane2.axis1          = 1527.6688122757496 881.9999999999998 0.0
+sideplane2_.T0_sideplane2.axis2          = 0.0 0.0 277.2       
+sideplane2_.T0_sideplane2.offset_vector  = -0.4999999999999999 0.8660254037844386 -0.0
+sideplane2_.T0_sideplane2.offsets        = 0.0 -252.0          
+XYdomain_027_.Farm_XYdomain027.type      = PlaneSampler        
+XYdomain_027_.Farm_XYdomain027.num_points = 513 513             
+XYdomain_027_.Farm_XYdomain027.origin    = 0.0001 0.0001 27.0  
+XYdomain_027_.Farm_XYdomain027.axis1     = 5119.9998 0.0 0.0   
+XYdomain_027_.Farm_XYdomain027.axis2     = 0.0 5119.9998 0.0   
+XYdomain_027_.Farm_XYdomain027.offset_vector = 0.0 0.0 0.0         
+XYdomain_090_.Farm_XYdomain090.type      = PlaneSampler        
+XYdomain_090_.Farm_XYdomain090.num_points = 513 513             
+XYdomain_090_.Farm_XYdomain090.origin    = 0.0001 0.0001 90.0  
+XYdomain_090_.Farm_XYdomain090.axis1     = 5119.9998 0.0 0.0   
+XYdomain_090_.Farm_XYdomain090.axis2     = 0.0 5119.9998 0.0   
+XYdomain_090_.Farm_XYdomain090.offset_vector = 0.0 0.0 0.0         
+XYdomain_153_.Farm_XYdomain153.type      = PlaneSampler        
+XYdomain_153_.Farm_XYdomain153.num_points = 513 513             
+XYdomain_153_.Farm_XYdomain153.origin    = 0.0001 0.0001 153.0 
+XYdomain_153_.Farm_XYdomain153.axis1     = 5119.9998 0.0 0.0   
+XYdomain_153_.Farm_XYdomain153.axis2     = 0.0 5119.9998 0.0   
+XYdomain_153_.Farm_XYdomain153.offset_vector = 0.0 0.0 0.0         
+
+#---- extra params ----
+io.KE_int                                = -1                  
+io.line_plot_int                         = 1                   
+CoriolisForcing.turn_off_vertical_force  = True                
+#== END AMR-WIND INPUT ==
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="for-the-blade-resolved-case">
+<h3>For the blade resolved case<a class="headerlink" href="#for-the-blade-resolved-case" title="Link to this heading"></a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># For the blade resolved case</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'amr.max_level'</span><span class="p">,</span>  <span class="mi">4</span><span class="p">)</span>
+<span class="k">case</span><span class="o">.</span><span class="n">setAMRWindInput</span><span class="p">(</span><span class="s1">'time.fixed_dt'</span><span class="p">,</span>  <span class="mf">0.003443526170799</span><span class="p">)</span> <span class="c1"># = OFdt*4</span>
+
+<span class="c1"># These are extra parameters needed for the hybrid solver</span>
+<span class="n">extraparams</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">ABL.enable_hybrid_rl_mode                = true                </span>
+<span class="s2">amr.max_grid_size                        = 128                 </span>
+<span class="s2">amr.blocking_factor                      = 32                  </span>
+<span class="s2">nodal_proj.max_coarsening_level          = 0                   </span>
+<span class="s2">nodal_proj.num_pre_smooth                = 10                  </span>
+<span class="s2">nodal_proj.num_post_smooth               = 10                  </span>
+<span class="s2">nodal_proj.bottom_rtol                   = 1.0e-9              </span>
+<span class="s2">nodal_proj.bottom_atol                   = 1.0e-12             </span>
+<span class="s2">mac_proj.verbose                         = 0                   </span>
+<span class="s2">mac_proj.max_coarsening_level            = 0                   </span>
+<span class="s2">mac_proj.do_nsolve                       = true                </span>
+<span class="s2">mac_proj.bottom_verbose                  = 0                   </span>
+<span class="s2">mac_proj.bottom_rtol                     = 1.0e-11             </span>
+<span class="s2">mac_proj.bottom_atol                     = 1.0e-12             </span>
+<span class="s2">mac_proj.num_pre_smooth                  = 10                  </span>
+<span class="s2">mac_proj.num_post_smooth                 = 10                  </span>
+<span class="s2">diffusion.verbose                        = 0                   </span>
+<span class="s2">diffusion.do_agglomeration               = false               </span>
+<span class="s2">diffusion.do_nsolve                      = true                </span>
+<span class="s2">velocity_diffusion.verbose               = 0                   </span>
+<span class="s2">velocity_diffusion.use_tensor_operator   = false               </span>
+<span class="s2">velocity_diffusion.use_segregated_operator = true                </span>
+<span class="s2">velocity_diffusion.do_nsolve             = true                </span>
+<span class="s2">temperature_diffusion.verbose            = 0                   </span>
+<span class="s2">temperature_diffusion.do_nsolve          = true                </span>
+<span class="s2">amrex.abort_on_out_of_gpu_memory         = 1                   </span>
+<span class="s2">amrex.the_arena_is_managed               = 0                   </span>
+<span class="s2">amrex.hypre_spgemm_use_vendor            = 1                   </span>
+<span class="s2">amrex.hypre_spmv_use_vendor              = 0                   </span>
+<span class="s2">amrex.hypre_sptrans_use_vendor           = 0                   </span>
+<span class="s2">amrex.hypre_umpire_device_pool_mbs       = 4096                </span>
+<span class="s2">hypre.bamg_verbose                       = 0                   </span>
+<span class="s2">hypre.verbose                            = 0                   </span>
+<span class="s2">hypre.recompute_preconditioner           = 0                   </span>
+<span class="s2">hypre.hypre_solver                       = GMRES               </span>
+<span class="s2">hypre.hypre_preconditioner               = BoomerAMG           </span>
+<span class="s2">hypre.num_krylov                         = 40                  </span>
+<span class="s2">hypre.max_iterations                     = 40                  </span>
+<span class="s2">hypre.rtol                               = 1.e-5               </span>
+<span class="s2">hypre.atol                               = 1.e-8               </span>
+<span class="s2">hypre.bamg_coarsen_type                  = 8                   </span>
+<span class="s2">hypre.bamg_interp_type                   = 6                   </span>
+<span class="s2">hypre.bamg_relax_type                    = 11                  </span>
+<span class="s2">hypre.bamg_num_sweeps                    = 2                   </span>
+<span class="s2">hypre.bamg_cycle_type                    = 1                   </span>
+<span class="s2">hypre.bamg_relax_order                   = 0                   </span>
+<span class="s2">hypre.bamg_trunc_factor                  = 0.45                </span>
+<span class="s2">hypre.bamg_strong_threshold              = 0.3                 </span>
+<span class="s2">hypre.bamg_min_coarse_size               = 1                   </span>
+<span class="s2">hypre.bamg_max_coarse_size               = 100                 </span>
+<span class="s2">hypre.bamg_agg_num_levels                = 0                   </span>
+<span class="s2">hypre.bamg_agg_interp_type               = 7                   </span>
+<span class="s2">hypre.bamg_agg_pmax_elmts                = 3                   </span>
+<span class="s2">hypre.bamg_pmax_elmts                    = 3                   </span>
+<span class="s2">hypre.bamg_keep_transpose                = 1                   </span>
+<span class="s2">hypre.write_matrix_files                 = 0                   </span>
+<span class="s2">hypre.bamg_smooth_type                   = 5                   </span>
+<span class="s2">hypre.bamg_smooth_num_sweeps             = 1                   </span>
+<span class="s2">hypre.bamg_smooth_num_levels             = 0                   </span>
+<span class="s2">hypre.bamg_ilu_type                      = 0                   </span>
+<span class="s2">hypre.bamg_ilu_level                     = 0                   </span>
+<span class="s2">hypre.bamg_ilu_max_iter                  = 1                   </span>
+<span class="s2">hypre.bamg_ilu_reordering_type           = 0                   </span>
+<span class="s2">hypre.bamg_ilu_tri_solve                 = 0                   </span>
+<span class="s2">hypre.bamg_ilu_lower_jacobi_iters        = 3                   </span>
+<span class="s2">hypre.bamg_ilu_upper_jacobi_iters        = 3                   </span>
+<span class="s2">"""</span>
+<span class="k">case</span><span class="o">.</span><span class="n">loadAMRWindInput</span><span class="p">(</span><span class="n">extraparams</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">case</span><span class="o">.</span><span class="n">writeAMRWindInput</span><span class="p">(</span><span class="n">BRoutputfile</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span># --- Simulation time control parameters ---
+time.stop_time                           = 16000.0             # Max (simulated) time to evolve [s]
+time.max_step                            = -1                  
+time.fixed_dt                            = 0.003443526170799   # Fixed timestep size (in seconds). If negative, then time.cfl is used
+time.checkpoint_interval                 = 10000               
+time.checkpoint_start                    = 30000               
+incflo.physics                           = ABL                 # List of physics models to include in simulation.
+incflo.verbose                           = 0                   
+io.check_file                            = chk                 
+io.restart_file                          = /gpfs/lcheung/HFM/exawind-benchmarks/Neutral_ABL/chk30000
+incflo.use_godunov                       = true                
+incflo.godunov_type                      = weno_z              
+turbulence.model                         = OneEqKsgsM84        
+TKE.source_terms                         = KsgsM84Src          
+nodal_proj.mg_rtol                       = 1e-08               
+nodal_proj.mg_atol                       = 1e-08               
+mac_proj.mg_rtol                         = 1e-08               
+mac_proj.mg_atol                         = 1e-08               
+diffusion.mg_rtol                        = 1e-08               
+diffusion.mg_atol                        = 1e-08               
+temperature_diffusion.mg_rtol            = 1e-08               
+temperature_diffusion.mg_atol            = 1e-08               
+incflo.gravity                           = 0.0 0.0 -9.81       # Gravitational acceleration vector (x,y,z) [m/s^2]
+incflo.density                           = 1.0                 # Fluid density [kg/m^3]
+transport.viscosity                      = 0.0                 # Fluid dynamic viscosity [kg/m-s]
+transport.laminar_prandtl                = 0.7                 # Laminar prandtl number
+transport.turbulent_prandtl              = 0.3333              # Turbulent prandtl number
+
+# --- Geometry and Mesh ---
+geometry.prob_lo                         = 0.0 0.0 0.0         
+geometry.prob_hi                         = 5120.0 5120.0 1920.0
+amr.n_cell                               = 512 512 192         # Number of cells in x, y, and z directions
+amr.max_level                            = 4                   
+geometry.is_periodic                     = 0 0 0               
+xlo.type                                 = mass_inflow         
+xlo.density                              = 1.0                 
+xlo.temperature                          = 0.0                 
+xlo.tke                                  = 0.0                 
+xhi.type                                 = pressure_outflow    
+ylo.type                                 = mass_inflow         
+ylo.density                              = 1.0                 
+ylo.temperature                          = 0.0                 
+ylo.tke                                  = 0.0                 
+yhi.type                                 = pressure_outflow    
+zlo.type                                 = wall_model          
+zlo.temperature_type                     = wall_model          
+zlo.tke_type                             = zero_gradient       
+zhi.type                                 = slip_wall           
+zhi.temperature_type                     = fixed_gradient      
+zhi.temperature                          = 0.003               
+
+# --- ABL parameters ---
+ICNS.source_terms                        = BoussinesqBuoyancy CoriolisForcing BodyForce ABLMeanBoussinesq
+ABL.stats_output_frequency               = 1                   
+ABL.stats_output_format                  = netcdf              
+ABL.tendency_forcing                     = false               
+ABL.bndry_io_mode                        = 1                   
+ABL.bndry_file                           = /gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/bndry_file
+ABL.bndry_planes                         = xlo ylo             
+ABL.bndry_output_start_time              = 15000.0             
+ABL.bndry_var_names                      = velocity temperature tke
+ABL.bndry_output_format                  = native              
+incflo.velocity                          = 9.8726896031426 5.7 0.0
+ABLForcing.abl_forcing_height            = 90.0                
+ABL.kappa                                = 0.41                
+ABL.normal_direction                     = 2                   
+ABL.surface_roughness_z0                 = 0.01                
+ABL.reference_temperature                = 300.0               
+ABL.surface_temp_rate                    = 0.0                 
+ABL.surface_temp_flux                    = 0.005               # Surface temperature flux [K-m/s]
+ABL.log_law_height                       = 5.0                 
+ABL.wall_shear_stress_type               = local               
+ABL.wf_velocity                          = 6.0977889026612075 3.6097639593035185
+ABL.wf_vmag                              = 7.103916682319445   
+ABL.wf_theta                             = 300.20261481689676  
+CoriolisForcing.latitude                 = 40.0                
+CoriolisForcing.rotational_time_period   = 86400.0             
+CoriolisForcing.north_vector             = 0.0 1.0 0.0         
+CoriolisForcing.east_vector              = 1.0 0.0 0.0         
+BoussinesqBuoyancy.reference_temperature = 300.0               
+BodyForce.magnitude                      = -0.0002743665569299508 0.0011708563286373845 0.0
+ABL.temperature_heights                  = 0.0 750.0 850.0 2000.0
+ABL.temperature_values                   = 300.0 300.0 308.0 311.45
+ABLMeanBoussinesq.read_temperature_profile = true                
+ABLMeanBoussinesq.temperature_profile_filename = avg_theta.dat       
+ABL.perturb_velocity                     = true                
+ABL.perturb_ref_height                   = 50.0                
+ABL.Uperiods                             = 4.0                 
+ABL.Vperiods                             = 4.0                 
+ABL.deltaU                               = 1.0                 
+ABL.deltaV                               = 1.0                 
+ABL.perturb_temperature                  = true                
+ABL.theta_amplitude                      = 0.8                 
+ABL.cutoff_height                        = 50.0                
+time.plot_interval                       = 10000               
+io.plot_file                             = plt                 
+
+#---- tagging defs ----
+tagging.labels                           = T0_level_0_zone T0_level_1_zone T0_level_2_zone T0_level_3_zone
+tagging.T0_level_0_zone.type             = GeometryRefinement  
+tagging.T0_level_0_zone.shapes           = T0_level_0_zone     
+tagging.T0_level_0_zone.level            = 0                   
+tagging.T0_level_0_zone.T0_level_0_zone.type = box                 
+tagging.T0_level_0_zone.T0_level_0_zone.origin = 1569.4039956158035 939.4039956158036 -4.5
+tagging.T0_level_0_zone.T0_level_0_zone.xaxis = 1636.788013152589 944.9999999999998 0.0
+tagging.T0_level_0_zone.T0_level_0_zone.yaxis = -629.9999999999999 1091.1920087683927 -0.0
+tagging.T0_level_0_zone.T0_level_0_zone.zaxis = 0.0 0.0 346.5       
+tagging.T0_level_1_zone.type             = GeometryRefinement  
+tagging.T0_level_1_zone.shapes           = T0_level_1_zone     
+tagging.T0_level_1_zone.level            = 1                   
+tagging.T0_level_1_zone.T0_level_1_zone.type = box                 
+tagging.T0_level_1_zone.T0_level_1_zone.origin = 1653.2019978079018 1424.2615982463215 -4.5
+tagging.T0_level_1_zone.T0_level_1_zone.xaxis = 818.3940065762945 472.4999999999999 0.0
+tagging.T0_level_1_zone.T0_level_1_zone.yaxis = -251.99999999999994 436.47680350735703 -0.0
+tagging.T0_level_1_zone.T0_level_1_zone.zaxis = 0.0 0.0 283.5       
+tagging.T0_level_2_zone.type             = GeometryRefinement  
+tagging.T0_level_2_zone.shapes           = T0_level_2_zone     
+tagging.T0_level_2_zone.level            = 2                   
+tagging.T0_level_2_zone.T0_level_2_zone.type = box                 
+tagging.T0_level_2_zone.T0_level_2_zone.origin = 1742.350998903951 1584.850998903951 -4.5
+tagging.T0_level_2_zone.T0_level_2_zone.xaxis = 354.6374028497276 204.74999999999994 0.0
+tagging.T0_level_2_zone.T0_level_2_zone.yaxis = -157.49999999999997 272.7980021920982 -0.0
+tagging.T0_level_2_zone.T0_level_2_zone.zaxis = 0.0 0.0 220.5       
+tagging.T0_level_3_zone.type             = GeometryRefinement  
+tagging.T0_level_3_zone.shapes           = T0_level_3_zone     
+tagging.T0_level_3_zone.level            = 3                   
+tagging.T0_level_3_zone.T0_level_3_zone.type = box                 
+tagging.T0_level_3_zone.T0_level_3_zone.origin = 1781.1605993423705 1643.6307991231608 -4.5
+tagging.T0_level_3_zone.T0_level_3_zone.xaxis = 163.6788013152589 94.49999999999999 0.0
+tagging.T0_level_3_zone.T0_level_3_zone.yaxis = -125.99999999999997 218.23840175367852 -0.0
+tagging.T0_level_3_zone.T0_level_3_zone.zaxis = 0.0 0.0 189.0       
+
+#---- postprocessing defs ----
+incflo.post_processing                   = metmast_ rotorplaneUP_ rotorplaneDN_ nearwake_ turbsw_ turbhh_ turb027_ turb153_ turb216_ sideplane1_ sideplane2_ XYdomain_027_ XYdomain_090_ XYdomain_153_
+metmast_.type                            = Sampling            
+metmast_.output_frequency                = 1                   
+metmast_.fields                          = velocity temperature tke
+rotorplaneUP_.type                       = Sampling            
+rotorplaneUP_.output_frequency           = 50                  
+rotorplaneUP_.fields                     = velocity temperature tke
+rotorplaneDN_.type                       = Sampling            
+rotorplaneDN_.output_frequency           = 50                  
+rotorplaneDN_.fields                     = velocity temperature tke
+nearwake_.type                           = Sampling            
+nearwake_.output_frequency               = 50                  
+nearwake_.fields                         = velocity temperature tke
+turbsw_.type                             = Sampling            
+turbsw_.output_frequency                 = 50                  
+turbsw_.fields                           = velocity temperature tke
+turbhh_.type                             = Sampling            
+turbhh_.output_frequency                 = 50                  
+turbhh_.fields                           = velocity temperature tke
+turb027_.type                            = Sampling            
+turb027_.output_frequency                = 50                  
+turb027_.fields                          = velocity temperature tke
+turb153_.type                            = Sampling            
+turb153_.output_frequency                = 50                  
+turb153_.fields                          = velocity temperature tke
+turb216_.type                            = Sampling            
+turb216_.output_frequency                = 50                  
+turb216_.fields                          = velocity temperature tke
+sideplane1_.type                         = Sampling            
+sideplane1_.output_frequency             = 50                  
+sideplane1_.fields                       = velocity temperature tke
+sideplane2_.type                         = Sampling            
+sideplane2_.output_frequency             = 50                  
+sideplane2_.fields                       = velocity temperature tke
+XYdomain_027_.type                       = Sampling            
+XYdomain_027_.output_frequency           = 50                  
+XYdomain_027_.fields                     = velocity temperature tke
+XYdomain_090_.type                       = Sampling            
+XYdomain_090_.output_frequency           = 50                  
+XYdomain_090_.fields                     = velocity temperature tke
+XYdomain_153_.type                       = Sampling            
+XYdomain_153_.output_frequency           = 50                  
+XYdomain_153_.fields                     = velocity temperature tke
+
+#---- sample defs ----
+metmast_.labels                          = virtualmast         
+rotorplaneUP_.labels                     = T0_rotorplaneUP     
+rotorplaneDN_.labels                     = T0_rotorplaneDN     
+nearwake_.labels                         = T0_nearwake         
+turbsw_.labels                           = T0_turbsw           
+turbhh_.labels                           = T0_turbhh           
+turb027_.labels                          = T0_turb027          
+turb153_.labels                          = T0_turb153          
+turb216_.labels                          = T0_turb216          
+sideplane1_.labels                       = T0_sideplane1       
+sideplane2_.labels                       = T0_sideplane2       
+XYdomain_027_.labels                     = Farm_XYdomain027    
+XYdomain_090_.labels                     = Farm_XYdomain090    
+XYdomain_153_.labels                     = Farm_XYdomain153    
+metmast_.virtualmast.type                = LineSampler         
+metmast_.virtualmast.num_points          = 20                  
+metmast_.virtualmast.start               = 1800.0 1800.0 10.0  
+metmast_.virtualmast.end                 = 1800.0 1800.0 200.0 
+rotorplaneUP_.T0_rotorplaneUP.type       = PlaneSampler        
+rotorplaneUP_.T0_rotorplaneUP.num_points = 81 35               
+rotorplaneUP_.T0_rotorplaneUP.origin     = 1489.523196492643 1329.7615982463215 1.8000000000000114
+rotorplaneUP_.T0_rotorplaneUP.axis1      = -251.99999999999994 436.47680350735703 -0.0
+rotorplaneUP_.T0_rotorplaneUP.axis2      = 0.0 0.0 214.2       
+rotorplaneUP_.T0_rotorplaneUP.offset_vector = 0.8660254037844386 0.4999999999999999 0.0
+rotorplaneUP_.T0_rotorplaneUP.offsets    = 0.0 126.0 252.0 378.0 504.0
+rotorplaneDN_.T0_rotorplaneDN.type       = PlaneSampler        
+rotorplaneDN_.T0_rotorplaneDN.num_points = 81 35               
+rotorplaneDN_.T0_rotorplaneDN.origin     = 1926.0 1581.7615982463215 1.8000000000000114
+rotorplaneDN_.T0_rotorplaneDN.axis1      = -251.99999999999994 436.47680350735703 -0.0
+rotorplaneDN_.T0_rotorplaneDN.axis2      = 0.0 0.0 214.2       
+rotorplaneDN_.T0_rotorplaneDN.offset_vector = 0.8660254037844386 0.4999999999999999 0.0
+rotorplaneDN_.T0_rotorplaneDN.offsets    = 0.0 126.0 252.0 378.0 504.0 630.0 756.0 882.0 1008.0 1134.0 1260.0
+nearwake_.T0_nearwake.type               = PlaneSampler        
+nearwake_.T0_nearwake.num_points         = 81 35               
+nearwake_.T0_nearwake.origin             = 1926.0 1581.7615982463215 1.8000000000000114
+nearwake_.T0_nearwake.axis1              = -251.99999999999994 436.47680350735703 -0.0
+nearwake_.T0_nearwake.axis2              = 0.0 0.0 214.2       
+nearwake_.T0_nearwake.offset_vector      = 0.8660254037844386 0.4999999999999999 0.0
+nearwake_.T0_nearwake.offsets            = 0.0 63.0 126.0 189.0 252.0
+turbsw_.T0_turbsw.type                   = PlaneSampler        
+turbsw_.T0_turbsw.num_points             = 281 45              
+turbsw_.T0_turbsw.origin                 = 1363.523196492643 1548.0 1.8000000000000114
+turbsw_.T0_turbsw.axis1                  = 1527.6688122757496 881.9999999999998 0.0
+turbsw_.T0_turbsw.axis2                  = 0.0 0.0 277.2       
+turbsw_.T0_turbsw.offset_vector          = 0.0 0.0 0.0         
+turbhh_.T0_turbhh.type                   = PlaneSampler        
+turbhh_.T0_turbhh.num_points             = 281 81              
+turbhh_.T0_turbhh.origin                 = 1489.523196492643 1329.7615982463215 90.0
+turbhh_.T0_turbhh.axis1                  = 1527.6688122757496 881.9999999999998 0.0
+turbhh_.T0_turbhh.axis2                  = -251.99999999999994 436.47680350735703 -0.0
+turbhh_.T0_turbhh.offset_vector          = 0.0 0.0 0.0         
+turb027_.T0_turb027.type                 = PlaneSampler        
+turb027_.T0_turb027.num_points           = 281 81              
+turb027_.T0_turb027.origin               = 1489.523196492643 1329.7615982463215 27.0
+turb027_.T0_turb027.axis1                = 1527.6688122757496 881.9999999999998 0.0
+turb027_.T0_turb027.axis2                = -251.99999999999994 436.47680350735703 -0.0
+turb027_.T0_turb027.offset_vector        = 0.0 0.0 0.0         
+turb153_.T0_turb153.type                 = PlaneSampler        
+turb153_.T0_turb153.num_points           = 281 81              
+turb153_.T0_turb153.origin               = 1489.523196492643 1329.7615982463215 153.0
+turb153_.T0_turb153.axis1                = 1527.6688122757496 881.9999999999998 0.0
+turb153_.T0_turb153.axis2                = -251.99999999999994 436.47680350735703 -0.0
+turb153_.T0_turb153.offset_vector        = 0.0 0.0 0.0         
+turb216_.T0_turb216.type                 = PlaneSampler        
+turb216_.T0_turb216.num_points           = 281 81              
+turb216_.T0_turb216.origin               = 1489.523196492643 1329.7615982463215 216.0
+turb216_.T0_turb216.axis1                = 1527.6688122757496 881.9999999999998 0.0
+turb216_.T0_turb216.axis2                = -251.99999999999994 436.47680350735703 -0.0
+turb216_.T0_turb216.offset_vector        = 0.0 0.0 0.0         
+sideplane1_.T0_sideplane1.type           = PlaneSampler        
+sideplane1_.T0_sideplane1.num_points     = 281 45              
+sideplane1_.T0_sideplane1.origin         = 1363.523196492643 1548.0 1.8000000000000114
+sideplane1_.T0_sideplane1.axis1          = 1527.6688122757496 881.9999999999998 0.0
+sideplane1_.T0_sideplane1.axis2          = 0.0 0.0 277.2       
+sideplane1_.T0_sideplane1.offset_vector  = -0.4999999999999999 0.8660254037844386 -0.0
+sideplane1_.T0_sideplane1.offsets        = 0.0 252.0           
+sideplane2_.T0_sideplane2.type           = PlaneSampler        
+sideplane2_.T0_sideplane2.num_points     = 281 45              
+sideplane2_.T0_sideplane2.origin         = 1363.523196492643 1548.0 1.8000000000000114
+sideplane2_.T0_sideplane2.axis1          = 1527.6688122757496 881.9999999999998 0.0
+sideplane2_.T0_sideplane2.axis2          = 0.0 0.0 277.2       
+sideplane2_.T0_sideplane2.offset_vector  = -0.4999999999999999 0.8660254037844386 -0.0
+sideplane2_.T0_sideplane2.offsets        = 0.0 -252.0          
+XYdomain_027_.Farm_XYdomain027.type      = PlaneSampler        
+XYdomain_027_.Farm_XYdomain027.num_points = 513 513             
+XYdomain_027_.Farm_XYdomain027.origin    = 0.0001 0.0001 27.0  
+XYdomain_027_.Farm_XYdomain027.axis1     = 5119.9998 0.0 0.0   
+XYdomain_027_.Farm_XYdomain027.axis2     = 0.0 5119.9998 0.0   
+XYdomain_027_.Farm_XYdomain027.offset_vector = 0.0 0.0 0.0         
+XYdomain_090_.Farm_XYdomain090.type      = PlaneSampler        
+XYdomain_090_.Farm_XYdomain090.num_points = 513 513             
+XYdomain_090_.Farm_XYdomain090.origin    = 0.0001 0.0001 90.0  
+XYdomain_090_.Farm_XYdomain090.axis1     = 5119.9998 0.0 0.0   
+XYdomain_090_.Farm_XYdomain090.axis2     = 0.0 5119.9998 0.0   
+XYdomain_090_.Farm_XYdomain090.offset_vector = 0.0 0.0 0.0         
+XYdomain_153_.Farm_XYdomain153.type      = PlaneSampler        
+XYdomain_153_.Farm_XYdomain153.num_points = 513 513             
+XYdomain_153_.Farm_XYdomain153.origin    = 0.0001 0.0001 153.0 
+XYdomain_153_.Farm_XYdomain153.axis1     = 5119.9998 0.0 0.0   
+XYdomain_153_.Farm_XYdomain153.axis2     = 0.0 5119.9998 0.0   
+XYdomain_153_.Farm_XYdomain153.offset_vector = 0.0 0.0 0.0         
+
+#---- extra params ----
+ABL.enable_hybrid_rl_mode                = true                
+amr.max_grid_size                        = 128                 
+amr.blocking_factor                      = 32                  
+nodal_proj.max_coarsening_level          = 0                   
+nodal_proj.num_pre_smooth                = 10                  
+nodal_proj.num_post_smooth               = 10                  
+nodal_proj.bottom_rtol                   = 1.0e-9              
+nodal_proj.bottom_atol                   = 1.0e-12             
+mac_proj.verbose                         = 0                   
+mac_proj.max_coarsening_level            = 0                   
+mac_proj.do_nsolve                       = true                
+mac_proj.bottom_verbose                  = 0                   
+mac_proj.bottom_rtol                     = 1.0e-11             
+mac_proj.bottom_atol                     = 1.0e-12             
+mac_proj.num_pre_smooth                  = 10                  
+mac_proj.num_post_smooth                 = 10                  
+diffusion.verbose                        = 0                   
+diffusion.do_agglomeration               = false               
+diffusion.do_nsolve                      = true                
+velocity_diffusion.verbose               = 0                   
+velocity_diffusion.use_tensor_operator   = false               
+velocity_diffusion.use_segregated_operator = true                
+velocity_diffusion.do_nsolve             = true                
+temperature_diffusion.verbose            = 0                   
+temperature_diffusion.do_nsolve          = true                
+amrex.abort_on_out_of_gpu_memory         = 1                   
+amrex.the_arena_is_managed               = 0                   
+amrex.hypre_spgemm_use_vendor            = 1                   
+amrex.hypre_spmv_use_vendor              = 0                   
+amrex.hypre_sptrans_use_vendor           = 0                   
+amrex.hypre_umpire_device_pool_mbs       = 4096                
+hypre.bamg_verbose                       = 0                   
+hypre.verbose                            = 0                   
+hypre.recompute_preconditioner           = 0                   
+hypre.hypre_solver                       = GMRES               
+hypre.hypre_preconditioner               = BoomerAMG           
+hypre.num_krylov                         = 40                  
+hypre.max_iterations                     = 40                  
+hypre.rtol                               = 1.e-5               
+hypre.atol                               = 1.e-8               
+hypre.bamg_coarsen_type                  = 8                   
+hypre.bamg_interp_type                   = 6                   
+hypre.bamg_relax_type                    = 11                  
+hypre.bamg_num_sweeps                    = 2                   
+hypre.bamg_cycle_type                    = 1                   
+hypre.bamg_relax_order                   = 0                   
+hypre.bamg_trunc_factor                  = 0.45                
+hypre.bamg_strong_threshold              = 0.3                 
+hypre.bamg_min_coarse_size               = 1                   
+hypre.bamg_max_coarse_size               = 100                 
+hypre.bamg_agg_num_levels                = 0                   
+hypre.bamg_agg_interp_type               = 7                   
+hypre.bamg_agg_pmax_elmts                = 3                   
+hypre.bamg_pmax_elmts                    = 3                   
+hypre.bamg_keep_transpose                = 1                   
+hypre.write_matrix_files                 = 0                   
+hypre.bamg_smooth_type                   = 5                   
+hypre.bamg_smooth_num_sweeps             = 1                   
+hypre.bamg_smooth_num_levels             = 0                   
+hypre.bamg_ilu_type                      = 0                   
+hypre.bamg_ilu_level                     = 0                   
+hypre.bamg_ilu_max_iter                  = 1                   
+hypre.bamg_ilu_reordering_type           = 0                   
+hypre.bamg_ilu_tri_solve                 = 0                   
+hypre.bamg_ilu_lower_jacobi_iters        = 3                   
+hypre.bamg_ilu_upper_jacobi_iters        = 3                   
+#== END AMR-WIND INPUT ==
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

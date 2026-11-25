@@ -1,0 +1,463 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Turbulent channel flow with immersed boundaries &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Turbulent channel flow with immersed boundaries</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/kynema-sgf/immersed_boundary/turbulent_channel_flow/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <!-- This file is compiled into the website through .website_src. -->
+<section class="tex2jax_ignore mathjax_ignore" id="turbulent-channel-flow-with-immersed-boundaries">
+<h1>Turbulent channel flow with immersed boundaries<a class="headerlink" href="#turbulent-channel-flow-with-immersed-boundaries" title="Link to this heading"></a></h1>
+<p>This validation case compares wall-resolved large-eddy simulations (LES) of
+pressure-driven turbulent channel flow with direct numerical simulation (DNS)
+data at friction Reynolds numbers <span class="math notranslate nohighlight">\(Re_\tau = 180\)</span> and <span class="math notranslate nohighlight">\(Re_\tau = 395\)</span>. The
+channel walls are represented with <code class="docutils literal notranslate"><span class="pre">ChannelBuilder</span></code> immersed boundaries (IB)
+and the <code class="docutils literal notranslate"><span class="pre">DragForcing</span></code> wall model. A channel with no-slip domain walls and no
+IB provides a solver reference at <span class="math notranslate nohighlight">\(Re_\tau = 180\)</span>.</p>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#channel-configurations">Channel configurations</a></p></li>
+<li><p><a class="reference internal" href="#validation-matrix">Validation matrix</a></p></li>
+<li><p><a class="reference internal" href="#reference-data">Reference data</a></p></li>
+<li><p><a class="reference internal" href="#statistics">Statistics</a></p></li>
+<li><p><a class="reference internal" href="#prerequisites">Prerequisites</a></p></li>
+<li><p><a class="reference internal" href="#run-the-solver">Run the solver</a></p></li>
+<li><p><a class="reference internal" href="#check-convergence">Check convergence</a></p></li>
+<li><p><a class="reference internal" href="#analyze-statistics">Analyze statistics</a></p></li>
+<li><p><a class="reference internal" href="#results">Results</a></p></li>
+</ul>
+</section>
+<section id="channel-configurations">
+<h2>Channel configurations<a class="headerlink" href="#channel-configurations" title="Link to this heading"></a></h2>
+<p>Flow is in the <span class="math notranslate nohighlight">\(x\)</span> direction, <span class="math notranslate nohighlight">\(y\)</span> is spanwise, and <span class="math notranslate nohighlight">\(z\)</span> is wall-normal. The
+DNS coordinate system uses <span class="math notranslate nohighlight">\(y\)</span> as the wall-normal direction and <span class="math notranslate nohighlight">\(z\)</span> as the
+spanwise direction, so the DNS <span class="math notranslate nohighlight">\(v\)</span> and <span class="math notranslate nohighlight">\(w\)</span> components correspond to the
+Kynema-SGF <span class="math notranslate nohighlight">\(w\)</span> and <span class="math notranslate nohighlight">\(v\)</span> components, respectively.</p>
+<p><img alt="Coordinate systems" src="../../../_images/CoordinateSystem.png" /></p>
+<p>The walls are located at <span class="math notranslate nohighlight">\(z = \pm\delta\)</span>, where <span class="math notranslate nohighlight">\(\delta\)</span> is the channel
+half-height. The domain is periodic in <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span>. In the no-IB case, the
+walls are the no-slip domain boundaries at <span class="math notranslate nohighlight">\(z = \pm\delta\)</span>. In the IB cases,
+the domain is extended in <span class="math notranslate nohighlight">\(z\)</span> and the <code class="docutils literal notranslate"><span class="pre">ChannelBuilder</span></code> walls at
+<span class="math notranslate nohighlight">\(z = \pm\delta\)</span> coincide with level 0 cell faces. Flow is driven by a uniform
+body force</p>
+<div class="math notranslate nohighlight">
+\[f_{b,x} = -\frac{1}{\rho}\frac{dp}{dx}.\]</div>
+<p>The fluid is air at 101325 Pa and 750 K:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Density, <span class="math notranslate nohighlight">\(\rho\)</span></p></td>
+<td><p>0.468793 kg/m<span class="math notranslate nohighlight">\(^3\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>Dynamic viscosity, <span class="math notranslate nohighlight">\(\mu\)</span></p></td>
+<td><p>3.57816e-5 Pa s</p></td>
+</tr>
+<tr class="row-even"><td><p>Subgrid model</p></td>
+<td><p>Smagorinsky, <span class="math notranslate nohighlight">\(C_s = 0.1\)</span></p></td>
+</tr>
+</tbody>
+</table>
+<p>The flow characteristics follow from:</p>
+<div class="math notranslate nohighlight">
+\[u_\tau = Re_\tau\,\mu / (\rho\,\delta),\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{dp}{dx} = -\rho u_\tau^2 / \delta,\]</div>
+<div class="math notranslate nohighlight">
+\[t^* = \delta / u_\tau.\]</div>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Quantity</p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(Re_\tau = 180\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(Re_\tau = 395\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Half-height, <span class="math notranslate nohighlight">\(\delta\)</span></p></td>
+<td><p>0.005 m</p></td>
+<td><p>0.01 m</p></td>
+</tr>
+<tr class="row-odd"><td><p>Domain, <span class="math notranslate nohighlight">\(L_x \times L_y\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(6.24\delta \times 3.12\delta\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(6.24\delta \times 3.12\delta\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>Friction velocity, <span class="math notranslate nohighlight">\(u_\tau\)</span></p></td>
+<td><p>2.7478 m/s</p></td>
+<td><p>3.0149 m/s</p></td>
+</tr>
+<tr class="row-odd"><td><p>Pressure gradient, <span class="math notranslate nohighlight">\(dp/dx\)</span></p></td>
+<td><p>-709.79 Pa/m</p></td>
+<td><p>-426.121 Pa/m</p></td>
+</tr>
+<tr class="row-even"><td><p>Body force</p></td>
+<td><p>1514.08 m/s<span class="math notranslate nohighlight">\(^2\)</span></p></td>
+<td><p>908.975 m/s<span class="math notranslate nohighlight">\(^2\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>Viscous time, <span class="math notranslate nohighlight">\(t^*\)</span></p></td>
+<td><p>1.8197e-3 s</p></td>
+<td><p>3.3168e-3 s</p></td>
+</tr>
+<tr class="row-even"><td><p>Spin-up</p></td>
+<td><p><span class="math notranslate nohighlight">\(40t^*\)</span> (0.072788 s)</p></td>
+<td><p><span class="math notranslate nohighlight">\(70t^*\)</span> (0.232176 s)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Statistics</p></td>
+<td><p><span class="math notranslate nohighlight">\(10t^*\)</span> (to 0.090985 s)</p></td>
+<td><p><span class="math notranslate nohighlight">\(10t^*\)</span> (to 0.265344 s)</p></td>
+</tr>
+</tbody>
+</table>
+<p>Each mesh uses one level of refinement near each wall. Grid spacing in wall
+units is:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Mesh</p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(Re_\tau = 180\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(Re_\tau = 395\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Level 0 cells, no IB</p></td>
+<td><p><span class="math notranslate nohighlight">\(192 \times 96 \times 56\)</span></p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-odd"><td><p>Level 0 cells, IB</p></td>
+<td><p><span class="math notranslate nohighlight">\(192 \times 96 \times 64\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(200 \times 96 \times 72\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>Level 0 <span class="math notranslate nohighlight">\(\Delta x^+, \Delta y^+, \Delta z^+\)</span></p></td>
+<td><p>5.85, 5.85, 6.43</p></td>
+<td><p>12.32, 12.84, 12.34</p></td>
+</tr>
+<tr class="row-odd"><td><p>Level 1 <span class="math notranslate nohighlight">\(\Delta x^+, \Delta y^+, \Delta z^+\)</span></p></td>
+<td><p>2.93, 2.93, 3.21</p></td>
+<td><p>6.16, 6.42, 6.17</p></td>
+</tr>
+<tr class="row-even"><td><p>Level 1 extent from each wall</p></td>
+<td><p><span class="math notranslate nohighlight">\(z^+ \leq 45\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(z^+ \leq 111\)</span></p></td>
+</tr>
+</tbody>
+</table>
+<p>In the IB cases, level 1 also covers the solid cells between the wall and the
+domain boundary.</p>
+</section>
+<section id="validation-matrix">
+<h2>Validation matrix<a class="headerlink" href="#validation-matrix" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Case</p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(Re_\tau\)</span></p></th>
+<th class="head"><p>Walls</p></th>
+<th class="head"><p>Directory</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>No IB</p></td>
+<td><p>180</p></td>
+<td><p>No-slip domain boundaries</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cases/re180-no-ib</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>IB (<code class="docutils literal notranslate"><span class="pre">default</span></code>)</p></td>
+<td><p>180</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ChannelBuilder</span></code> with <code class="docutils literal notranslate"><span class="pre">DragForcing</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cases/re180-default</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>IB (<code class="docutils literal notranslate"><span class="pre">default</span></code>)</p></td>
+<td><p>395</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ChannelBuilder</span></code> with <code class="docutils literal notranslate"><span class="pre">DragForcing</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cases/re395-default</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>The <code class="docutils literal notranslate"><span class="pre">default</span></code> IB configuration uses the current <code class="docutils literal notranslate"><span class="pre">DragForcing</span></code> implementation,
+with <code class="docutils literal notranslate"><span class="pre">ABL.surface_roughness_z0</span> <span class="pre">=</span> <span class="pre">0.00001</span></code>. The <span class="math notranslate nohighlight">\(Re_\tau = 395\)</span> employs a wall model by setting <code class="docutils literal notranslate"><span class="pre">ChannelBuilder.initialize_drag_cells</span> <span class="pre">=</span> <span class="pre">true</span></code>.</p>
+<p>Shared solver settings are in <code class="docutils literal notranslate"><span class="pre">cases/base.inp</span></code>. Each case directory contains:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">inputs.inp</span></code>, which includes <code class="docutils literal notranslate"><span class="pre">base.inp</span></code> and sets the domain, forcing, walls,
+mesh, stop time, and the plane sampler used to collect statistics. Sampling
+starts after the spin-up time through <code class="docutils literal notranslate"><span class="pre">sampling.output_time_delay</span></code>.</p></li>
+</ul>
+</section>
+<section id="reference-data">
+<h2>Reference data<a class="headerlink" href="#reference-data" title="Link to this heading"></a></h2>
+<p>The reference data in <code class="docutils literal notranslate"><span class="pre">data/</span></code> are DNS profiles from:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(Re_\tau = 180\)</span>: Kim, J., Moin, P., and Moser, R. (1987). Turbulence
+statistics in fully developed channel flow at low Reynolds number.
+<em>Journal of Fluid Mechanics</em>, 177, 133-166.</p></li>
+<li><p><span class="math notranslate nohighlight">\(Re_\tau = 395\)</span>: Moser, R. D., Kim, J., and Mansour, N. N. (1999). Direct
+numerical simulation of turbulent channel flow up to <span class="math notranslate nohighlight">\(Re_\tau = 590\)</span>.
+<em>Physics of Fluids</em>, 11(4), 943-945.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">Re&lt;Re_tau&gt;_MeanVelocity.csv</span></code> contains <span class="math notranslate nohighlight">\(u^+\)</span> versus <span class="math notranslate nohighlight">\(y^+\)</span>. The
+<code class="docutils literal notranslate"><span class="pre">Re&lt;Re_tau&gt;_RMS_&lt;component&gt;.csv</span></code> files contain RMS velocity in wall units
+using the Kynema-SGF orientation: <code class="docutils literal notranslate"><span class="pre">U</span></code> is streamwise, <code class="docutils literal notranslate"><span class="pre">V</span></code> is spanwise, and
+<code class="docutils literal notranslate"><span class="pre">W</span></code> is wall-normal.</p>
+</section>
+<section id="statistics">
+<h2>Statistics<a class="headerlink" href="#statistics" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">channel_stats</span></code> plane sampler writes velocity on planes parallel to the
+walls every <span class="math notranslate nohighlight">\(0.1t^*\)</span> (<code class="docutils literal notranslate"><span class="pre">sampling.output_time_interval</span></code>), starting at the end of
+the spin-up (<code class="docutils literal notranslate"><span class="pre">sampling.output_time_delay</span></code>). This gives 100 samples over the
+<span class="math notranslate nohighlight">\(10t^*\)</span> statistics window after a <span class="math notranslate nohighlight">\(40t^*\)</span> (<span class="math notranslate nohighlight">\(Re_\tau = 180\)</span>) or <span class="math notranslate nohighlight">\(70t^*\)</span>
+(<span class="math notranslate nohighlight">\(Re_\tau = 395\)</span>) spinup. The planes are located at level 1 and level 0 cell
+centers between <span class="math notranslate nohighlight">\(z = -\delta\)</span> and <span class="math notranslate nohighlight">\(z = \delta\)</span>.</p>
+<p>For each plane, the analyzer accumulates the sample count, sum, and sum of
+squares of each velocity component over all sampled points and all sampler
+outputs. It combines planes with the same distance from the nearest wall,
+<span class="math notranslate nohighlight">\(y = \delta - |z|\)</span>, and computes</p>
+<div class="math notranslate nohighlight">
+\[\langle u_i \rangle = \frac{1}{N}\sum u_i,
+\qquad
+u_{i,\mathrm{rms}} = \sqrt{\frac{1}{N}\sum u_i^2 - \langle u_i \rangle^2}.\]</div>
+<p>Profiles are scaled with
+$<span class="math notranslate nohighlight">\(y^+ = \rho u_\tau y / \mu,\)</span><span class="math notranslate nohighlight">\(
+\)</span><span class="math notranslate nohighlight">\(u^+ = \langle u \rangle / u_\tau,\)</span><span class="math notranslate nohighlight">\(
+\)</span><span class="math notranslate nohighlight">\(u_{i,\mathrm{rms}}^+ = u_{i,\mathrm{rms}} / u_\tau.\)</span>$</p>
+<p>By default, the friction velocity is computed from the imposed pressure gradient,</p>
+<div class="math notranslate nohighlight">
+\[u_\tau = \sqrt{-\frac{\delta}{\rho}\frac{dp}{dx}}.\]</div>
+<p>With <code class="docutils literal notranslate"><span class="pre">--utau-source</span> <span class="pre">gradU</span></code>, it is instead computed from the wall shear stress
+<span class="math notranslate nohighlight">\(\tau_w = \mu\,|dU/dy|_{y=0}\)</span>, where the wall gradient comes from a quadratic
+fit through the wall and the two planes nearest to it:</p>
+<div class="math notranslate nohighlight">
+\[\left.\frac{dU}{dy}\right|_{y=0} = \frac{U_0 y_1^2 - U_1 y_0^2}{y_0 y_1 (y_1 - y_0)},
+\qquad
+u_\tau = \sqrt{\tau_w / \rho}.\]</div>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">kynema-sgf-env</span></code> conda environment shared by the immersed boundary
+cases. It contains the Python, NumPy, and Matplotlib dependencies required by
+the analyzer.</p>
+<p>From this directory, create the environment when necessary and activate it:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>../kynema-sgf-env.yml
+conda<span class="w"> </span>activate<span class="w"> </span>kynema-sgf-env
+</pre></div>
+</div>
+<p>An available Kynema-SGF executable is also required. Solver launch and
+resource selection are controlled by the user or the target HPC system.</p>
+</section>
+<section id="run-the-solver">
+<h2>Run the solver<a class="headerlink" href="#run-the-solver" title="Link to this heading"></a></h2>
+<p>Each case runs in a single job from its case directory. The run spins up the
+turbulence from a perturbed initial condition and then continues to the stop
+time; the sampler begins writing statistics data at the end of the spin-up.
+For example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>cases/re180-default
+srun<span class="w"> </span>-N<span class="w"> </span><span class="m">2</span><span class="w"> </span>--ntasks-per-node<span class="o">=</span><span class="m">50</span><span class="w"> </span>kynema_sgf<span class="w"> </span>inputs.inp
+</pre></div>
+</div>
+<p>The run writes sampler outputs in <code class="docutils literal notranslate"><span class="pre">post_processing/sampling*/</span></code>. Samples taken
+before the spin-up time are not written.</p>
+</section>
+<section id="check-convergence">
+<h2>Check convergence<a class="headerlink" href="#check-convergence" title="Link to this heading"></a></h2>
+<p>Statistics are only meaningful once the flow has reached a statistically
+steady state. If the spin-up is too short, the bulk velocity is still changing
+during the statistics window and the time averages are biased. Check this with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>python/drift.py<span class="w"> </span>--nprocs<span class="w"> </span><span class="m">16</span>
+</pre></div>
+</div>
+<p>For each case, <code class="docutils literal notranslate"><span class="pre">drift.py</span></code> integrates the plane-averaged streamwise velocity
+from wall to wall to get the bulk velocity <span class="math notranslate nohighlight">\(U_b\)</span> of every sampler output. It
+then compares the mean <span class="math notranslate nohighlight">\(U_b\)</span> over the first quarter of the outputs with the
+mean over the last quarter and prints the change, for example:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>re180-default: U_b 41.00 -&gt; 41.20 m/s (+0.5%) over the first and last 25 outputs
+</pre></div>
+</div>
+<p>A change of more than a percent or two means the spin-up should be extended.
+Restart from the latest checkpoint with <code class="docutils literal notranslate"><span class="pre">io.restart_file</span></code>, and increase
+<code class="docutils literal notranslate"><span class="pre">time.stop_time</span></code> and <code class="docutils literal notranslate"><span class="pre">sampling.output_time_delay</span></code>. Move the old <code class="docutils literal notranslate"><span class="pre">sampling*</span></code>
+folders aside and delete <code class="docutils literal notranslate"><span class="pre">particle_stats.txt</span></code> before reanalyzing.</p>
+<p>The sampler outputs of a case are read in parallel, one per worker process, so
+peak memory scales with the number of workers (about 0.6 GB per worker for
+<span class="math notranslate nohighlight">\(Re_\tau = 395\)</span>). Options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--cases</span> <span class="pre">re180-no-ib,re395-default</span></code> checks a subset of cases, which are
+processed one after another (default: all).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--nprocs</span> <span class="pre">N</span></code> sets the number of worker processes (default:
+<code class="docutils literal notranslate"><span class="pre">$SLURM_CPUS_PER_TASK</span></code>, otherwise the number of CPUs). Keep it within the
+memory of the node.</p></li>
+</ul>
+<p>At least four sampler outputs are required.</p>
+</section>
+<section id="analyze-statistics">
+<h2>Analyze statistics<a class="headerlink" href="#analyze-statistics" title="Link to this heading"></a></h2>
+<p>After the runs complete, run from this directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>python/analyze.py
+</pre></div>
+</div>
+<p>The analyzer reads every completed sampler output in each case’s
+<code class="docutils literal notranslate"><span class="pre">post_processing/</span></code> directory with a particle reader adapted from
+Kynema-SGF’s <code class="docutils literal notranslate"><span class="pre">tools/amrex_particle.py</span></code>. Cases without sampler output are
+reported and skipped. The time-averaged statistics on each sampling plane are
+written to <code class="docutils literal notranslate"><span class="pre">cases/&lt;case&gt;/particle_stats.txt</span></code>; when that file exists, it is read
+instead of the sampler output. Delete it to reprocess the sampler output, for
+example after rerunning a case. Options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--cases</span> <span class="pre">re180-no-ib,re180-default</span></code> analyzes a subset of cases.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--utau-source</span> <span class="pre">gradU</span></code> computes <span class="math notranslate nohighlight">\(u_\tau\)</span> from the wall velocity gradient.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--output-dir</span> <span class="pre">PATH</span></code> changes the output directory.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--last-time</span></code> uses only the latest sampler output, for debugging. It does not
+read or write <code class="docutils literal notranslate"><span class="pre">particle_stats.txt</span></code>, and adds a <code class="docutils literal notranslate"><span class="pre">_last-time</span></code> suffix to the
+output file names.</p></li>
+</ul>
+<section id="outputs">
+<h3>Outputs<a class="headerlink" href="#outputs" title="Link to this heading"></a></h3>
+<p>Analysis results are written to <code class="docutils literal notranslate"><span class="pre">cases/analysis/</span></code> by default:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cases/&lt;case&gt;/particle_stats.txt</span></code> (in the case directory) contains, for each
+sampling plane <span class="math notranslate nohighlight">\(z\)</span>, the mean and variance of each velocity component
+averaged over <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, and time, before the channel halves are folded.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;case&gt;_profiles.csv</span></code> contains the wall distance <span class="math notranslate nohighlight">\(y\)</span>, <span class="math notranslate nohighlight">\(y^+\)</span>, <span class="math notranslate nohighlight">\(u^+\)</span>, and the
+streamwise, spanwise, and wall-normal RMS velocity in wall units.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">re&lt;Re_tau&gt;_mean_velocity.png</span></code> compares <span class="math notranslate nohighlight">\(u^+\)</span> with the DNS data, the
+viscous sublayer <span class="math notranslate nohighlight">\(u^+ = y^+\)</span>, and the log law <span class="math notranslate nohighlight">\(u^+ = 2.5\ln y^+ + 5.5\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">re&lt;Re_tau&gt;_rms_velocity.png</span></code> compares RMS velocity components with the
+DNS data.</p></li>
+</ul>
+<p>The analyzer also prints the number of sampler outputs averaged and the
+friction velocity used for each case.</p>
+</section>
+</section>
+<section id="results">
+<h2>Results<a class="headerlink" href="#results" title="Link to this heading"></a></h2>
+<section id="re-tau-180">
+<h3><span class="math notranslate nohighlight">\(Re_\tau = 180\)</span><a class="headerlink" href="#re-tau-180" title="Link to this heading"></a></h3>
+<section id="mean-velocity-compared-with-dns">
+<h4>Mean velocity compared with DNS:<a class="headerlink" href="#mean-velocity-compared-with-dns" title="Link to this heading"></a></h4>
+<p><img alt="Re_tau = 180 mean velocity" src="../../../_images/re180_mean_velocity.png" /></p>
+</section>
+<section id="rms-velocity-compared-with-dns">
+<h4>RMS velocity compared with DNS:<a class="headerlink" href="#rms-velocity-compared-with-dns" title="Link to this heading"></a></h4>
+<p><img alt="Re_tau = 180 RMS velocity" src="../../../_images/re180_rms_velocity.png" /></p>
+</section>
+</section>
+<section id="re-tau-395">
+<h3><span class="math notranslate nohighlight">\(Re_\tau = 395\)</span><a class="headerlink" href="#re-tau-395" title="Link to this heading"></a></h3>
+<p>For this case we use the wall model by setting <code class="docutils literal notranslate"><span class="pre">ChannelBuilder.initialize_drag_cells</span> <span class="pre">=</span> <span class="pre">true</span></code>. The wall model is used here because the level 1 mesh only extends to <span class="math notranslate nohighlight">\(z^+ \leq 111\)</span>, which does not resolve the viscous sublayer and buffer layer. For non-IB cases, the wall model in Kynema-SGF is only implemented on the lower <span class="math notranslate nohighlight">\(z\)</span> boundary, therefore the non-IB reference is not used included.</p>
+<section id="id1">
+<h4>Mean velocity compared with DNS:<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<p><img alt="Re_tau = 395 mean velocity" src="../../../_images/re395_mean_velocity.png" /></p>
+</section>
+<section id="id2">
+<h4>RMS velocity compared with DNS:<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<p><img alt="Re_tau = 395 RMS velocity" src="../../../_images/re395_rms_velocity.png" /></p>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

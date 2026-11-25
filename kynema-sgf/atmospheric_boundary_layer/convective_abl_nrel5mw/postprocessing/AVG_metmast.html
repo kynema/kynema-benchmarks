@@ -1,0 +1,376 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Average met mast data &mdash; Kynema Benchmarks 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Kynema Benchmarks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-driver/benchmarks.html">Kynema Hybrid Solver Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Kynema-SGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kynema-ugf/benchmarks.html">Kynema-UGF Benchmarks</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes.html">Notes and additional cases</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Kynema Benchmarks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Average met mast data</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/kynema-sgf/atmospheric_boundary_layer/convective_abl_nrel5mw/postprocessing/AVG_metmast.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="average-met-mast-data">
+<h1>Average met mast data<a class="headerlink" href="#average-met-mast-data" title="Link to this heading"></a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add any possible locations of amr-wind-frontend here</span>
+<span class="n">amrwindfedirs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'/projects/wind_uq/lcheung/amrwind-frontend/'</span><span class="p">,</span>
+                  <span class="s1">'/ccs/proj/cfd162/lcheung/amrwind-frontend/'</span><span class="p">,</span>
+                <span class="p">]</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">shutil</span><span class="o">,</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">amrwindfedirs</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Make all plots inline </span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">postproengine</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ppeng</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/ascldap/users/lcheung/.local/lib/python3.9/site-packages/pandas/core/computation/expressions.py:21: UserWarning: Pandas requires version '2.8.4' or newer of 'numexpr' (version '2.8.1' currently installed).
+  from pandas.core.computation.check import NUMEXPR_INSTALLED
+/ascldap/users/lcheung/.local/lib/python3.9/site-packages/pandas/core/arrays/masked.py:60: UserWarning: Pandas requires version '1.3.6' or newer of 'bottleneck' (version '1.3.4' currently installed).
+  from pandas.core import (
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load ruamel or pyyaml as needed</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">ruamel.yaml</span>
+    <span class="n">yaml</span> <span class="o">=</span> <span class="n">ruamel</span><span class="o">.</span><span class="n">yaml</span><span class="o">.</span><span class="n">YAML</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="s1">'unsafe'</span><span class="p">,</span> <span class="n">pure</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">useruamel</span><span class="o">=</span><span class="kc">True</span>
+    <span class="n">loaderkwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'Loader'</span><span class="p">:</span><span class="n">yaml</span><span class="o">.</span><span class="n">RoundTripLoader</span><span class="p">}</span>
+    <span class="n">dumperkwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'Dumper'</span><span class="p">:</span><span class="n">yaml</span><span class="o">.</span><span class="n">RoundTripDumper</span><span class="p">,</span> <span class="s1">'indent'</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="s1">'default_flow_style'</span><span class="p">:</span><span class="kc">False</span><span class="p">}</span>
+    <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">load</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">yaml</span>
+    <span class="n">useruamel</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">loaderkwargs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">dumperkwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'default_flow_style'</span><span class="p">:</span><span class="kc">False</span> <span class="p">}</span>
+    <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span>
+    
+    
+<span class="k">def</span><span class="w"> </span><span class="nf">formatTfig</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span><span class="n">ax</span><span class="p">):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mi">300</span><span class="p">,</span> <span class="mi">301</span><span class="p">])</span>
+    <span class="k">return</span>
+<span class="n">ppeng</span><span class="o">.</span><span class="n">formatTfig</span> <span class="o">=</span> <span class="n">formatTfig</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">yamlstring</span><span class="o">=</span><span class="s2">"""</span>
+<span class="s2">globalattributes:</span>
+<span class="s2">  verbose: False</span>
+<span class="s2">  executeorder:</span>
+<span class="s2">  - linesampler</span>
+<span class="s2">  - plotcsv</span>
+<span class="s2">  </span>
+<span class="s2">linesampler:</span>
+<span class="s2">- name: metmast_1k</span>
+<span class="s2">  ncfile: </span>
+<span class="s2">  - /gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/post_processing/metmast_30000.nc</span>
+<span class="s2">  group: virtualmast</span>
+<span class="s2">  varnames: ['velocityx', 'velocityy', 'velocityz', 'temperature']</span>
+<span class="s2">  average:</span>
+<span class="s2">    tavg: [15000, 16000]</span>
+<span class="s2">    savefile: ../results/avgmast_1000.csv</span>
+<span class="s2">- name: metmast_120</span>
+<span class="s2">  ncfile: </span>
+<span class="s2">  - /gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/post_processing/metmast_30000.nc</span>
+<span class="s2">  group: virtualmast</span>
+<span class="s2">  varnames: ['velocityx', 'velocityy', 'velocityz', 'temperature']</span>
+<span class="s2">  average:</span>
+<span class="s2">    tavg: [15000, 15120]</span>
+<span class="s2">    savefile: ../results/avgmast_0120.csv</span>
+<span class="s2">- name: metmast_600</span>
+<span class="s2">  ncfile: </span>
+<span class="s2">  - /gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/post_processing/metmast_30000.nc</span>
+<span class="s2">  group: virtualmast</span>
+<span class="s2">  varnames: ['velocityx', 'velocityy', 'velocityz', 'temperature']</span>
+<span class="s2">  average:</span>
+<span class="s2">    tavg: [15000, 15600]</span>
+<span class="s2">    savefile: ../results/avgmast_0600.csv</span>
+<span class="s2">    </span>
+<span class="s2">plotcsv:</span>
+<span class="s2"># Averaged over 120 seconds</span>
+<span class="s2">  - name: plotUh</span>
+<span class="s2">    xlabel: 'U [m/s]'</span>
+<span class="s2">    ylabel: 'z [m]'</span>
+<span class="s2">    title: 'Velocity'</span>
+<span class="s2">    figsize: [5,4]</span>
+<span class="s2">    legendopts: {'loc':'upper left'}</span>
+<span class="s2">    figname: avg0120</span>
+<span class="s2">    axesnum: 0</span>
+<span class="s2">    #postplotfunc: plothelper.formatplot</span>
+<span class="s2">    csvfiles:</span>
+<span class="s2">    - {'file':'../results/avgmast_0120.csv', 'ycol':'z', 'xcol':'velocityx_avg',  'lineopts':{'color':'g', 'lw':1, 'linestyle':'--', 'label':'U'}}</span>
+<span class="s2">    - {'file':'../results/avgmast_0120.csv', 'ycol':'z', 'xcol':'velocityy_avg',  'lineopts':{'color':'r', 'lw':1, 'linestyle':'--', 'label':'V'}}</span>
+<span class="s2">    - {'file':'../results/avgmast_0120.csv', 'ycol':'z', 'xcol':'', 'xscalefunc':'lambda x:np.array(np.sqrt(x["velocityx_avg"]**2+x["velocityy_avg"]**2))',  'lineopts':{'color':'k', 'lw':1, 'linestyle':'-', 'label':'$U_h$'}}</span>
+<span class="s2">  - name: plotWindDir</span>
+<span class="s2">    xlabel: 'Wind dir [deg]'</span>
+<span class="s2">    ylabel: 'z [m]'</span>
+<span class="s2">    title: 'Wind direction'</span>
+<span class="s2">    figsize: [5,4]</span>
+<span class="s2">    legendopts: {'loc':'upper left'}</span>
+<span class="s2">    figname: avg0120</span>
+<span class="s2">    axesnum: 1</span>
+<span class="s2">    #postplotfunc: plothelper.formatplot</span>
+<span class="s2">    csvfiles:</span>
+<span class="s2">    - {'file':'../results/avgmast_0120.csv', 'ycol':'z', 'xcol':'', 'xscalefunc':'lambda x:np.array(270-np.arctan2(x["velocityy_avg"], x["velocityx_avg"])*180.0/np.pi)',  </span>
+<span class="s2">       'lineopts':{'color':'k', 'lw':1, 'linestyle':'-', 'label':'$</span><span class="se">\\</span><span class="s2">theta$'}}</span>
+<span class="s2">  - name: plotT</span>
+<span class="s2">    xlabel: 'Temperature [K]'</span>
+<span class="s2">    ylabel: 'z [m]'</span>
+<span class="s2">    title: 'Temperature'</span>
+<span class="s2">    figsize: [5,4]</span>
+<span class="s2">    legendopts: {'loc':'upper right'}</span>
+<span class="s2">    figname: avg0120</span>
+<span class="s2">    axesnum: 2</span>
+<span class="s2">    postplotfunc: postproengine.formatTfig</span>
+<span class="s2">    csvfiles:</span>
+<span class="s2">    - {'file':'../results/avgmast_0120.csv', 'ycol':'z', 'xcol':'temperature_avg', 'lineopts':{'color':'k', 'lw':1, 'linestyle':'-', 'label':'T'}}</span>
+<span class="s2">    savefile: ../results/avgmetmast_0120.png</span>
+<span class="s2">    </span>
+<span class="s2"># Averaged over 600 seconds</span>
+<span class="s2">  - name: plotUh</span>
+<span class="s2">    xlabel: 'U [m/s]'</span>
+<span class="s2">    ylabel: 'z [m]'</span>
+<span class="s2">    title: 'Velocity'</span>
+<span class="s2">    figsize: [5,4]</span>
+<span class="s2">    legendopts: {'loc':'upper left'}</span>
+<span class="s2">    figname: avg0600</span>
+<span class="s2">    axesnum: 0</span>
+<span class="s2">    #postplotfunc: plothelper.formatplot</span>
+<span class="s2">    csvfiles:</span>
+<span class="s2">    - {'file':'../results/avgmast_0600.csv', 'ycol':'z', 'xcol':'velocityx_avg',  'lineopts':{'color':'g', 'lw':1, 'linestyle':'--', 'label':'U'}}</span>
+<span class="s2">    - {'file':'../results/avgmast_0600.csv', 'ycol':'z', 'xcol':'velocityy_avg',  'lineopts':{'color':'r', 'lw':1, 'linestyle':'--', 'label':'V'}}</span>
+<span class="s2">    - {'file':'../results/avgmast_0600.csv', 'ycol':'z', 'xcol':'', 'xscalefunc':'lambda x:np.array(np.sqrt(x["velocityx_avg"]**2+x["velocityy_avg"]**2))',  'lineopts':{'color':'k', 'lw':1, 'linestyle':'-', 'label':'$U_h$'}}</span>
+<span class="s2">  - name: plotWindDir</span>
+<span class="s2">    xlabel: 'Wind dir [deg]'</span>
+<span class="s2">    ylabel: 'z [m]'</span>
+<span class="s2">    title: 'Wind direction'</span>
+<span class="s2">    figsize: [5,4]</span>
+<span class="s2">    legendopts: {'loc':'upper left'}</span>
+<span class="s2">    figname: avg0600</span>
+<span class="s2">    axesnum: 1</span>
+<span class="s2">    #postplotfunc: plothelper.formatplot</span>
+<span class="s2">    csvfiles:</span>
+<span class="s2">    - {'file':'../results/avgmast_0600.csv', 'ycol':'z', 'xcol':'', 'xscalefunc':'lambda x:np.array(270-np.arctan2(x["velocityy_avg"], x["velocityx_avg"])*180.0/np.pi)',  </span>
+<span class="s2">       'lineopts':{'color':'k', 'lw':1, 'linestyle':'-', 'label':'$</span><span class="se">\\</span><span class="s2">theta$'}}</span>
+<span class="s2">  - name: plotT</span>
+<span class="s2">    xlabel: 'Temperature [K]'</span>
+<span class="s2">    ylabel: 'z [m]'</span>
+<span class="s2">    title: 'Temperature'</span>
+<span class="s2">    figsize: [5,4]</span>
+<span class="s2">    legendopts: {'loc':'upper right'}</span>
+<span class="s2">    figname: avg0600</span>
+<span class="s2">    axesnum: 2</span>
+<span class="s2">    postplotfunc: postproengine.formatTfig</span>
+<span class="s2">    csvfiles:</span>
+<span class="s2">    - {'file':'../results/avgmast_0600.csv', 'ycol':'z', 'xcol':'temperature_avg', 'lineopts':{'color':'k', 'lw':1, 'linestyle':'-', 'label':'T'}}</span>
+<span class="s2">    savefile: ../results/avgmetmast_0600.png</span>
+<span class="s2">    </span>
+<span class="s2"># Averaged over 1000 seconds</span>
+<span class="s2">  - name: plotUh</span>
+<span class="s2">    xlabel: 'U [m/s]'</span>
+<span class="s2">    ylabel: 'z [m]'</span>
+<span class="s2">    title: 'Velocity'</span>
+<span class="s2">    figsize: [5,4]</span>
+<span class="s2">    legendopts: {'loc':'upper left'}</span>
+<span class="s2">    figname: avg1000</span>
+<span class="s2">    axesnum: 0</span>
+<span class="s2">    #postplotfunc: plothelper.formatplot</span>
+<span class="s2">    csvfiles:</span>
+<span class="s2">    - {'file':'../results/avgmast_1000.csv', 'ycol':'z', 'xcol':'velocityx_avg',  'lineopts':{'color':'g', 'lw':1, 'linestyle':'--', 'label':'U'}}</span>
+<span class="s2">    - {'file':'../results/avgmast_1000.csv', 'ycol':'z', 'xcol':'velocityy_avg',  'lineopts':{'color':'r', 'lw':1, 'linestyle':'--', 'label':'V'}}</span>
+<span class="s2">    - {'file':'../results/avgmast_1000.csv', 'ycol':'z', 'xcol':'', 'xscalefunc':'lambda x:np.array(np.sqrt(x["velocityx_avg"]**2+x["velocityy_avg"]**2))',  'lineopts':{'color':'k', 'lw':1, 'linestyle':'-', 'label':'$U_h$'}}</span>
+<span class="s2">  - name: plotWindDir</span>
+<span class="s2">    xlabel: 'Wind dir [deg]'</span>
+<span class="s2">    ylabel: 'z [m]'</span>
+<span class="s2">    title: 'Wind direction'</span>
+<span class="s2">    figsize: [5,4]</span>
+<span class="s2">    legendopts: {'loc':'upper left'}</span>
+<span class="s2">    figname: avg1000</span>
+<span class="s2">    axesnum: 1</span>
+<span class="s2">    #postplotfunc: plothelper.formatplot</span>
+<span class="s2">    csvfiles:</span>
+<span class="s2">    - {'file':'../results/avgmast_1000.csv', 'ycol':'z', 'xcol':'', 'xscalefunc':'lambda x:np.array(270-np.arctan2(x["velocityy_avg"], x["velocityx_avg"])*180.0/np.pi)',  </span>
+<span class="s2">       'lineopts':{'color':'k', 'lw':1, 'linestyle':'-', 'label':'$</span><span class="se">\\</span><span class="s2">theta$'}}</span>
+<span class="s2">  - name: plotT</span>
+<span class="s2">    xlabel: 'Temperature [K]'</span>
+<span class="s2">    ylabel: 'z [m]'</span>
+<span class="s2">    title: 'Temperature'</span>
+<span class="s2">    figsize: [5,4]</span>
+<span class="s2">    legendopts: {'loc':'upper right'}</span>
+<span class="s2">    figname: avg1000</span>
+<span class="s2">    axesnum: 2</span>
+<span class="s2">    postplotfunc: postproengine.formatTfig</span>
+<span class="s2">    csvfiles:</span>
+<span class="s2">    - {'file':'../results/avgmast_1000.csv', 'ycol':'z', 'xcol':'temperature_avg', 'lineopts':{'color':'k', 'lw':1, 'linestyle':'-', 'label':'T'}}</span>
+<span class="s2">    savefile: ../results/avgmetmast_1000.png</span>
+<span class="s2">"""</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">yamlstring</span><span class="p">)</span>
+<span class="n">yamldict</span> <span class="o">=</span> <span class="n">Loader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">loaderkwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the driver</span>
+<span class="n">fig0120</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="s2">"avg0120"</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fig0120</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">'Avg. met mast (120 sec)'</span><span class="p">)</span>
+<span class="n">fig0600</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="s2">"avg0600"</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fig0600</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">'Avg. met mast (600 sec)'</span><span class="p">)</span>
+<span class="n">fig1000</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="s2">"avg1000"</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fig1000</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">'Avg. met mast (1000 sec)'</span><span class="p">)</span>
+<span class="n">ppeng</span><span class="o">.</span><span class="n">driver</span><span class="p">(</span><span class="n">yamldict</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initialized linesampler
+Running linesampler
+Initialized average inside linesampler
+Executing average
+/gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/post_processing/metmast_30000.nc 2001
+[============================================================] 100.0% 
+Ncount = 2001
+
+Initialized average inside linesampler
+Executing average
+/gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/post_processing/metmast_30000.nc 241
+[============================================================] 100.0% 
+Ncount = 241
+
+Initialized average inside linesampler
+Executing average
+/gpfs/lcheung/HFM/exawind-benchmarks/convective_abl/post_processing/metmast_30000.nc 1201
+[============================================================] 100.0% 
+Ncount = 1201
+
+Initialized plotcsv
+Running plotcsv
+Saving ../results/avgmetmast_0120.png
+Saving ../results/avgmetmast_0600.png
+Saving ../results/avgmetmast_1000.png
+</pre></div>
+</div>
+<img alt="../../../../_images/5930c5ab60bf5dc6978174c296f957b4c18a393f9a31103d0ce7130a7f3e744f.png" src="../../../../_images/5930c5ab60bf5dc6978174c296f957b4c18a393f9a31103d0ce7130a7f3e744f.png" />
+<img alt="../../../../_images/8b0e346fe8ebccba59de7bcb812ed148dd05e2bdd2fbdd4eb130def96dbbfb7c.png" src="../../../../_images/8b0e346fe8ebccba59de7bcb812ed148dd05e2bdd2fbdd4eb130def96dbbfb7c.png" />
+<img alt="../../../../_images/ecc9166a30fbdd5ad8b9b5ca6c61e7fc60f3f70555a82d655ebab8a31e9722dc.png" src="../../../../_images/ecc9166a30fbdd5ad8b9b5ca6c61e7fc60f3f70555a82d655ebab8a31e9722dc.png" />
+</div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
